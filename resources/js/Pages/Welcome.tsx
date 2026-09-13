@@ -1,366 +1,850 @@
-import { PageProps } from '@/types';
 import { Head, Link } from '@inertiajs/react';
+import { useEffect, useRef, useState, Suspense } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { Sphere, MeshDistortMaterial, Float, Stars } from '@react-three/drei';
+import * as THREE from 'three';
+import { motion, useInView, useMotionValue, useSpring, animate } from 'framer-motion';
+import {
+    ArrowRight, ArrowDown, Shield, Scale, BookOpen, Users, FileText, Search,
+    Globe, Heart, ChevronRight, Play
+} from 'lucide-react';
+import PublicLayout from '@/Layouts/PublicLayout';
 
-export default function Welcome({
-    auth,
-    laravelVersion,
-    phpVersion,
-}: PageProps<{ laravelVersion: string; phpVersion: string }>) {
-    const handleImageError = () => {
-        document
-            .getElementById('screenshot-container')
-            ?.classList.add('!hidden');
-        document.getElementById('docs-card')?.classList.add('!row-span-1');
-        document
-            .getElementById('docs-card-content')
-            ?.classList.add('!flex-row');
-        document.getElementById('background')?.classList.add('!hidden');
-    };
+// ─── 3D HERO SCENE ────────────────────────────────────────────────────────────
+
+function FloatingNode({ position, size = 0.15, color = '#f59e0b', speed = 1 }: {
+    position: [number, number, number];
+    size?: number;
+    color?: string;
+    speed?: number;
+}) {
+    const meshRef = useRef<THREE.Mesh>(null);
+    const t = useRef(Math.random() * Math.PI * 2);
+
+    useFrame((_, delta) => {
+        t.current += delta * speed * 0.5;
+        if (meshRef.current) {
+            meshRef.current.position.y = position[1] + Math.sin(t.current) * 0.3;
+            meshRef.current.rotation.x += delta * 0.3;
+            meshRef.current.rotation.z += delta * 0.2;
+        }
+    });
 
     return (
-        <>
-            <Head title="Welcome" />
-            <div className="bg-gray-50 text-black/50 dark:bg-black dark:text-white/50">
-                <img
-                    id="background"
-                    className="absolute -left-20 top-0 max-w-[877px]"
-                    src="https://laravel.com/assets/img/welcome/background.svg"
+        <mesh ref={meshRef} position={position}>
+            <octahedronGeometry args={[size, 0]} />
+            <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.4} transparent opacity={0.8} />
+        </mesh>
+    );
+}
+
+function ConnectionLine({ start, end }: { start: [number, number, number]; end: [number, number, number] }) {
+    const points = [new THREE.Vector3(...start), new THREE.Vector3(...end)];
+    const geometry = new THREE.BufferGeometry().setFromPoints(points);
+
+    return (
+        // @ts-expect-error Three.js line JSX conflicts with SVG line
+        <line geometry={geometry}>
+            <lineBasicMaterial color="#f59e0b" transparent opacity={0.15} />
+        </line>
+    );
+}
+
+function HeroScene({ mouseX, mouseY }: { mouseX: number; mouseY: number }) {
+    const groupRef = useRef<THREE.Group>(null);
+    const { size } = useThree();
+
+    useFrame((state) => {
+        if (groupRef.current) {
+            groupRef.current.rotation.y = mouseX * 0.15 + state.clock.elapsedTime * 0.05;
+            groupRef.current.rotation.x = -mouseY * 0.08;
+        }
+    });
+
+    const nodes: [number, number, number][] = [
+        [0, 0, 0],
+        [2, 1, -1],
+        [-2, 0.5, -0.5],
+        [1.5, -1.5, 0.5],
+        [-1.5, -1, 1],
+        [0.5, 2, -0.5],
+        [3, 0, -1],
+        [-2.5, -0.5, 0],
+        [0, -2, 0.5],
+    ];
+
+    const connections: [[number, number, number], [number, number, number]][] = [
+        [nodes[0], nodes[1]],
+        [nodes[0], nodes[2]],
+        [nodes[0], nodes[3]],
+        [nodes[0], nodes[4]],
+        [nodes[1], nodes[5]],
+        [nodes[1], nodes[6]],
+        [nodes[2], nodes[7]],
+        [nodes[3], nodes[8]],
+        [nodes[4], nodes[8]],
+    ];
+
+    return (
+        <group ref={groupRef}>
+            {/* Central sphere */}
+            <Float speed={2} rotationIntensity={0.3} floatIntensity={0.5}>
+                <Sphere args={[0.8, 32, 32]} position={[0, 0, 0]}>
+                    <MeshDistortMaterial
+                        color="#1e2882"
+                        emissive="#3a58f0"
+                        emissiveIntensity={0.3}
+                        distort={0.3}
+                        speed={2}
+                        transparent
+                        opacity={0.7}
+                        roughness={0.1}
+                        metalness={0.8}
+                    />
+                </Sphere>
+            </Float>
+
+            {/* Floating nodes */}
+            {nodes.slice(1).map((pos, i) => (
+                <FloatingNode
+                    key={i}
+                    position={pos}
+                    size={0.1 + (i % 3) * 0.04}
+                    color={i % 3 === 0 ? '#f59e0b' : i % 3 === 1 ? '#60a5fa' : '#e11d48'}
+                    speed={0.5 + i * 0.15}
                 />
-                <div className="relative flex min-h-screen flex-col items-center justify-center selection:bg-[#FF2D20] selection:text-white">
-                    <div className="relative w-full max-w-2xl px-6 lg:max-w-7xl">
-                        <header className="grid grid-cols-2 items-center gap-2 py-10 lg:grid-cols-3">
-                            <div className="flex lg:col-start-2 lg:justify-center">
-                                <svg
-                                    className="h-12 w-auto text-white lg:h-16 lg:text-[#FF2D20]"
-                                    viewBox="0 0 62 65"
-                                    fill="none"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        d="M61.8548 14.6253C61.8778 14.7102 61.8895 14.7978 61.8897 14.8858V28.5615C61.8898 28.737 61.8434 28.9095 61.7554 29.0614C61.6675 29.2132 61.5409 29.3392 61.3887 29.4265L49.9104 36.0351V49.1337C49.9104 49.4902 49.7209 49.8192 49.4118 49.9987L25.4519 63.7916C25.3971 63.8227 25.3372 63.8427 25.2774 63.8639C25.255 63.8714 25.2338 63.8851 25.2101 63.8913C25.0426 63.9354 24.8666 63.9354 24.6991 63.8913C24.6716 63.8838 24.6467 63.8689 24.6205 63.8589C24.5657 63.8389 24.5084 63.8215 24.456 63.7916L0.501061 49.9987C0.348882 49.9113 0.222437 49.7853 0.134469 49.6334C0.0465019 49.4816 0.000120578 49.3092 0 49.1337L0 8.10652C0 8.01678 0.0124642 7.92953 0.0348998 7.84477C0.0423783 7.8161 0.0598282 7.78993 0.0697995 7.76126C0.0884958 7.70891 0.105946 7.65531 0.133367 7.6067C0.152063 7.5743 0.179485 7.54812 0.20192 7.51821C0.230588 7.47832 0.256763 7.43719 0.290416 7.40229C0.319084 7.37362 0.356476 7.35243 0.388883 7.32751C0.425029 7.29759 0.457436 7.26518 0.498568 7.2415L12.4779 0.345059C12.6296 0.257786 12.8015 0.211853 12.9765 0.211853C13.1515 0.211853 13.3234 0.257786 13.475 0.345059L25.4531 7.2415H25.4556C25.4955 7.26643 25.5292 7.29759 25.5653 7.32626C25.5977 7.35119 25.6339 7.37362 25.6625 7.40104C25.6974 7.43719 25.7224 7.47832 25.7523 7.51821C25.7735 7.54812 25.8021 7.5743 25.8196 7.6067C25.8483 7.65656 25.8645 7.70891 25.8844 7.76126C25.8944 7.78993 25.9118 7.8161 25.9193 7.84602C25.9423 7.93096 25.954 8.01853 25.9542 8.10652V33.7317L35.9355 27.9844V14.8846C35.9355 14.7973 35.948 14.7088 35.9704 14.6253C35.9792 14.5954 35.9954 14.5692 36.0053 14.5405C36.0253 14.4882 36.0427 14.4346 36.0702 14.386C36.0888 14.3536 36.1163 14.3274 36.1375 14.2975C36.1674 14.2576 36.1923 14.2165 36.2272 14.1816C36.2559 14.1529 36.292 14.1317 36.3244 14.1068C36.3618 14.0769 36.3942 14.0445 36.4341 14.0208L48.4147 7.12434C48.5663 7.03694 48.7383 6.99094 48.9133 6.99094C49.0883 6.99094 49.2602 7.03694 49.4118 7.12434L61.3899 14.0208C61.4323 14.0457 61.4647 14.0769 61.5021 14.1055C61.5333 14.1305 61.5694 14.1529 61.5981 14.1803C61.633 14.2165 61.6579 14.2576 61.6878 14.2975C61.7103 14.3274 61.7377 14.3536 61.7551 14.386C61.7838 14.4346 61.8 14.4882 61.8199 14.5405C61.8312 14.5692 61.8474 14.5954 61.8548 14.6253ZM59.893 27.9844V16.6121L55.7013 19.0252L49.9104 22.3593V33.7317L59.8942 27.9844H59.893ZM47.9149 48.5566V37.1768L42.2187 40.4299L25.953 49.7133V61.2003L47.9149 48.5566ZM1.99677 9.83281V48.5566L23.9562 61.199V49.7145L12.4841 43.2219L12.4804 43.2194L12.4754 43.2169C12.4368 43.1945 12.4044 43.1621 12.3682 43.1347C12.3371 43.1097 12.3009 43.0898 12.2735 43.0624L12.271 43.0586C12.2386 43.0275 12.2162 42.9888 12.1887 42.9539C12.1638 42.9203 12.1339 42.8916 12.114 42.8567L12.1127 42.853C12.0903 42.8156 12.0766 42.7707 12.0604 42.7283C12.0442 42.6909 12.023 42.656 12.013 42.6161C12.0005 42.5688 11.998 42.5177 11.9931 42.4691C11.9881 42.4317 11.9781 42.3943 11.9781 42.3569V15.5801L6.18848 12.2446L1.99677 9.83281ZM12.9777 2.36177L2.99764 8.10652L12.9752 13.8513L22.9541 8.10527L12.9752 2.36177H12.9777ZM18.1678 38.2138L23.9574 34.8809V9.83281L19.7657 12.2459L13.9749 15.5801V40.6281L18.1678 38.2138ZM48.9133 9.14105L38.9344 14.8858L48.9133 20.6305L58.8909 14.8846L48.9133 9.14105ZM47.9149 22.3593L42.124 19.0252L37.9323 16.6121V27.9844L43.7219 31.3174L47.9149 33.7317V22.3593ZM24.9533 47.987L39.59 39.631L46.9065 35.4555L36.9352 29.7145L25.4544 36.3242L14.9907 42.3482L24.9533 47.987Z"
-                                        fill="currentColor"
-                                    />
-                                </svg>
-                            </div>
-                            <nav className="-mx-3 flex flex-1 justify-end">
-                                {auth.user ? (
-                                    <Link
-                                        href={route('dashboard')}
-                                        className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                    >
-                                        Dashboard
-                                    </Link>
-                                ) : (
-                                    <>
-                                        <Link
-                                            href={route('login')}
-                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                        >
-                                            Log in
-                                        </Link>
-                                        <Link
-                                            href={route('register')}
-                                            className="rounded-md px-3 py-2 text-black ring-1 ring-transparent transition hover:text-black/70 focus:outline-none focus-visible:ring-[#FF2D20] dark:text-white dark:hover:text-white/80 dark:focus-visible:ring-white"
-                                        >
-                                            Register
-                                        </Link>
-                                    </>
-                                )}
-                            </nav>
-                        </header>
+            ))}
 
-                        <main className="mt-6">
-                            <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
-                                <a
-                                    href="https://laravel.com/docs"
-                                    id="docs-card"
-                                    className="flex flex-col items-start gap-6 overflow-hidden rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] md:row-span-3 lg:p-10 lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
-                                >
-                                    <div
-                                        id="screenshot-container"
-                                        className="relative flex w-full flex-1 items-stretch"
-                                    >
-                                        <img
-                                            src="https://laravel.com/assets/img/welcome/docs-light.svg"
-                                            alt="Laravel documentation screenshot"
-                                            className="aspect-video h-full w-full flex-1 rounded-[10px] object-cover object-top drop-shadow-[0px_4px_34px_rgba(0,0,0,0.06)] dark:hidden"
-                                            onError={handleImageError}
-                                        />
-                                        <img
-                                            src="https://laravel.com/assets/img/welcome/docs-dark.svg"
-                                            alt="Laravel documentation screenshot"
-                                            className="hidden aspect-video h-full w-full flex-1 rounded-[10px] object-cover object-top drop-shadow-[0px_4px_34px_rgba(0,0,0,0.25)] dark:block"
-                                        />
-                                        <div className="absolute -bottom-16 -left-16 h-40 w-[calc(100%+8rem)] bg-gradient-to-b from-transparent via-white to-white dark:via-zinc-900 dark:to-zinc-900"></div>
-                                    </div>
+            {/* Connection lines */}
+            {connections.map(([start, end], i) => (
+                <ConnectionLine key={i} start={start} end={end} />
+            ))}
 
-                                    <div className="relative flex items-center gap-6 lg:items-end">
-                                        <div
-                                            id="docs-card-content"
-                                            className="flex items-start gap-6 lg:flex-col"
-                                        >
-                                            <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                                <svg
-                                                    className="size-5 sm:size-6"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                    fill="none"
-                                                    viewBox="0 0 24 24"
-                                                >
-                                                    <path
-                                                        fill="#FF2D20"
-                                                        d="M23 4a1 1 0 0 0-1.447-.894L12.224 7.77a.5.5 0 0 1-.448 0L2.447 3.106A1 1 0 0 0 1 4v13.382a1.99 1.99 0 0 0 1.105 1.79l9.448 4.728c.14.065.293.1.447.1.154-.005.306-.04.447-.105l9.453-4.724a1.99 1.99 0 0 0 1.1-1.789V4ZM3 6.023a.25.25 0 0 1 .362-.223l7.5 3.75a.251.251 0 0 1 .138.223v11.2a.25.25 0 0 1-.362.224l-7.5-3.75a.25.25 0 0 1-.138-.22V6.023Zm18 11.2a.25.25 0 0 1-.138.224l-7.5 3.75a.249.249 0 0 1-.329-.099.249.249 0 0 1-.033-.12V9.772a.251.251 0 0 1 .138-.224l7.5-3.75a.25.25 0 0 1 .362.224v11.2Z"
-                                                    />
-                                                    <path
-                                                        fill="#FF2D20"
-                                                        d="m3.55 1.893 8 4.048a1.008 1.008 0 0 0 .9 0l8-4.048a1 1 0 0 0-.9-1.785l-7.322 3.706a.506.506 0 0 1-.452 0L4.454.108a1 1 0 0 0-.9 1.785H3.55Z"
-                                                    />
-                                                </svg>
-                                            </div>
+            {/* Stars background */}
+            <Stars radius={20} depth={10} count={800} factor={2} saturation={0} fade speed={0.5} />
 
-                                            <div className="pt-3 sm:pt-5 lg:pt-0">
-                                                <h2 className="text-xl font-semibold text-black dark:text-white">
-                                                    Documentation
-                                                </h2>
+            {/* Ambient ring */}
+            <mesh rotation={[Math.PI / 2, 0, 0]}>
+                <torusGeometry args={[2.5, 0.015, 16, 100]} />
+                <meshStandardMaterial color="#f59e0b" emissive="#f59e0b" emissiveIntensity={0.5} transparent opacity={0.3} />
+            </mesh>
+            <mesh rotation={[Math.PI / 3, Math.PI / 6, 0]}>
+                <torusGeometry args={[3.2, 0.01, 16, 100]} />
+                <meshStandardMaterial color="#3a58f0" emissive="#3a58f0" emissiveIntensity={0.4} transparent opacity={0.2} />
+            </mesh>
 
-                                                <p className="mt-4 text-sm/relaxed">
-                                                    Laravel has wonderful
-                                                    documentation covering every
-                                                    aspect of the framework.
-                                                    Whether you are a newcomer
-                                                    or have prior experience
-                                                    with Laravel, we recommend
-                                                    reading our documentation
-                                                    from beginning to end.
-                                                </p>
-                                            </div>
-                                        </div>
+            {/* Lighting */}
+            <ambientLight intensity={0.4} />
+            <pointLight position={[5, 5, 5]} intensity={1} color="#f59e0b" />
+            <pointLight position={[-5, -3, -5]} intensity={0.6} color="#3a58f0" />
+        </group>
+    );
+}
 
-                                        <svg
-                                            className="size-6 shrink-0 stroke-[#FF2D20]"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth="1.5"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                                            />
-                                        </svg>
-                                    </div>
-                                </a>
+// ─── ANIMATED COUNTER ─────────────────────────────────────────────────────────
 
-                                <a
-                                    href="https://laracasts.com"
-                                    className="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
-                                >
-                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                        <svg
-                                            className="size-5 sm:size-6"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <g fill="#FF2D20">
-                                                <path d="M24 8.25a.5.5 0 0 0-.5-.5H.5a.5.5 0 0 0-.5.5v12a2.5 2.5 0 0 0 2.5 2.5h19a2.5 2.5 0 0 0 2.5-2.5v-12Zm-7.765 5.868a1.221 1.221 0 0 1 0 2.264l-6.626 2.776A1.153 1.153 0 0 1 8 18.123v-5.746a1.151 1.151 0 0 1 1.609-1.035l6.626 2.776ZM19.564 1.677a.25.25 0 0 0-.177-.427H15.6a.106.106 0 0 0-.072.03l-4.54 4.543a.25.25 0 0 0 .177.427h3.783c.027 0 .054-.01.073-.03l4.543-4.543ZM22.071 1.318a.047.047 0 0 0-.045.013l-4.492 4.492a.249.249 0 0 0 .038.385.25.25 0 0 0 .14.042h5.784a.5.5 0 0 0 .5-.5v-2a2.5 2.5 0 0 0-1.925-2.432ZM13.014 1.677a.25.25 0 0 0-.178-.427H9.101a.106.106 0 0 0-.073.03l-4.54 4.543a.25.25 0 0 0 .177.427H8.4a.106.106 0 0 0 .073-.03l4.54-4.543ZM6.513 1.677a.25.25 0 0 0-.177-.427H2.5A2.5 2.5 0 0 0 0 3.75v2a.5.5 0 0 0 .5.5h1.4a.106.106 0 0 0 .073-.03l4.54-4.543Z" />
-                                            </g>
-                                        </svg>
-                                    </div>
+function AnimatedCounter({ target, suffix = '', prefix = '' }: { target: number; suffix?: string; prefix?: string }) {
+    const ref = useRef<HTMLSpanElement>(null);
+    const inView = useInView(ref, { once: true, margin: '-100px' });
 
-                                    <div className="pt-3 sm:pt-5">
-                                        <h2 className="text-xl font-semibold text-black dark:text-white">
-                                            Laracasts
-                                        </h2>
+    useEffect(() => {
+        if (!inView || !ref.current) return;
+        const controls = animate(0, target, {
+            duration: 2,
+            ease: [0.16, 1, 0.3, 1],
+            onUpdate(value) {
+                if (ref.current) ref.current.textContent = `${prefix}${Math.round(value)}${suffix}`;
+            },
+        });
+        return controls.stop;
+    }, [inView, target, prefix, suffix]);
 
-                                        <p className="mt-4 text-sm/relaxed">
-                                            Laracasts offers thousands of video
-                                            tutorials on Laravel, PHP, and
-                                            JavaScript development. Check them
-                                            out, see for yourself, and massively
-                                            level up your development skills in
-                                            the process.
-                                        </p>
-                                    </div>
+    return <span ref={ref}>{prefix}0{suffix}</span>;
+}
 
-                                    <svg
-                                        className="size-6 shrink-0 self-center stroke-[#FF2D20]"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth="1.5"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                                        />
-                                    </svg>
-                                </a>
+// ─── THEMATIC AREAS ───────────────────────────────────────────────────────────
 
-                                <a
-                                    href="https://laravel-news.com"
-                                    className="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] transition duration-300 hover:text-black/70 hover:ring-black/20 focus:outline-none focus-visible:ring-[#FF2D20] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800 dark:hover:text-white/70 dark:hover:ring-zinc-700 dark:focus-visible:ring-[#FF2D20]"
-                                >
-                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                        <svg
-                                            className="size-5 sm:size-6"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <g fill="#FF2D20">
-                                                <path d="M8.75 4.5H5.5c-.69 0-1.25.56-1.25 1.25v4.75c0 .69.56 1.25 1.25 1.25h3.25c.69 0 1.25-.56 1.25-1.25V5.75c0-.69-.56-1.25-1.25-1.25Z" />
-                                                <path d="M24 10a3 3 0 0 0-3-3h-2V2.5a2 2 0 0 0-2-2H2a2 2 0 0 0-2 2V20a3.5 3.5 0 0 0 3.5 3.5h17A3.5 3.5 0 0 0 24 20V10ZM3.5 21.5A1.5 1.5 0 0 1 2 20V3a.5.5 0 0 1 .5-.5h14a.5.5 0 0 1 .5.5v17c0 .295.037.588.11.874a.5.5 0 0 1-.484.625L3.5 21.5ZM22 20a1.5 1.5 0 1 1-3 0V9.5a.5.5 0 0 1 .5-.5H21a1 1 0 0 1 1 1v10Z" />
-                                                <path d="M12.751 6.047h2a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-2A.75.75 0 0 1 12 7.3v-.5a.75.75 0 0 1 .751-.753ZM12.751 10.047h2a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-2A.75.75 0 0 1 12 11.3v-.5a.75.75 0 0 1 .751-.753ZM4.751 14.047h10a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-10A.75.75 0 0 1 4 15.3v-.5a.75.75 0 0 1 .751-.753ZM4.75 18.047h7.5a.75.75 0 0 1 .75.75v.5a.75.75 0 0 1-.75.75h-7.5A.75.75 0 0 1 4 19.3v-.5a.75.75 0 0 1 .75-.753Z" />
-                                            </g>
-                                        </svg>
-                                    </div>
+const thematicAreas = [
+    {
+        number: '01',
+        title: 'Human Rights & Constitutionalism',
+        description: 'Promoting knowledge and protection of rights guaranteed under the Constitution and relevant international and regional human rights instruments.',
+        icon: Shield,
+        color: 'from-blue-600/20 to-navy-900/20',
+        accent: '#60a5fa',
+    },
+    {
+        number: '02',
+        title: 'Access to Justice & Legal Empowerment',
+        description: 'Supporting communities and vulnerable groups to understand their legal rights, access appropriate remedies and engage with justice institutions.',
+        icon: Scale,
+        color: 'from-gold-600/20 to-navy-900/20',
+        accent: '#f59e0b',
+    },
+    {
+        number: '03',
+        title: 'Democracy & Good Governance',
+        description: 'Promoting accountable, transparent, participatory and responsive governance and strengthening citizens\' participation in democratic processes.',
+        icon: Globe,
+        color: 'from-emerald-600/20 to-navy-900/20',
+        accent: '#34d399',
+    },
+    {
+        number: '04',
+        title: 'Civic & Human Rights Education',
+        description: 'Providing communities, young people and duty bearers with information and skills necessary to understand and exercise their rights and responsibilities.',
+        icon: BookOpen,
+        color: 'from-purple-600/20 to-navy-900/20',
+        accent: '#a78bfa',
+    },
+    {
+        number: '05',
+        title: 'Policy & Legislative Advocacy',
+        description: 'Conducting policy and legal analysis and advocating for laws and policies that comply with constitutional and human rights standards.',
+        icon: FileText,
+        color: 'from-crimson-600/20 to-navy-900/20',
+        accent: '#f43f5e',
+    },
+    {
+        number: '06',
+        title: 'Protection of Vulnerable Groups',
+        description: 'Promoting equality and non-discrimination and addressing rights violations affecting women, children, persons with disabilities and other marginalized groups.',
+        icon: Heart,
+        color: 'from-pink-600/20 to-navy-900/20',
+        accent: '#ec4899',
+    },
+    {
+        number: '07',
+        title: 'Accountability & Human Rights Monitoring',
+        description: 'Monitoring government and institutional performance, documenting human rights concerns and promoting effective accountability mechanisms.',
+        icon: Search,
+        color: 'from-orange-600/20 to-navy-900/20',
+        accent: '#fb923c',
+    },
+    {
+        number: '08',
+        title: 'Research & Knowledge Generation',
+        description: 'Undertaking research, assessments, policy analysis and documentation to generate evidence for human rights programming, advocacy and policy reform.',
+        icon: BookOpen,
+        color: 'from-teal-600/20 to-navy-900/20',
+        accent: '#2dd4bf',
+    },
+];
 
-                                    <div className="pt-3 sm:pt-5">
-                                        <h2 className="text-xl font-semibold text-black dark:text-white">
-                                            Laravel News
-                                        </h2>
+const stats = [
+    { label: 'Years of Advocacy', value: 9, suffix: '+', prefix: '' },
+    { label: 'Communities Reached', value: 25, suffix: '+', prefix: '' },
+    { label: 'Rights Initiatives', value: 50, suffix: '+', prefix: '' },
+    { label: 'Partners & Allies', value: 30, suffix: '+', prefix: '' },
+];
 
-                                        <p className="mt-4 text-sm/relaxed">
-                                            Laravel News is a community driven
-                                            portal and newsletter aggregating
-                                            all of the latest and most important
-                                            news in the Laravel ecosystem,
-                                            including new package releases and
-                                            tutorials.
-                                        </p>
-                                    </div>
+const beneficiaries = [
+    'Women & Girls', 'Children & Young People', 'Persons with Disabilities',
+    'Persons with Albinism', 'Refugees & Asylum Seekers', 'Displaced Persons',
+    'Rural Communities', 'Economically Disadvantaged', 'Survivors of Human Rights Violations',
+    'Marginalized Communities',
+];
 
-                                    <svg
-                                        className="size-6 shrink-0 self-center stroke-[#FF2D20]"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth="1.5"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            d="M4.5 12h15m0 0l-6.75-6.75M19.5 12l-6.75 6.75"
-                                        />
-                                    </svg>
-                                </a>
+const hrbaPoints = [
+    { title: 'Rights Holders', desc: 'Empowering individuals and communities to claim their rights' },
+    { title: 'Duty Bearers', desc: 'Holding institutions accountable to their obligations' },
+    { title: 'Participation', desc: 'Ensuring meaningful inclusion in decision-making processes' },
+    { title: 'Equality', desc: 'Promoting non-discrimination in all interventions' },
+    { title: 'Accountability', desc: 'Creating transparent mechanisms for redress' },
+    { title: 'Empowerment', desc: 'Building legal literacy and civic competence' },
+];
 
-                                <div className="flex items-start gap-4 rounded-lg bg-white p-6 shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05] lg:pb-10 dark:bg-zinc-900 dark:ring-zinc-800">
-                                    <div className="flex size-12 shrink-0 items-center justify-center rounded-full bg-[#FF2D20]/10 sm:size-16">
-                                        <svg
-                                            className="size-5 sm:size-6"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                        >
-                                            <g fill="#FF2D20">
-                                                <path d="M16.597 12.635a.247.247 0 0 0-.08-.237 2.234 2.234 0 0 1-.769-1.68c.001-.195.03-.39.084-.578a.25.25 0 0 0-.09-.267 8.8 8.8 0 0 0-4.826-1.66.25.25 0 0 0-.268.181 2.5 2.5 0 0 1-2.4 1.824.045.045 0 0 0-.045.037 12.255 12.255 0 0 0-.093 3.86.251.251 0 0 0 .208.214c2.22.366 4.367 1.08 6.362 2.118a.252.252 0 0 0 .32-.079 10.09 10.09 0 0 0 1.597-3.733ZM13.616 17.968a.25.25 0 0 0-.063-.407A19.697 19.697 0 0 0 8.91 15.98a.25.25 0 0 0-.287.325c.151.455.334.898.548 1.328.437.827.981 1.594 1.619 2.28a.249.249 0 0 0 .32.044 29.13 29.13 0 0 0 2.506-1.99ZM6.303 14.105a.25.25 0 0 0 .265-.274 13.048 13.048 0 0 1 .205-4.045.062.062 0 0 0-.022-.07 2.5 2.5 0 0 1-.777-.982.25.25 0 0 0-.271-.149 11 11 0 0 0-5.6 2.815.255.255 0 0 0-.075.163c-.008.135-.02.27-.02.406.002.8.084 1.598.246 2.381a.25.25 0 0 0 .303.193 19.924 19.924 0 0 1 5.746-.438ZM9.228 20.914a.25.25 0 0 0 .1-.393 11.53 11.53 0 0 1-1.5-2.22 12.238 12.238 0 0 1-.91-2.465.248.248 0 0 0-.22-.187 18.876 18.876 0 0 0-5.69.33.249.249 0 0 0-.179.336c.838 2.142 2.272 4 4.132 5.353a.254.254 0 0 0 .15.048c1.41-.01 2.807-.282 4.117-.802ZM18.93 12.957l-.005-.008a.25.25 0 0 0-.268-.082 2.21 2.21 0 0 1-.41.081.25.25 0 0 0-.217.2c-.582 2.66-2.127 5.35-5.75 7.843a.248.248 0 0 0-.09.299.25.25 0 0 0 .065.091 28.703 28.703 0 0 0 2.662 2.12.246.246 0 0 0 .209.037c2.579-.701 4.85-2.242 6.456-4.378a.25.25 0 0 0 .048-.189 13.51 13.51 0 0 0-2.7-6.014ZM5.702 7.058a.254.254 0 0 0 .2-.165A2.488 2.488 0 0 1 7.98 5.245a.093.093 0 0 0 .078-.062 19.734 19.734 0 0 1 3.055-4.74.25.25 0 0 0-.21-.41 12.009 12.009 0 0 0-10.4 8.558.25.25 0 0 0 .373.281 12.912 12.912 0 0 1 4.826-1.814ZM10.773 22.052a.25.25 0 0 0-.28-.046c-.758.356-1.55.635-2.365.833a.25.25 0 0 0-.022.48c1.252.43 2.568.65 3.893.65.1 0 .2 0 .3-.008a.25.25 0 0 0 .147-.444c-.526-.424-1.1-.917-1.673-1.465ZM18.744 8.436a.249.249 0 0 0 .15.228 2.246 2.246 0 0 1 1.352 2.054c0 .337-.08.67-.23.972a.25.25 0 0 0 .042.28l.007.009a15.016 15.016 0 0 1 2.52 4.6.25.25 0 0 0 .37.132.25.25 0 0 0 .096-.114c.623-1.464.944-3.039.945-4.63a12.005 12.005 0 0 0-5.78-10.258.25.25 0 0 0-.373.274c.547 2.109.85 4.274.901 6.453ZM9.61 5.38a.25.25 0 0 0 .08.31c.34.24.616.561.8.935a.25.25 0 0 0 .3.127.631.631 0 0 1 .206-.034c2.054.078 4.036.772 5.69 1.991a.251.251 0 0 0 .267.024c.046-.024.093-.047.141-.067a.25.25 0 0 0 .151-.23A29.98 29.98 0 0 0 15.957.764a.25.25 0 0 0-.16-.164 11.924 11.924 0 0 0-2.21-.518.252.252 0 0 0-.215.076A22.456 22.456 0 0 0 9.61 5.38Z" />
-                                            </g>
-                                        </svg>
-                                    </div>
+// ─── MAIN HOMEPAGE ────────────────────────────────────────────────────────────
 
-                                    <div className="pt-3 sm:pt-5">
-                                        <h2 className="text-xl font-semibold text-black dark:text-white">
-                                            Vibrant Ecosystem
-                                        </h2>
+export default function Welcome() {
+    const [mouseX, setMouseX] = useState(0);
+    const [mouseY, setMouseY] = useState(0);
+    const [webglSupported, setWebglSupported] = useState(true);
+    const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+    const heroRef = useRef<HTMLDivElement>(null);
 
-                                        <p className="mt-4 text-sm/relaxed">
-                                            Laravel's robust library of
-                                            first-party tools and libraries,
-                                            such as{' '}
-                                            <a
-                                                href="https://forge.laravel.com"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white dark:focus-visible:ring-[#FF2D20]"
-                                            >
-                                                Forge
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://vapor.laravel.com"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Vapor
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://nova.laravel.com"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Nova
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://envoyer.io"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Envoyer
-                                            </a>
-                                            , and{' '}
-                                            <a
-                                                href="https://herd.laravel.com"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Herd
-                                            </a>{' '}
-                                            help you take your projects to the
-                                            next level. Pair them with powerful
-                                            open source libraries like{' '}
-                                            <a
-                                                href="https://laravel.com/docs/billing"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Cashier
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/dusk"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Dusk
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/broadcasting"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Echo
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/horizon"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Horizon
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/sanctum"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Sanctum
-                                            </a>
-                                            ,{' '}
-                                            <a
-                                                href="https://laravel.com/docs/telescope"
-                                                className="rounded-sm underline hover:text-black focus:outline-none focus-visible:ring-1 focus-visible:ring-[#FF2D20] dark:hover:text-white"
-                                            >
-                                                Telescope
-                                            </a>
-                                            , and more.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </main>
+    useEffect(() => {
+        // Check WebGL support
+        try {
+            const canvas = document.createElement('canvas');
+            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            if (!gl) setWebglSupported(false);
+        } catch { setWebglSupported(false); }
 
-                        <footer className="py-16 text-center text-sm text-black dark:text-white/70">
-                            Laravel v{laravelVersion} (PHP v{phpVersion})
-                        </footer>
+        // Check reduced motion
+        const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+        setPrefersReducedMotion(mq.matches);
+
+        const handleMouseMove = (e: MouseEvent) => {
+            setMouseX((e.clientX / window.innerWidth - 0.5) * 2);
+            setMouseY((e.clientY / window.innerHeight - 0.5) * 2);
+        };
+        window.addEventListener('mousemove', handleMouseMove, { passive: true });
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
+
+    const show3D = webglSupported && !prefersReducedMotion;
+
+    return (
+        <PublicLayout>
+            <Head>
+                <title>Chapter Four — Rights. Justice. Dignity. For Everyone.</title>
+                <meta name="description" content="A youth-led Malawian organization advancing human rights, constitutionalism, democracy, access to justice and accountable governance." />
+            </Head>
+
+            {/* ═══════════════════════════════════════════════════════════ */}
+            {/* SECTION 1 — HERO                                            */}
+            {/* ═══════════════════════════════════════════════════════════ */}
+            <section ref={heroRef} className="relative min-h-screen flex items-center bg-hero-gradient overflow-hidden" aria-label="Hero">
+                {/* Background layers */}
+                <div className="absolute inset-0 grid-bg opacity-40" />
+                <div className="absolute inset-0 bg-gradient-to-b from-navy-950/40 via-transparent to-navy-950" />
+
+                {/* 3D Canvas or static fallback */}
+                <div className="absolute inset-0">
+                    {show3D ? (
+                        <Suspense fallback={<div className="w-full h-full bg-hero-gradient" />}>
+                            <Canvas camera={{ position: [0, 0, 8], fov: 60 }} dpr={[1, 2]} gl={{ antialias: true, alpha: true }}>
+                                <HeroScene mouseX={mouseX} mouseY={mouseY} />
+                            </Canvas>
+                        </Suspense>
+                    ) : (
+                        /* Static fallback */
+                        <div className="w-full h-full flex items-center justify-center">
+                            <div className="w-80 h-80 rounded-full border border-gold-500/20 absolute" style={{ animation: 'pulse 4s ease-in-out infinite' }} />
+                            <div className="w-60 h-60 rounded-full border border-navy-600/40 absolute" />
+                            <div className="w-40 h-40 rounded-full bg-navy-700/30 absolute" />
+                        </div>
+                    )}
+                </div>
+
+                {/* Hero content */}
+                <div className="container-cf relative z-10 pt-28 pb-20">
+                    <div className="max-w-3xl">
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, delay: 0.2 }}
+                            className="section-label mb-6"
+                        >
+                            Chapter Four · Malawi
+                        </motion.div>
+
+                        <motion.h1
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                            className="font-display text-5xl sm:text-6xl lg:text-7xl xl:text-8xl text-white mb-6 leading-[1.05]"
+                        >
+                            Rights.{' '}
+                            <span className="text-gradient-gold italic">Justice.</span>
+                            <br />
+                            Dignity.{' '}
+                            <span className="text-white/60">For Everyone.</span>
+                        </motion.h1>
+
+                        <motion.p
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.7, delay: 0.5 }}
+                            className="text-white/70 text-lg lg:text-xl leading-relaxed mb-10 max-w-2xl"
+                        >
+                            A youth-led organization advancing human rights, constitutionalism, democracy,
+                            access to justice and accountable governance in Malawi.
+                        </motion.p>
+
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.6, delay: 0.65 }}
+                            className="flex flex-wrap items-center gap-4"
+                        >
+                            <Link href="/what-we-do" id="hero-cta-primary" className="btn-primary text-base">
+                                Explore Our Work
+                                <ArrowRight className="w-4 h-4" />
+                            </Link>
+                            <Link href="/about" id="hero-cta-secondary" className="btn-secondary text-base">
+                                Who We Are
+                            </Link>
+                        </motion.div>
+
+                        {/* Scroll indicator */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 1.2 }}
+                            className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/30"
+                        >
+                            <span className="text-xs tracking-[0.2em] uppercase font-sans">Scroll</span>
+                            <motion.div
+                                animate={{ y: [0, 8, 0] }}
+                                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                            >
+                                <ArrowDown className="w-4 h-4" />
+                            </motion.div>
+                        </motion.div>
                     </div>
                 </div>
-            </div>
-        </>
+
+                {/* Bottom gradient */}
+                <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-navy-950 to-transparent" />
+            </section>
+
+            {/* ═══════════════════════════════════════════════════════════ */}
+            {/* SECTION 2 — MANIFESTO                                       */}
+            {/* ═══════════════════════════════════════════════════════════ */}
+            <section className="section-cf bg-navy-950 relative overflow-hidden" aria-label="Manifesto">
+                <div className="absolute inset-0 dot-grid opacity-30" />
+                <div className="container-cf relative">
+                    <div className="max-w-4xl mx-auto text-center">
+                        <motion.blockquote
+                            initial={{ opacity: 0, y: 40 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, margin: '-100px' }}
+                            transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                            className="font-display text-3xl sm:text-4xl lg:text-5xl xl:text-6xl text-white leading-[1.2] mb-8"
+                        >
+                            "Human rights should not{' '}
+                            <span className="text-gradient-gold italic">exist only on paper.</span>"
+                        </motion.blockquote>
+
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.7, delay: 0.3 }}
+                            className="divider-gold mx-auto mb-8"
+                        />
+
+                        <motion.p
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.7, delay: 0.4 }}
+                            className="text-white/60 text-lg leading-relaxed max-w-2xl mx-auto"
+                        >
+                            Chapter Four exists to bridge the gap between constitutional guarantees and lived realities.
+                            Named after Chapter Four of the Constitution of the Republic of Malawi — the chapter that
+                            enshrines fundamental rights and freedoms — we work to ensure these rights are translated
+                            into practical realities for every person.
+                        </motion.p>
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════════════ */}
+            {/* SECTION 3 — IMPACT NUMBERS                                  */}
+            {/* ═══════════════════════════════════════════════════════════ */}
+            <section className="section-cf bg-gradient-to-b from-navy-950 to-navy-900/30 relative" aria-label="Impact statistics">
+                <div className="container-cf">
+                    <div className="text-center mb-16">
+                        <span className="section-label">Our Impact</span>
+                        <h2 className="font-display text-4xl lg:text-5xl text-white mt-4">
+                            Building a Rights-Respecting Malawi
+                        </h2>
+                    </div>
+
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+                        {stats.map((stat, i) => (
+                            <motion.div
+                                key={stat.label}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, margin: '-50px' }}
+                                transition={{ duration: 0.6, delay: i * 0.1 }}
+                                className="card-cf text-center"
+                            >
+                                <div className="stat-number mb-3">
+                                    <AnimatedCounter target={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
+                                </div>
+                                <p className="text-white/50 text-sm font-medium">{stat.label}</p>
+                            </motion.div>
+                        ))}
+                    </div>
+
+                    <p className="text-center text-white/30 text-xs mt-8">
+                        * Figures will be updated as the organization grows. These represent indicative milestones.
+                    </p>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════════════ */}
+            {/* SECTION 4 — WHAT WE DO                                      */}
+            {/* ═══════════════════════════════════════════════════════════ */}
+            <section className="section-cf bg-navy-950 relative" aria-label="What We Do">
+                <div className="absolute inset-0 grid-bg opacity-20" />
+                <div className="container-cf relative">
+                    <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-16 gap-6">
+                        <div>
+                            <span className="section-label">What We Do</span>
+                            <h2 className="font-display text-4xl lg:text-5xl text-white mt-4 max-w-xl">
+                                Eight Thematic Areas of Work
+                            </h2>
+                        </div>
+                        <Link href="/what-we-do" className="btn-secondary text-sm self-start lg:self-auto">
+                            View All <ArrowRight className="w-4 h-4" />
+                        </Link>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {thematicAreas.map((area, i) => {
+                            const Icon = area.icon;
+                            return (
+                                <motion.div
+                                    key={area.number}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true, margin: '-50px' }}
+                                    transition={{ duration: 0.5, delay: (i % 4) * 0.08 }}
+                                >
+                                    <Link
+                                        href={`/what-we-do/${area.title.toLowerCase().replace(/[^a-z]+/g, '-')}`}
+                                        id={`thematic-${area.number}`}
+                                        className="thematic-card group block h-full"
+                                    >
+                                        <span className="number">{area.number}</span>
+
+                                        <div
+                                            className="w-10 h-10 rounded-xl flex items-center justify-center mb-4"
+                                            style={{ backgroundColor: `${area.accent}20`, border: `1px solid ${area.accent}30` }}
+                                        >
+                                            <Icon className="w-5 h-5" style={{ color: area.accent }} />
+                                        </div>
+
+                                        <h3 className="font-sans font-semibold text-white text-base leading-snug mb-3 group-hover:text-gold-300 transition-colors">
+                                            {area.title}
+                                        </h3>
+
+                                        <p className="text-white/50 text-sm leading-relaxed line-clamp-3 mb-4">
+                                            {area.description}
+                                        </p>
+
+                                        <span className="inline-flex items-center gap-1.5 text-gold-400 text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            Explore <ArrowRight className="w-3.5 h-3.5" />
+                                        </span>
+                                    </Link>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════════════ */}
+            {/* SECTION 5 — OUR APPROACH (HRBA)                             */}
+            {/* ═══════════════════════════════════════════════════════════ */}
+            <section className="section-cf bg-gradient-to-b from-navy-950 via-navy-900/30 to-navy-950 relative overflow-hidden" aria-label="Our Approach">
+                <div className="container-cf">
+                    <div className="text-center mb-16">
+                        <span className="section-label">Our Approach</span>
+                        <h2 className="font-display text-4xl lg:text-5xl text-white mt-4 mb-6">
+                            Human Rights-Based Approach
+                        </h2>
+                        <p className="text-white/60 max-w-2xl mx-auto leading-relaxed">
+                            All our interventions apply a HRBA — recognizing individuals as rights holders
+                            and institutions as duty bearers, ensuring participation, equality and accountability.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                        {hrbaPoints.map((point, i) => (
+                            <motion.div
+                                key={point.title}
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                whileInView={{ opacity: 1, scale: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.5, delay: i * 0.07 }}
+                                className="card-cf text-center group"
+                            >
+                                <div className="w-10 h-10 rounded-full border border-gold-500/30 flex items-center justify-center mx-auto mb-3
+                                                group-hover:border-gold-500/70 group-hover:bg-gold-500/10 transition-all duration-300">
+                                    <span className="text-gold-400 text-xs font-bold">{String(i + 1).padStart(2, '0')}</span>
+                                </div>
+                                <h4 className="font-sans font-semibold text-white text-sm mb-2">{point.title}</h4>
+                                <p className="text-white/40 text-xs leading-relaxed">{point.desc}</p>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════════════ */}
+            {/* SECTION 6 — WHO WE SERVE                                    */}
+            {/* ═══════════════════════════════════════════════════════════ */}
+            <section className="section-cf bg-navy-950 relative" aria-label="Who We Serve">
+                <div className="container-cf">
+                    <div className="flex flex-col lg:flex-row gap-16 items-center">
+                        <div className="flex-1">
+                            <span className="section-label">Who We Serve</span>
+                            <h2 className="font-display text-4xl lg:text-5xl text-white mt-4 mb-6 max-w-md">
+                                Centring the Most Vulnerable
+                            </h2>
+                            <p className="text-white/60 leading-relaxed mb-8 max-w-lg">
+                                Chapter Four works with a broad range of rights holders, with particular attention
+                                to people and communities facing heightened vulnerability or barriers to accessing
+                                justice and public services.
+                            </p>
+                            <Link href="/about#beneficiaries" className="btn-secondary text-sm">
+                                Learn More <ArrowRight className="w-4 h-4" />
+                            </Link>
+                        </div>
+
+                        <div className="flex-1 flex flex-wrap gap-3">
+                            {beneficiaries.map((group, i) => (
+                                <motion.span
+                                    key={group}
+                                    initial={{ opacity: 0, scale: 0.85 }}
+                                    whileInView={{ opacity: 1, scale: 1 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.4, delay: i * 0.04 }}
+                                    className="px-4 py-2.5 glass rounded-full text-sm text-white/80 hover:text-white hover:border-gold-500/40 transition-all duration-200 cursor-default"
+                                >
+                                    {group}
+                                </motion.span>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════════════ */}
+            {/* SECTION 7 — LATEST NEWS & RESOURCES                         */}
+            {/* ═══════════════════════════════════════════════════════════ */}
+            <section className="section-cf bg-navy-950 relative" aria-label="Latest News">
+                <div className="absolute inset-0 grid-bg opacity-15" />
+                <div className="container-cf relative">
+                    <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-16 gap-6">
+                        <div>
+                            <span className="section-label">Latest</span>
+                            <h2 className="font-display text-4xl lg:text-5xl text-white mt-4">News & Resources</h2>
+                        </div>
+                        <Link href="/resources" className="btn-secondary text-sm self-start lg:self-auto">
+                            View All Resources <ArrowRight className="w-4 h-4" />
+                        </Link>
+                    </div>
+
+                    {/* Placeholder news cards */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {[
+                            { type: 'Report', title: 'State of Human Rights in Malawi 2024', date: 'Sept 2024', excerpt: 'An overview of the human rights situation in Malawi, covering key developments in access to justice, democratic governance and fundamental freedoms.' },
+                            { type: 'Statement', title: 'Chapter Four Statement on Constitutional Reforms', date: 'Aug 2024', excerpt: 'Chapter Four calls on Parliament to expedite constitutional reforms that strengthen the rights of marginalized communities and improve access to justice.' },
+                            { type: 'Publication', title: 'Legal Empowerment in Rural Communities', date: 'Jul 2024', excerpt: 'A research publication examining the gaps in legal literacy and access to justice in rural Malawi, with recommendations for policy reform.' },
+                        ].map((item, i) => (
+                            <motion.article
+                                key={i}
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.5, delay: i * 0.1 }}
+                                className="card-cf group cursor-pointer"
+                            >
+                                {/* Placeholder image */}
+                                <div className="h-44 rounded-xl bg-gradient-to-br from-navy-800/80 to-navy-900 mb-5 relative overflow-hidden">
+                                    <div className="absolute inset-0 flex items-center justify-center">
+                                        <FileText className="w-12 h-12 text-white/10" />
+                                    </div>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-navy-950/50 to-transparent" />
+                                    <span className="absolute top-3 left-3 px-2.5 py-1 glass rounded-full text-gold-400 text-xs font-semibold uppercase tracking-wider">
+                                        {item.type}
+                                    </span>
+                                </div>
+                                <time className="text-white/40 text-xs font-medium">{item.date}</time>
+                                <h3 className="font-sans font-semibold text-white mt-2 mb-3 leading-snug group-hover:text-gold-300 transition-colors line-clamp-2">
+                                    {item.title}
+                                </h3>
+                                <p className="text-white/50 text-sm leading-relaxed line-clamp-3 mb-4">{item.excerpt}</p>
+                                <span className="inline-flex items-center gap-1.5 text-gold-400 text-sm font-medium">
+                                    Read More <ArrowRight className="w-3.5 h-3.5" />
+                                </span>
+                            </motion.article>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════════════ */}
+            {/* SECTION 8 — FEATURED PUBLICATION                            */}
+            {/* ═══════════════════════════════════════════════════════════ */}
+            <section className="section-cf bg-gradient-to-r from-navy-950 via-navy-900/50 to-navy-950 relative overflow-hidden" aria-label="Featured Publication">
+                <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-gold-500/5 to-transparent" />
+                <div className="container-cf relative">
+                    <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+                        {/* Publication cover */}
+                        <motion.div
+                            initial={{ opacity: 0, x: -40 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8 }}
+                            className="flex-shrink-0 w-56 lg:w-72"
+                        >
+                            <div className="relative">
+                                <div className="w-full aspect-[3/4] glass rounded-2xl flex items-center justify-center border-gold-500/20">
+                                    <div className="text-center p-6">
+                                        <div className="w-12 h-1 bg-gold-500 mx-auto mb-4" />
+                                        <div className="font-display text-white/80 text-sm italic leading-relaxed">
+                                            Annual Report
+                                        </div>
+                                        <div className="font-display text-white text-2xl mt-2">2024</div>
+                                        <div className="text-gold-400/60 text-xs mt-3 font-sans tracking-widest uppercase">Chapter Four</div>
+                                    </div>
+                                </div>
+                                <div className="absolute -bottom-3 -right-3 w-full h-full glass rounded-2xl -z-10 border border-gold-500/10" />
+                            </div>
+                        </motion.div>
+
+                        {/* Text */}
+                        <motion.div
+                            initial={{ opacity: 0, x: 40 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.8, delay: 0.2 }}
+                            className="flex-1"
+                        >
+                            <span className="section-label mb-4">Featured Resource</span>
+                            <h2 className="font-display text-4xl lg:text-5xl text-white mt-4 mb-4 max-w-lg leading-[1.1]">
+                                State of Human Rights in Malawi — 2024
+                            </h2>
+                            <p className="text-white/60 leading-relaxed mb-8 max-w-xl">
+                                A comprehensive review of the human rights landscape in Malawi, examining progress and challenges
+                                in constitutional governance, access to justice, democratic participation and the protection of
+                                vulnerable groups.
+                            </p>
+                            <div className="flex flex-wrap gap-4">
+                                <a href="#" className="btn-primary text-sm">
+                                    Read Report <ArrowRight className="w-4 h-4" />
+                                </a>
+                                <a href="#" className="btn-secondary text-sm">
+                                    Download PDF
+                                </a>
+                            </div>
+                        </motion.div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════════════ */}
+            {/* SECTION 9 — OUR STORY (TIMELINE)                            */}
+            {/* ═══════════════════════════════════════════════════════════ */}
+            <section className="section-cf bg-navy-950 relative" aria-label="Our Story">
+                <div className="container-cf">
+                    <div className="text-center mb-16">
+                        <span className="section-label">Our Story</span>
+                        <h2 className="font-display text-4xl lg:text-5xl text-white mt-4">
+                            A Movement Born from Within
+                        </h2>
+                    </div>
+
+                    <div className="relative">
+                        {/* Timeline line */}
+                        <div className="absolute left-8 lg:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-gold-500/60 via-gold-500/20 to-transparent" />
+
+                        {[
+                            { year: '2016', title: 'The Movement Begins', desc: 'Chapter Four started as a human rights movement of students in Malawi, advocating for constitutional rights on campuses.' },
+                            { year: '2018', title: 'Community Outreach', desc: 'Expanded beyond campus to engage rural communities on legal literacy, civic rights and access to justice.' },
+                            { year: '2020', title: 'Formalization as an NGO', desc: 'Chapter Four formally registered as a non-governmental organization, growing its institutional capacity and programming.' },
+                            { year: '2024', title: 'National Impact', desc: 'Now operating across Malawi with partnerships spanning civil society, government, academia and international bodies.' },
+                        ].map((event, i) => (
+                            <motion.div
+                                key={event.year}
+                                initial={{ opacity: 0, x: i % 2 === 0 ? -30 : 30 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.6, delay: 0.1 }}
+                                className={`relative flex items-start gap-8 mb-12 ${i % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'} lg:gap-0`}
+                            >
+                                {/* Year bubble */}
+                                <div className="flex-shrink-0 w-16 h-16 lg:absolute lg:left-1/2 lg:-translate-x-1/2 z-10
+                                                bg-navy-950 border-2 border-gold-500 rounded-full flex items-center justify-center">
+                                    <span className="font-display text-gold-400 text-sm">{event.year}</span>
+                                </div>
+
+                                {/* Content */}
+                                <div className={`card-cf flex-1 ml-4 lg:ml-0 lg:w-5/12 ${i % 2 === 0 ? 'lg:mr-auto lg:pr-16' : 'lg:ml-auto lg:pl-16'}`}>
+                                    <h3 className="font-sans font-semibold text-white text-lg mb-2">{event.title}</h3>
+                                    <p className="text-white/60 text-sm leading-relaxed">{event.desc}</p>
+                                </div>
+                            </motion.div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════════════ */}
+            {/* SECTION 10 — PARTNERS                                       */}
+            {/* ═══════════════════════════════════════════════════════════ */}
+            <section className="section-cf bg-navy-950/80 relative" aria-label="Partners">
+                <div className="container-cf">
+                    <div className="text-center mb-12">
+                        <span className="section-label">Our Partners</span>
+                        <h2 className="font-display text-4xl text-white mt-4">
+                            Building Rights Together
+                        </h2>
+                    </div>
+
+                    <div className="flex flex-wrap justify-center gap-4">
+                        {['Government Institutions', 'Civil Society', 'Academic Institutions', 'Development Partners', 'Legal Practitioners', 'Media Organizations', 'Regional Bodies', 'Community Leaders'].map((partner, i) => (
+                            <motion.div
+                                key={partner}
+                                initial={{ opacity: 0 }}
+                                whileInView={{ opacity: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.4, delay: i * 0.05 }}
+                                className="h-16 px-8 glass rounded-2xl flex items-center justify-center hover:border-gold-500/30 transition-all duration-300"
+                            >
+                                <span className="text-white/50 hover:text-white/80 text-sm font-medium transition-colors duration-200">{partner}</span>
+                            </motion.div>
+                        ))}
+                    </div>
+                    <p className="text-center text-white/30 text-xs mt-8">Partner logos will be displayed here once provided</p>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════════════ */}
+            {/* SECTION 11 — GET INVOLVED (CTA)                             */}
+            {/* ═══════════════════════════════════════════════════════════ */}
+            <section className="section-cf relative overflow-hidden" aria-label="Get Involved">
+                <div className="absolute inset-0 bg-gradient-to-br from-navy-900 via-navy-800/40 to-navy-950" />
+                <div className="absolute inset-0 dot-grid opacity-40" />
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gold-500/5 glow-gold blur-3xl" />
+
+                <div className="container-cf relative text-center">
+                    <motion.div
+                        initial={{ opacity: 0, y: 40 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.8 }}
+                    >
+                        <span className="section-label justify-center mb-6">Get Involved</span>
+                        <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl text-white mt-4 mb-6 max-w-3xl mx-auto leading-[1.1]">
+                            Human rights are{' '}
+                            <span className="text-gradient-gold italic">everyone's</span>{' '}
+                            responsibility.
+                        </h2>
+                        <p className="text-white/60 text-lg max-w-xl mx-auto mb-12">
+                            Join us in building a Malawi where constitutional rights are respected, protected and enjoyed by all.
+                        </p>
+
+                        <div className="flex flex-wrap justify-center gap-4">
+                            {[
+                                { label: 'Partner With Us', href: '/get-involved#partner', primary: true },
+                                { label: 'Volunteer', href: '/get-involved#volunteer', primary: false },
+                                { label: 'Support Our Work', href: '/get-involved#support', primary: false },
+                                { label: 'Report a Concern', href: '/get-involved#report', primary: false },
+                            ].map((action) => (
+                                <Link
+                                    key={action.label}
+                                    href={action.href}
+                                    id={`cta-${action.label.toLowerCase().replace(/\s+/g, '-')}`}
+                                    className={action.primary ? 'btn-primary' : 'btn-secondary'}
+                                >
+                                    {action.label}
+                                    {action.primary && <ArrowRight className="w-4 h-4" />}
+                                </Link>
+                            ))}
+                        </div>
+                    </motion.div>
+                </div>
+            </section>
+        </PublicLayout>
     );
 }
