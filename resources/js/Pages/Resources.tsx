@@ -159,25 +159,26 @@ export default function Resources({ resources }: ResourcesProps) {
                                         )}
                                     </div>
 
-                                    <h3 className="font-serif text-2xl text-white font-normal mb-3 group-hover:text-amber-300 transition-colors">
-                                        {item.title}
-                                    </h3>
+                                    <Link href={`/resources/${item.slug}`}>
+                                        <h3 className="font-serif text-2xl text-white font-normal mb-3 group-hover:text-amber-300 transition-colors">
+                                            {item.title}
+                                        </h3>
+                                    </Link>
                                     <p className="text-navy-300 text-sm font-light leading-relaxed mb-6">
                                         {item.excerpt}
                                     </p>
                                 </div>
 
                                 <div className="flex items-center justify-between pt-4 border-t border-navy-800/80">
-                                    <span className="text-xs text-navy-400 flex items-center gap-1">
-                                        <FileText className="w-3.5 h-3.5" /> PDF Document
-                                    </span>
-                                    <a
-                                        href="#download"
-                                        onClick={(e) => { e.preventDefault(); alert('Document download will be available in Phase 2.'); }}
-                                        className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-400 hover:text-amber-300 transition-colors"
+                                    <Link
+                                        href={`/resources/${item.slug}`}
+                                        className="inline-flex items-center gap-1.5 text-xs text-amber-400 hover:text-amber-300 font-semibold uppercase tracking-wider transition-colors"
                                     >
-                                        Download <Download className="w-3.5 h-3.5 group-hover:translate-y-0.5 transition-transform" />
-                                    </a>
+                                        Read Article <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                                    </Link>
+                                    <span className="text-xs text-navy-400 flex items-center gap-1">
+                                        <FileText className="w-3.5 h-3.5" /> PDF Available
+                                    </span>
                                 </div>
                             </motion.div>
                         ))}

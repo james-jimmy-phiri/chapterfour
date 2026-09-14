@@ -41,7 +41,7 @@ const values = [
     },
 ];
 
-const team = [
+const defaultTeam = [
     {
         name: 'Executive Director',
         role: 'Leadership & Strategy',
@@ -75,7 +75,40 @@ const milestones = [
     { year: 'Today', title: 'Pan-Malawian Movement', text: 'Mobilizing youth leaders across all regions of Malawi to champion democracy, rule of law, and active citizenship.' },
 ];
 
-export default function About() {
+interface TeamMemberItem {
+    id: number;
+    name: string;
+    role: string;
+    department?: string;
+    category?: string;
+    biography?: string;
+    photo?: string;
+}
+
+interface PartnerItem {
+    id: number;
+    name: string;
+    category?: string;
+    description?: string;
+    website?: string;
+    logo?: string;
+}
+
+interface AboutProps {
+    teamMembers?: TeamMemberItem[];
+    stats?: any[];
+    partners?: PartnerItem[];
+}
+
+export default function About({ teamMembers, stats, partners }: AboutProps) {
+    const displayTeam = (teamMembers && teamMembers.length > 0)
+        ? teamMembers.map(m => ({
+            name: m.name,
+            role: m.role,
+            bio: m.biography || '',
+            initials: m.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase(),
+        }))
+        : defaultTeam;
     return (
         <PublicLayout>
             <Head title="About Us - Chapter Four" />
@@ -249,7 +282,7 @@ export default function About() {
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {team.map((member, i) => (
+                        {displayTeam.map((member, i) => (
                             <div key={i} className="p-6 rounded-2xl bg-navy-900/60 border border-navy-800 text-center flex flex-col items-center">
                                 <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-amber-500/20 to-red-500/20 border border-amber-500/30 flex items-center justify-center text-xl font-serif text-amber-400 mb-4">
                                     {member.initials}
@@ -260,6 +293,36 @@ export default function About() {
                             </div>
                         ))}
                     </div>
+
+                    {/* Strategic Coalitions & Partners */}
+                    {partners && partners.length > 0 && (
+                        <div className="mt-20 pt-16 border-t border-navy-800/60">
+                            <div className="text-center max-w-2xl mx-auto mb-10">
+                                <span className="text-amber-400 font-semibold tracking-wider text-xs uppercase">Allies in Human Rights</span>
+                                <h3 className="font-serif text-2xl sm:text-3xl text-white font-normal mt-2">
+                                    Coalition & Institutional Partners
+                                </h3>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {partners.map((partner) => (
+                                    <div key={partner.id} className="p-6 rounded-xl bg-navy-900/40 border border-navy-800/80 hover:border-amber-500/30 transition-all">
+                                        <h4 className="text-white font-semibold text-base mb-2">{partner.name}</h4>
+                                        <p className="text-navy-300 text-xs leading-relaxed font-light mb-3">{partner.description}</p>
+                                        {partner.website && (
+                                            <a
+                                                href={partner.website}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="text-amber-400 hover:text-amber-300 text-xs inline-flex items-center gap-1 font-medium"
+                                            >
+                                                Visit Partner Site <ArrowRight className="w-3 h-3" />
+                                            </a>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </section>
 

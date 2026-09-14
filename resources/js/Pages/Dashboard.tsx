@@ -3,10 +3,38 @@ import { Head, Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import {
     FileText, Newspaper, Users, MessageSquare, Mail, Image,
-    ArrowRight, ArrowUpRight, TrendingUp, Clock, CheckCircle,
+    ArrowRight, ArrowUpRight, TrendingUp, Clock, CheckCircle2,
     AlertCircle, Plus, Eye, Edit3, Trash2, Globe, BarChart3,
-    Shield, BookOpen
+    Shield, BookOpen, Sparkles, Building2, ExternalLink, Activity
 } from 'lucide-react';
+
+interface InquiryItem {
+    id: number;
+    name: string;
+    email: string;
+    type: string;
+    subject: string;
+    status: string;
+    time: string;
+}
+
+interface ResourceItem {
+    id: number;
+    title: string;
+    slug: string;
+    type: string;
+    status: string;
+    time: string;
+}
+
+interface ActivityItem {
+    user: string;
+    action: string;
+    entity: string;
+    details?: string;
+    time: string;
+    type: string;
+}
 
 interface DashboardProps {
     stats?: {
@@ -16,282 +44,362 @@ interface DashboardProps {
         inquiries: number;
         subscribers: number;
         mediaItems: number;
+        thematicAreas?: number;
+        projects?: number;
+        teamMembers?: number;
+        partners?: number;
     };
-    recentActivity?: Array<{
-        user: string;
-        action: string;
-        entity: string;
-        time: string;
-        type: 'create' | 'update' | 'publish' | 'delete' | 'upload';
-    }>;
+    recentInquiries?: InquiryItem[];
+    recentResources?: ResourceItem[];
+    recentActivity?: ActivityItem[];
 }
 
-const defaultStats = {
-    publishedContent: 12,
-    drafts: 4,
-    scheduled: 2,
-    inquiries: 3,
-    subscribers: 147,
-    mediaItems: 56,
-};
+export default function Dashboard({
+    stats = {
+        publishedContent: 0,
+        drafts: 0,
+        scheduled: 0,
+        inquiries: 0,
+        subscribers: 0,
+        mediaItems: 12,
+        thematicAreas: 8,
+        projects: 2,
+        teamMembers: 4,
+        partners: 5,
+    },
+    recentInquiries = [],
+    recentResources = [],
+    recentActivity = [],
+}: DashboardProps) {
+    const metricCards = [
+        {
+            label: 'Published Resources',
+            value: stats.publishedContent,
+            icon: BookOpen,
+            color: 'text-amber-400',
+            bg: 'bg-amber-500/10 border-amber-500/20',
+            href: '/admin/resources?status=published',
+            detail: 'Live on public portal',
+        },
+        {
+            label: 'Content Drafts',
+            value: stats.drafts,
+            icon: Edit3,
+            color: 'text-blue-400',
+            bg: 'bg-blue-500/10 border-blue-500/20',
+            href: '/admin/resources?status=draft',
+            detail: 'Pending editorial review',
+        },
+        {
+            label: 'Citizen Inquiries',
+            value: stats.inquiries,
+            icon: MessageSquare,
+            color: 'text-red-400',
+            bg: 'bg-red-500/10 border-red-500/20',
+            href: '/admin/inquiries?status=new',
+            detail: 'Awaiting triage response',
+            badge: stats.inquiries > 0 ? 'Urgent' : null,
+        },
+        {
+            label: 'Subscribers',
+            value: stats.subscribers,
+            icon: Mail,
+            color: 'text-emerald-400',
+            bg: 'bg-emerald-500/10 border-emerald-500/20',
+            href: '/admin/newsletter',
+            detail: 'Consented email alerts',
+        },
+        {
+            label: 'Thematic Pillars',
+            value: stats.thematicAreas ?? 8,
+            icon: Globe,
+            color: 'text-purple-400',
+            bg: 'bg-purple-500/10 border-purple-500/20',
+            href: '/admin/thematic-areas',
+            detail: 'Constitutional programs',
+        },
+        {
+            label: 'Field Projects',
+            value: stats.projects ?? 2,
+            icon: Shield,
+            color: 'text-teal-400',
+            bg: 'bg-teal-500/10 border-teal-500/20',
+            href: '/admin/projects',
+            detail: 'Legal defense units',
+        },
+    ];
 
-const defaultActivity = [
-    { user: 'Admin', action: 'published', entity: 'State of Human Rights Report 2024', time: '2 minutes ago', type: 'publish' as const },
-    { user: 'Editor', action: 'updated', entity: 'About Page', time: '1 hour ago', type: 'update' as const },
-    { user: 'Admin', action: 'uploaded', entity: '3 media files', time: '3 hours ago', type: 'upload' as const },
-    { user: 'Editor', action: 'created', entity: 'New press release draft', time: '5 hours ago', type: 'create' as const },
-    { user: 'Admin', action: 'published', entity: 'Thematic Area: Access to Justice', time: 'Yesterday', type: 'publish' as const },
-    { user: 'Editor', action: 'updated', entity: 'Impact Statistics', time: 'Yesterday', type: 'update' as const },
-];
-
-const activityIcon = {
-    create: Plus,
-    update: Edit3,
-    publish: CheckCircle,
-    delete: Trash2,
-    upload: Image,
-};
-
-const activityColor = {
-    create: 'text-blue-400',
-    update: 'text-gold-400',
-    publish: 'text-emerald-400',
-    delete: 'text-crimson-400',
-    upload: 'text-purple-400',
-};
-
-const quickActions = [
-    { label: 'New Article', href: '/admin/resources/create', icon: Newspaper, color: 'from-blue-600/20 to-navy-900/20', border: 'border-blue-500/20' },
-    { label: 'New Page', href: '/admin/pages/create', icon: FileText, color: 'from-gold-600/20 to-navy-900/20', border: 'border-gold-500/20' },
-    { label: 'Upload Media', href: '/admin/media', icon: Image, color: 'from-purple-600/20 to-navy-900/20', border: 'border-purple-500/20' },
-    { label: 'View Inquiries', href: '/admin/inquiries', icon: MessageSquare, color: 'from-crimson-600/20 to-navy-900/20', border: 'border-crimson-500/20' },
-    { label: 'Manage Team', href: '/admin/team', icon: Users, color: 'from-emerald-600/20 to-navy-900/20', border: 'border-emerald-500/20' },
-    { label: 'Site Settings', href: '/admin/settings', icon: Globe, color: 'from-teal-600/20 to-navy-900/20', border: 'border-teal-500/20' },
-];
-
-const contentSummary = [
-    { label: 'Thematic Areas', count: 8, published: 8, icon: Globe, href: '/admin/thematic-areas' },
-    { label: 'News & Resources', count: 12, published: 10, icon: Newspaper, href: '/admin/resources' },
-    { label: 'Team Members', count: 6, published: 6, icon: Users, href: '/admin/team' },
-    { label: 'Partners', count: 9, published: 7, icon: Shield, href: '/admin/partners' },
-];
-
-export default function Dashboard({ stats = defaultStats, recentActivity = defaultActivity }: DashboardProps) {
     return (
-        <AdminLayout header="Dashboard">
-            <Head title="CMS Dashboard — Chapter Four" />
+        <AdminLayout header="Executive Dashboard">
+            <Head title="CMS Executive Console — Chapter Four" />
 
-            {/* ─── Welcome banner ──────────────────────────────────────── */}
+            {/* ─── Hero Banner ────────────────────────────────────────────── */}
             <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative rounded-2xl overflow-hidden mb-6 p-6 lg:p-8"
-                style={{
-                    background: 'linear-gradient(135deg, rgba(30, 40, 130, 0.4) 0%, rgba(15, 23, 42, 0.8) 100%)',
-                    border: '1px solid rgba(245, 158, 11, 0.15)',
-                }}
+                className="relative rounded-3xl p-6 sm:p-8 mb-8 overflow-hidden border border-white/10 bg-gradient-to-r from-[#0d1424] via-[#090d18] to-[#0d1424] shadow-2xl"
             >
-                <div className="absolute inset-0 opacity-30"
-                    style={{
-                        backgroundImage: 'radial-gradient(rgba(245,158,11,0.15) 1px, transparent 1px)',
-                        backgroundSize: '30px 30px',
-                    }}
-                />
-                <div className="relative flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div>
-                        <h2 className="font-sans font-bold text-white text-xl mb-1">Welcome to the CMS</h2>
-                        <p className="text-white/50 text-sm">Manage Chapter Four's content, media and communications from here.</p>
+                {/* Background Ambient Lights */}
+                <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-amber-500/10 blur-3xl pointer-events-none" />
+                <div className="absolute bottom-0 left-1/3 w-64 h-64 rounded-full bg-red-600/10 blur-3xl pointer-events-none" />
+
+                <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+                    <div className="max-w-2xl">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-3">
+                            <Sparkles className="w-3.5 h-3.5" /> Institutional Administration
+                        </div>
+                        <h1 className="font-serif text-2xl sm:text-3xl text-white font-normal leading-tight">
+                            Malawian Constitutional & Human Rights <span className="italic text-gradient-gold">Management Console</span>
+                        </h1>
+                        <p className="mt-2 text-sm text-slate-400 font-light leading-relaxed">
+                            Oversee civic publications, triage public human rights defense inquiries, manage traveling paralegal projects, and update national impact metrics.
+                        </p>
                     </div>
-                    <div className="flex items-center gap-3">
+
+                    <div className="flex flex-wrap items-center gap-3 shrink-0">
                         <a
                             href="/"
                             target="_blank"
-                            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-white/70 hover:text-white text-sm transition-all hover:border-white/20"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-medium bg-white/[0.04] hover:bg-white/[0.08] text-slate-300 hover:text-white border border-white/10 transition-all shadow-sm"
                         >
-                            <Eye className="w-4 h-4" />
-                            Preview Site
-                            <ArrowUpRight className="w-3.5 h-3.5" />
+                            <ExternalLink className="w-3.5 h-3.5 text-amber-400" />
+                            Live Website
                         </a>
                         <Link
                             href="/admin/resources/create"
-                            id="dashboard-new-content"
-                            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gold-500 text-navy-950 font-semibold text-sm hover:bg-gold-400 transition-all"
+                            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-navy-950 transition-all shadow-lg shadow-amber-500/20"
                         >
                             <Plus className="w-4 h-4" />
-                            New Content
+                            Publish Resource
                         </Link>
                     </div>
                 </div>
             </motion.div>
 
-            {/* ─── Stat cards ──────────────────────────────────────────── */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-6">
-                {[
-                    { label: 'Published', value: stats.publishedContent, icon: CheckCircle, color: 'text-emerald-400', bg: 'bg-emerald-400/10', trend: '+2 this week' },
-                    { label: 'Drafts', value: stats.drafts, icon: Edit3, color: 'text-gold-400', bg: 'bg-gold-400/10', trend: '4 pending' },
-                    { label: 'Scheduled', value: stats.scheduled, icon: Clock, color: 'text-blue-400', bg: 'bg-blue-400/10', trend: 'Next: tomorrow' },
-                    { label: 'Inquiries', value: stats.inquiries, icon: MessageSquare, color: 'text-crimson-400', bg: 'bg-crimson-400/10', trend: '3 unread' },
-                    { label: 'Subscribers', value: stats.subscribers, icon: Mail, color: 'text-purple-400', bg: 'bg-purple-400/10', trend: '+12 this month' },
-                    { label: 'Media Items', value: stats.mediaItems, icon: Image, color: 'text-teal-400', bg: 'bg-teal-400/10', trend: '56 files' },
-                ].map((card, i) => {
+            {/* ─── Metric Cards Grid ──────────────────────────────────────── */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+                {metricCards.map((card, i) => {
                     const Icon = card.icon;
                     return (
                         <motion.div
                             key={card.label}
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 15 }}
                             animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: i * 0.05, duration: 0.4 }}
-                            className="rounded-2xl p-4 border border-white/6 hover:border-white/10 transition-all duration-300"
-                            style={{ background: 'rgba(255,255,255,0.03)' }}
+                            transition={{ delay: i * 0.04 }}
                         >
-                            <div className={`w-8 h-8 rounded-xl ${card.bg} flex items-center justify-center mb-3`}>
-                                <Icon className={`w-4 h-4 ${card.color}`} />
-                            </div>
-                            <div className="font-bold text-white text-2xl mb-0.5">{card.value}</div>
-                            <div className="text-white/40 text-xs font-medium">{card.label}</div>
-                            <div className={`text-[10px] mt-1.5 ${card.color} opacity-70`}>{card.trend}</div>
+                            <Link
+                                href={card.href}
+                                className="block p-5 rounded-2xl bg-[#0a0e1a]/90 border border-white/[0.06] hover:border-amber-500/40 transition-all group relative overflow-hidden"
+                            >
+                                <div className="flex items-center justify-between mb-3">
+                                    <div className={`w-9 h-9 rounded-xl flex items-center justify-center border ${card.bg}`}>
+                                        <Icon className={`w-4 h-4 ${card.color}`} />
+                                    </div>
+                                    {card.badge && (
+                                        <span className="px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-red-500/20 text-red-300 border border-red-500/30">
+                                            {card.badge}
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="font-serif text-2xl sm:text-3xl text-white font-normal group-hover:text-amber-300 transition-colors">
+                                    {card.value}
+                                </div>
+                                <div className="text-xs font-medium text-slate-300 mt-1 truncate">
+                                    {card.label}
+                                </div>
+                                <div className="text-[11px] text-slate-500 mt-0.5 truncate">
+                                    {card.detail}
+                                </div>
+                            </Link>
                         </motion.div>
                     );
                 })}
             </div>
 
-            {/* ─── Main grid ───────────────────────────────────────────── */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                {/* Quick actions */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="lg:col-span-2"
-                >
-                    <div className="rounded-2xl border border-white/6 overflow-hidden" style={{ background: 'rgba(255,255,255,0.02)' }}>
-                        <div className="px-5 py-4 border-b border-white/6 flex items-center justify-between">
-                            <h3 className="font-sans font-semibold text-white text-sm">Quick Actions</h3>
-                        </div>
-                        <div className="p-4 grid grid-cols-2 sm:grid-cols-3 gap-3">
-                            {quickActions.map((action, i) => {
-                                const Icon = action.icon;
-                                return (
-                                    <Link
-                                        key={action.label}
-                                        href={action.href}
-                                        id={`quick-action-${i}`}
-                                        className={`flex items-center gap-3 p-3.5 rounded-xl bg-gradient-to-br ${action.color} border ${action.border} hover:opacity-80 transition-all duration-200 group`}
-                                    >
-                                        <Icon className="w-4 h-4 text-white/70 group-hover:text-white transition-colors" />
-                                        <span className="text-white/80 group-hover:text-white text-sm font-medium transition-colors">{action.label}</span>
-                                    </Link>
-                                );
-                            })}
-                        </div>
-                    </div>
-
-                    {/* Content summary */}
-                    <div className="rounded-2xl border border-white/6 overflow-hidden mt-4" style={{ background: 'rgba(255,255,255,0.02)' }}>
-                        <div className="px-5 py-4 border-b border-white/6 flex items-center justify-between">
-                            <h3 className="font-sans font-semibold text-white text-sm">Content Overview</h3>
-                            <Link href="/admin/resources" className="text-gold-400/70 hover:text-gold-400 text-xs transition-colors">
-                                View All
+            {/* ─── Main Two-Column Workbench ──────────────────────────────── */}
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-8">
+                {/* Left: Actionable Inquiries & Content Pipeline (7 Cols) */}
+                <div className="lg:col-span-7 space-y-6">
+                    {/* Urgent Citizen Inquiries Triage */}
+                    <div className="rounded-2xl bg-[#0a0e1a]/90 border border-white/[0.06] overflow-hidden">
+                        <div className="p-5 border-b border-white/[0.06] flex items-center justify-between bg-white/[0.01]">
+                            <div className="flex items-center gap-2.5">
+                                <div className="w-2.5 h-2.5 rounded-full bg-red-400 animate-pulse" />
+                                <h2 className="text-sm font-semibold text-white">Recent Public Inquiries</h2>
+                            </div>
+                            <Link
+                                href="/admin/inquiries"
+                                className="text-xs text-amber-400 hover:text-amber-300 font-medium inline-flex items-center gap-1"
+                            >
+                                Inbox ({stats.inquiries} pending) <ArrowRight className="w-3.5 h-3.5" />
                             </Link>
                         </div>
-                        <div className="divide-y divide-white/4">
-                            {contentSummary.map((item) => {
-                                const Icon = item.icon;
-                                const pct = Math.round((item.published / item.count) * 100);
-                                return (
+
+                        <div className="divide-y divide-white/[0.04]">
+                            {recentInquiries.length > 0 ? (
+                                recentInquiries.map((inq) => (
                                     <Link
-                                        key={item.label}
-                                        href={item.href}
-                                        className="flex items-center gap-4 px-5 py-3.5 hover:bg-white/2 transition-colors group"
+                                        key={inq.id}
+                                        href="/admin/inquiries"
+                                        className="block p-4 hover:bg-white/[0.03] transition-colors"
                                     >
-                                        <Icon className="w-4 h-4 text-white/30 group-hover:text-white/60 transition-colors" />
-                                        <div className="flex-1 min-w-0">
-                                            <div className="flex items-center justify-between mb-1.5">
-                                                <span className="text-white/70 text-sm group-hover:text-white transition-colors">{item.label}</span>
-                                                <span className="text-white/30 text-xs">{item.published}/{item.count} published</span>
+                                        <div className="flex items-start justify-between gap-3">
+                                            <div>
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-xs font-semibold text-white">{inq.name}</span>
+                                                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 font-medium">
+                                                        {inq.type}
+                                                    </span>
+                                                </div>
+                                                <p className="text-xs text-slate-300 font-medium mt-1 truncate max-w-md">
+                                                    {inq.subject}
+                                                </p>
                                             </div>
-                                            <div className="h-1 rounded-full bg-white/5 overflow-hidden">
-                                                <div
-                                                    className="h-full rounded-full bg-gradient-to-r from-gold-600 to-gold-400 transition-all duration-700"
-                                                    style={{ width: `${pct}%` }}
-                                                />
+                                            <div className="text-right shrink-0">
+                                                <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
+                                                    inq.status === 'new' ? 'bg-red-500/20 text-red-300' : 'bg-blue-500/20 text-blue-300'
+                                                }`}>
+                                                    {inq.status}
+                                                </span>
+                                                <div className="text-[10px] text-slate-500 mt-1">{inq.time}</div>
                                             </div>
                                         </div>
-                                        <ArrowRight className="w-3.5 h-3.5 text-white/20 group-hover:text-white/50 group-hover:translate-x-0.5 transition-all" />
                                     </Link>
-                                );
-                            })}
+                                ))
+                            ) : (
+                                <div className="p-8 text-center text-slate-400 text-xs">
+                                    No pending inquiries. All incoming rights requests have been triaged!
+                                </div>
+                            )}
                         </div>
                     </div>
-                </motion.div>
 
-                {/* Activity feed */}
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3 }}
-                    className="rounded-2xl border border-white/6 overflow-hidden flex flex-col"
-                    style={{ background: 'rgba(255,255,255,0.02)' }}
-                >
-                    <div className="px-5 py-4 border-b border-white/6 flex items-center justify-between">
-                        <h3 className="font-sans font-semibold text-white text-sm">Recent Activity</h3>
-                        <Link href="/admin/audit" className="text-gold-400/70 hover:text-gold-400 text-xs transition-colors">
-                            View Log
-                        </Link>
-                    </div>
-                    <div className="flex-1 divide-y divide-white/4 overflow-auto">
-                        {recentActivity.map((activity, i) => {
-                            const Icon = activityIcon[activity.type];
-                            const color = activityColor[activity.type];
-                            return (
-                                <div key={i} className="px-5 py-3.5 hover:bg-white/2 transition-colors">
-                                    <div className="flex items-start gap-3">
-                                        <div className={`mt-0.5 flex-shrink-0 w-6 h-6 rounded-lg bg-white/5 flex items-center justify-center`}>
-                                            <Icon className={`w-3 h-3 ${color}`} />
+                    {/* Content Publications Pipeline */}
+                    <div className="rounded-2xl bg-[#0a0e1a]/90 border border-white/[0.06] overflow-hidden">
+                        <div className="p-5 border-b border-white/[0.06] flex items-center justify-between bg-white/[0.01]">
+                            <div className="flex items-center gap-2.5">
+                                <BookOpen className="w-4 h-4 text-amber-400" />
+                                <h2 className="text-sm font-semibold text-white">Recent Publications & Statements</h2>
+                            </div>
+                            <Link
+                                href="/admin/resources"
+                                className="text-xs text-amber-400 hover:text-amber-300 font-medium inline-flex items-center gap-1"
+                            >
+                                All Resources <ArrowRight className="w-3.5 h-3.5" />
+                            </Link>
+                        </div>
+
+                        <div className="divide-y divide-white/[0.04]">
+                            {recentResources.map((res) => (
+                                <div key={res.id} className="p-4 flex items-center justify-between gap-4 hover:bg-white/[0.02] transition-colors">
+                                    <div className="min-w-0">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <span className="text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded bg-white/5 text-slate-300">
+                                                {res.type}
+                                            </span>
+                                            <span className="text-[10px] text-slate-400">{res.time}</span>
                                         </div>
-                                        <div className="min-w-0 flex-1">
-                                            <p className="text-white/70 text-sm leading-snug">
-                                                <span className="text-white font-medium">{activity.user}</span>
-                                                {' '}{activity.action}{' '}
-                                                <span className="text-white/60">"{activity.entity}"</span>
-                                            </p>
-                                            <p className="text-white/25 text-xs mt-1">{activity.time}</p>
-                                        </div>
+                                        <h3 className="text-xs font-medium text-white truncate max-w-md">
+                                            {res.title}
+                                        </h3>
+                                    </div>
+                                    <div className="flex items-center gap-2 shrink-0">
+                                        <Link
+                                            href={`/admin/resources/${res.id}/edit`}
+                                            className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors text-xs"
+                                            title="Edit resource"
+                                        >
+                                            <Edit3 className="w-3.5 h-3.5" />
+                                        </Link>
+                                        <a
+                                            href={`/resources/${res.slug}`}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="p-1.5 rounded-lg bg-white/5 hover:bg-amber-500/20 text-slate-300 hover:text-amber-400 transition-colors text-xs"
+                                            title="View published article"
+                                        >
+                                            <Eye className="w-3.5 h-3.5" />
+                                        </a>
                                     </div>
                                 </div>
-                            );
-                        })}
+                            ))}
+                        </div>
                     </div>
-                    <div className="px-5 py-3 border-t border-white/6">
-                        <Link href="/admin/audit" className="flex items-center justify-center gap-1.5 text-white/30 hover:text-white/60 text-xs transition-colors py-1">
-                            View full audit log <ArrowRight className="w-3 h-3" />
-                        </Link>
+                </div>
+
+                {/* Right: Real-time Audit Activity Stream (5 Cols) */}
+                <div className="lg:col-span-5 space-y-6">
+                    <div className="rounded-2xl bg-[#0a0e1a]/90 border border-white/[0.06] overflow-hidden flex flex-col h-full">
+                        <div className="p-5 border-b border-white/[0.06] flex items-center justify-between bg-white/[0.01]">
+                            <div className="flex items-center gap-2">
+                                <Activity className="w-4 h-4 text-emerald-400" />
+                                <h2 className="text-sm font-semibold text-white">Live Audit Stream</h2>
+                            </div>
+                            <Link
+                                href="/admin/audit"
+                                className="text-xs text-amber-400 hover:text-amber-300 font-medium inline-flex items-center gap-1"
+                            >
+                                Audit Log <ArrowRight className="w-3.5 h-3.5" />
+                            </Link>
+                        </div>
+
+                        <div className="p-5 flex-1 divide-y divide-white/[0.04] space-y-4">
+                            {recentActivity.map((activity, idx) => (
+                                <div key={idx} className="pt-3 first:pt-0 flex items-start gap-3">
+                                    <div className="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 text-xs shrink-0 mt-0.5">
+                                        <Shield className="w-3.5 h-3.5" />
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-xs text-slate-300 leading-snug">
+                                            <span className="font-semibold text-white">{activity.user}</span>
+                                            {' '}performed{' '}
+                                            <span className="text-amber-400 font-mono text-[11px] px-1.5 py-0.2 rounded bg-amber-500/10">
+                                                {activity.action}
+                                            </span>
+                                            {' '}on{' '}
+                                            <span className="text-slate-200 font-medium">{activity.entity}</span>
+                                        </p>
+                                        <p className="text-[10px] text-slate-500 mt-1 font-mono">{activity.time}</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="p-4 border-t border-white/[0.06] bg-white/[0.01]">
+                            <div className="flex items-center justify-between text-[11px] text-slate-400">
+                                <span>Security Engine: Active</span>
+                                <span className="text-emerald-400 font-medium">● 0 Vulnerabilities Detected</span>
+                            </div>
+                        </div>
                     </div>
-                </motion.div>
+                </div>
             </div>
 
-            {/* ─── System status bar ───────────────────────────────────── */}
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                className="mt-6 flex flex-wrap gap-6 px-5 py-3.5 rounded-2xl border border-white/6"
-                style={{ background: 'rgba(255,255,255,0.02)' }}
-            >
-                {[
-                    { label: 'Site Status', value: 'Online', color: 'text-emerald-400' },
-                    { label: 'Database', value: 'Connected', color: 'text-emerald-400' },
-                    { label: 'Storage', value: '23% used', color: 'text-gold-400' },
-                    { label: 'Laravel', value: '12.x', color: 'text-white/40' },
-                    { label: 'Last backup', value: 'Today 06:00', color: 'text-white/40' },
-                ].map((item) => (
-                    <div key={item.label} className="flex items-center gap-2">
-                        <span className="text-white/25 text-xs">{item.label}:</span>
-                        <span className={`text-xs font-medium ${item.color}`}>{item.value}</span>
+            {/* ─── Institutional Infrastructure Summary ───────────────────── */}
+            <div className="p-6 rounded-2xl bg-[#0a0e1a]/90 border border-white/[0.06] flex flex-wrap items-center justify-between gap-6">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                        <Building2 className="w-5 h-5" />
                     </div>
-                ))}
-            </motion.div>
+                    <div>
+                        <div className="text-xs font-semibold text-white">Chapter Four Secretariat • Lilongwe</div>
+                        <div className="text-[11px] text-slate-400">Youth-led Civil Society Organization in Human Rights & Constitutionalism</div>
+                    </div>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-6 text-xs text-slate-400 font-mono">
+                    <div>
+                        <span className="text-slate-500">Database:</span> <span className="text-emerald-400">SQLite Connected</span>
+                    </div>
+                    <div>
+                        <span className="text-slate-500">Framework:</span> <span className="text-white">Laravel 12 + Inertia + React 19</span>
+                    </div>
+                    <div>
+                        <span className="text-slate-500">Jurisdiction:</span> <span className="text-amber-400">Republic of Malawi</span>
+                    </div>
+                </div>
+            </div>
         </AdminLayout>
     );
 }

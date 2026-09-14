@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link, usePage, router } from '@inertiajs/react';
 import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import {
     Menu, X, ChevronDown, ArrowRight,
@@ -90,9 +90,23 @@ export default function PublicLayout({ children }: PropsWithChildren) {
 
     const isActive = (href: string) => href === '/' ? url === '/' : url.startsWith(href);
 
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
     const handleSubscribe = (e: React.FormEvent) => {
         e.preventDefault();
-        if (email) { setSubscribed(true); setEmail(''); }
+        if (!email) return;
+        setIsSubmitting(true);
+        router.post('/newsletter/subscribe', { email, source: 'footer' }, {
+            preserveScroll: true,
+            onSuccess: () => {
+                setSubscribed(true);
+                setEmail('');
+                setIsSubmitting(false);
+            },
+            onError: () => {
+                setIsSubmitting(false);
+            },
+        });
     };
 
     return (
@@ -275,15 +289,16 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                             {/* Socials */}
                             <div className="flex items-center gap-3">
                                 {[
-                                    { Icon: Facebook, href: '#', label: 'Facebook' },
-                                    { Icon: Twitter, href: '#', label: 'Twitter' },
-                                    { Icon: Instagram, href: '#', label: 'Instagram' },
-                                    { Icon: Linkedin, href: '#', label: 'LinkedIn' },
-                                    { Icon: Youtube, href: '#', label: 'YouTube' },
+                                    { Icon: Facebook, href: (usePage().props as any)?.site?.facebook_url || '#', label: 'Facebook' },
+                                    { Icon: Twitter, href: (usePage().props as any)?.site?.twitter_url || '#', label: 'Twitter' },
+                                    { Icon: Instagram, href: (usePage().props as any)?.site?.instagram_url || '#', label: 'Instagram' },
+                                    { Icon: Linkedin, href: (usePage().props as any)?.site?.linkedin_url || '#', label: 'LinkedIn' },
                                 ].map(({ Icon, href, label }) => (
                                     <a
                                         key={label}
                                         href={href}
+                                        target="_blank"
+                                        rel="noreferrer"
                                         aria-label={label}
                                         className="w-9 h-9 rounded-lg glass flex items-center justify-center text-white/50 hover:text-gold-400 hover:border-gold-500/30 transition-all duration-200"
                                     >
@@ -316,16 +331,28 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                     {/* Contact info */}
                     <div className="flex flex-wrap gap-6 mb-10 pb-10 border-b border-white/8">
                         {[
-                            { Icon: Mail, text: 'info@chapterfour.org', href: 'mailto:info@chapterfour.org' },
-                            { Icon: Phone, text: '+265 XXX XXX XXX', href: 'tel:+265' },
-                            { Icon: MapPin, text: 'Lilongwe, Malawi', href: '#' },
+                            {
+                                Icon: Mail,
+                                text: (usePage().props as any)?.site?.contact_email || 'info@chapterfour.mw',
+                                href: `mailto:${(usePage().props as any)?.site?.contact_email || 'info@chapterfour.mw'}`,
+                            },
+                            {
+                                Icon: Phone,
+                                text: (usePage().props as any)?.site?.contact_phone || '+265 (0) 1 770 000',
+                                href: `tel:${(usePage().props as any)?.site?.contact_phone || '+2651770000'}`,
+                            },
+                            {
+                                Icon: MapPin,
+                                text: (usePage().props as any)?.site?.office_address || 'City Centre, Lilongwe, Malawi',
+                                href: '/contact',
+                            },
                         ].map(({ Icon, text, href }) => (
                             <a
                                 key={text}
                                 href={href}
-                                className="flex items-center gap-2 text-white/50 hover:text-white/80 text-sm transition-colors duration-200"
+                                className="flex items-center gap-2 text-white/60 hover:text-gold-400 text-sm transition-colors duration-200"
                             >
-                                <Icon className="w-4 h-4 text-gold-500/70" />
+                                <Icon className="w-4 h-4 text-gold-500/80" />
                                 {text}
                             </a>
                         ))}

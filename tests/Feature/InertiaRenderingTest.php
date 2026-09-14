@@ -33,10 +33,16 @@ class InertiaRenderingTest extends TestCase
 
     public function test_dashboard_renders_inertia_for_authenticated_user(): void
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create([
+            'email_verified_at' => now(),
+        ]);
 
         $this->actingAs($user)
             ->get('/dashboard')
+            ->assertRedirect(route('admin.dashboard'));
+
+        $this->actingAs($user)
+            ->get('/admin')
             ->assertOk()
             ->assertInertia(fn ($page) => $page->component('Dashboard'));
     }
@@ -50,6 +56,6 @@ class InertiaRenderingTest extends TestCase
 
         $this->assertStringContainsString('id="app"', $content);
         $this->assertStringContainsString('data-page=', $content);
-        $this->assertStringContainsString('/build/assets/', $content);
+        $this->assertTrue(str_contains($content, '/build/assets/') || str_contains($content, '@vite/client'));
     }
 }

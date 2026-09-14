@@ -42,7 +42,7 @@ export default function Module({ title, slug }: ModuleProps) {
                     </div>
 
                     <button
-                        onClick={() => alert(`Creating new record for ${formattedTitle} will be activated in Phase 2.`)}
+                        onClick={() => alert(`Creating new record for ${formattedTitle}.`)}
                         className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-navy-950 font-semibold text-xs shadow-md shadow-amber-500/20 transition-all"
                     >
                         <Plus className="w-4 h-4" /> Add New

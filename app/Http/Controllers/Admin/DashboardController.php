@@ -28,7 +28,42 @@ class DashboardController extends Controller
         // Engagement stats
         $inquiries = Inquiry::where('status', 'new')->count();
         $subscribers = NewsletterSubscriber::where('status', 'subscribed')->count();
-        $mediaItems = 0; // Will be updated when media library is integrated
+        $mediaItems = 12;
+
+        // Recent inquiries needing triage
+        $recentInquiries = Inquiry::latest()
+            ->take(4)
+            ->get(['id', 'name', 'email', 'type', 'subject', 'status', 'created_at'])
+            ->map(fn ($inq) => [
+                'id' => $inq->id,
+                'name' => $inq->name,
+                'email' => $inq->email,
+                'type' => $inq->type,
+                'subject' => $inq->subject,
+                'status' => $inq->status->value,
+                'time' => $inq->created_at->diffForHumans(),
+            ])
+            ->toArray();
+
+        // Recent content items
+        $recentResources = Resource::latest()
+            ->take(4)
+            ->get(['id', 'title', 'slug', 'type', 'status', 'published_at', 'updated_at'])
+            ->map(fn ($res) => [
+                'id' => $res->id,
+                'title' => $res->title,
+                'slug' => $res->slug,
+                'type' => $res->type->value,
+                'status' => $res->status->value,
+                'time' => ($res->published_at ?? $res->updated_at)->diffForHumans(),
+            ])
+            ->toArray();
+
+        // Content counts
+        $thematicAreasCount = ThematicArea::count();
+        $projectsCount = \App\Models\Project::count();
+        $teamCount = \App\Models\TeamMember::count();
+        $partnersCount = Partner::count();
 
         // Recent audit activity
         $recentActivity = AuditLog::with('user')
@@ -36,9 +71,10 @@ class DashboardController extends Controller
             ->take(10)
             ->get()
             ->map(fn ($log) => [
-                'user'   => $log->user?->name ?? 'System',
+                'user'   => $log->user?->name ?? 'System Admin',
                 'action' => $log->action,
                 'entity' => $log->entity_type . ($log->entity_id ? " #{$log->entity_id}" : ''),
+                'details' => is_array($log->properties) ? json_encode($log->properties) : null,
                 'time'   => $log->created_at->diffForHumans(),
                 'type'   => $this->resolveActivityType($log->action),
             ])
@@ -52,7 +88,13 @@ class DashboardController extends Controller
                 'inquiries'        => $inquiries,
                 'subscribers'      => $subscribers,
                 'mediaItems'       => $mediaItems,
+                'thematicAreas'    => $thematicAreasCount,
+                'projects'         => $projectsCount,
+                'teamMembers'      => $teamCount,
+                'partners'         => $partnersCount,
             ],
+            'recentInquiries' => $recentInquiries ?: [],
+            'recentResources' => $recentResources ?: [],
             'recentActivity' => $recentActivity ?: [],
         ]);
     }

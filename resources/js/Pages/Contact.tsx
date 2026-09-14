@@ -1,26 +1,28 @@
 import PublicLayout from '@/Layouts/PublicLayout';
-import { Head } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import {
     Mail, Phone, MapPin, Send, MessageSquare, Clock,
-    CheckCircle2, Sparkles, Shield
+    CheckCircle2, Sparkles, Shield, Loader2
 } from 'lucide-react';
 import { useState } from 'react';
 
 export default function Contact() {
-    const [submitted, setSubmitted] = useState(false);
-    const [formData, setFormData] = useState({
+    const { data, setData, post, processing, errors, reset, recentlySuccessful } = useForm({
         name: '',
         email: '',
         phone: '',
+        inquiry_type: 'General Inquiry',
         subject: '',
         message: '',
-        inquiry_type: 'General Inquiry',
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        setSubmitted(true);
+        post('/contact', {
+            preserveScroll: true,
+            onSuccess: () => reset(),
+        });
     };
 
     return (
@@ -115,21 +117,15 @@ export default function Contact() {
                         {/* Interactive Form */}
                         <div className="lg:col-span-7">
                             <div className="p-8 sm:p-10 rounded-2xl bg-navy-900/50 border border-navy-800">
-                                {submitted ? (
+                                {recentlySuccessful ? (
                                     <div className="text-center py-12 space-y-4">
                                         <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mx-auto">
                                             <CheckCircle2 className="w-8 h-8" />
                                         </div>
                                         <h3 className="font-serif text-2xl text-white">Message Received</h3>
                                         <p className="text-navy-300 text-sm font-light max-w-md mx-auto">
-                                            Thank you for reaching out to Chapter Four. Our legal and advocacy team will review your inquiry promptly.
+                                            Thank you for reaching out to Chapter Four. Your inquiry has been logged in our system and our legal and advocacy team will review it promptly.
                                         </p>
-                                        <button
-                                            onClick={() => setSubmitted(false)}
-                                            className="mt-4 px-6 py-2 rounded-xl bg-navy-800 hover:bg-navy-700 text-amber-400 text-xs font-semibold"
-                                        >
-                                            Send another inquiry
-                                        </button>
                                     </div>
                                 ) : (
                                     <form onSubmit={handleSubmit} className="space-y-6">
@@ -141,11 +137,12 @@ export default function Contact() {
                                                 <input
                                                     type="text"
                                                     required
-                                                    value={formData.name}
-                                                    onChange={e => setFormData({ ...formData, name: e.target.value })}
+                                                    value={data.name}
+                                                    onChange={e => setData('name', e.target.value)}
                                                     placeholder="e.g. Chimwemwe Banda"
                                                     className="w-full px-4 py-3 rounded-xl bg-navy-950/80 border border-navy-700 text-white placeholder-navy-500 text-sm focus:outline-none focus:border-amber-500 transition-colors"
                                                 />
+                                                {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
                                             </div>
 
                                             <div>
@@ -155,11 +152,12 @@ export default function Contact() {
                                                 <input
                                                     type="email"
                                                     required
-                                                    value={formData.email}
-                                                    onChange={e => setFormData({ ...formData, email: e.target.value })}
+                                                    value={data.email}
+                                                    onChange={e => setData('email', e.target.value)}
                                                     placeholder="name@example.com"
                                                     className="w-full px-4 py-3 rounded-xl bg-navy-950/80 border border-navy-700 text-white placeholder-navy-500 text-sm focus:outline-none focus:border-amber-500 transition-colors"
                                                 />
+                                                {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
                                             </div>
                                         </div>
 
@@ -170,11 +168,12 @@ export default function Contact() {
                                                 </label>
                                                 <input
                                                     type="tel"
-                                                    value={formData.phone}
-                                                    onChange={e => setFormData({ ...formData, phone: e.target.value })}
+                                                    value={data.phone}
+                                                    onChange={e => setData('phone', e.target.value)}
                                                     placeholder="+265 999 000 000"
                                                     className="w-full px-4 py-3 rounded-xl bg-navy-950/80 border border-navy-700 text-white placeholder-navy-500 text-sm focus:outline-none focus:border-amber-500 transition-colors"
                                                 />
+                                                {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone}</p>}
                                             </div>
 
                                             <div>
@@ -182,8 +181,8 @@ export default function Contact() {
                                                     Inquiry Type
                                                 </label>
                                                 <select
-                                                    value={formData.inquiry_type}
-                                                    onChange={e => setFormData({ ...formData, inquiry_type: e.target.value })}
+                                                    value={data.inquiry_type}
+                                                    onChange={e => setData('inquiry_type', e.target.value)}
                                                     className="w-full px-4 py-3 rounded-xl bg-navy-950/80 border border-navy-700 text-white text-sm focus:outline-none focus:border-amber-500 transition-colors"
                                                 >
                                                     <option>General Inquiry</option>
@@ -192,6 +191,7 @@ export default function Contact() {
                                                     <option>Media & Press Interview</option>
                                                     <option>Youth Volunteering</option>
                                                 </select>
+                                                {errors.inquiry_type && <p className="text-red-400 text-xs mt-1">{errors.inquiry_type}</p>}
                                             </div>
                                         </div>
 
@@ -202,11 +202,12 @@ export default function Contact() {
                                             <input
                                                 type="text"
                                                 required
-                                                value={formData.subject}
-                                                onChange={e => setFormData({ ...formData, subject: e.target.value })}
+                                                value={data.subject}
+                                                onChange={e => setData('subject', e.target.value)}
                                                 placeholder="Brief summary of your inquiry"
                                                 className="w-full px-4 py-3 rounded-xl bg-navy-950/80 border border-navy-700 text-white placeholder-navy-500 text-sm focus:outline-none focus:border-amber-500 transition-colors"
                                             />
+                                            {errors.subject && <p className="text-red-400 text-xs mt-1">{errors.subject}</p>}
                                         </div>
 
                                         <div>
@@ -216,18 +217,28 @@ export default function Contact() {
                                             <textarea
                                                 required
                                                 rows={5}
-                                                value={formData.message}
-                                                onChange={e => setFormData({ ...formData, message: e.target.value })}
+                                                value={data.message}
+                                                onChange={e => setData('message', e.target.value)}
                                                 placeholder="Provide relevant context or details..."
                                                 className="w-full px-4 py-3 rounded-xl bg-navy-950/80 border border-navy-700 text-white placeholder-navy-500 text-sm focus:outline-none focus:border-amber-500 transition-colors resize-none"
                                             />
+                                            {errors.message && <p className="text-red-400 text-xs mt-1">{errors.message}</p>}
                                         </div>
 
                                         <button
                                             type="submit"
-                                            className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-navy-950 font-semibold text-sm transition-all shadow-lg shadow-amber-500/20"
+                                            disabled={processing}
+                                            className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-navy-950 font-semibold text-sm transition-all shadow-lg shadow-amber-500/20 disabled:opacity-50"
                                         >
-                                            <Send className="w-4 h-4" /> Submit Inquiry
+                                            {processing ? (
+                                                <>
+                                                    <Loader2 className="w-4 h-4 animate-spin" /> Submitting...
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Send className="w-4 h-4" /> Submit Inquiry
+                                                </>
+                                            )}
                                         </button>
                                     </form>
                                 )}

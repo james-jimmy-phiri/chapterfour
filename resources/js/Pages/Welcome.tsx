@@ -710,10 +710,14 @@ export default function Welcome() {
                                 vulnerable groups.
                             </p>
                             <div className="flex flex-wrap gap-4">
-                                <a href="#" className="btn-primary text-sm">
+                                <Link href="/resources/state-of-constitutional-rights-2024" className="btn-primary text-sm">
                                     Read Report <ArrowRight className="w-4 h-4" />
-                                </a>
-                                <a href="#" className="btn-secondary text-sm">
+                                </Link>
+                                <a
+                                    href="#download"
+                                    onClick={(e) => { e.preventDefault(); alert('Annual report PDF is being prepared for download.'); }}
+                                    className="btn-secondary text-sm"
+                                >
                                     Download PDF
                                 </a>
                             </div>
