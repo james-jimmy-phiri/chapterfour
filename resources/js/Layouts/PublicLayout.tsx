@@ -2,63 +2,48 @@ import { Link, usePage, router } from '@inertiajs/react';
 import { PropsWithChildren, useEffect, useRef, useState } from 'react';
 import {
     Menu, X, ChevronDown, ArrowRight,
-    Facebook, Twitter, Instagram, Linkedin, Youtube,
-    Mail, Phone, MapPin
+    Facebook, Twitter, Instagram, Linkedin,
+    Mail, Phone, MapPin, CheckCircle2,
+    Shield, Scale, Globe, BookOpen, FileText, Heart, Search, Users
 } from 'lucide-react';
+import ChapterFourLogo from '@/Components/ChapterFourLogo';
+import PageLoader from '@/Components/PageLoader';
 
-const navLinks = [
+interface NavChild {
+    label: string;
+    href: string;
+    desc?: string;
+    icon?: any;
+}
+
+interface NavLinkItem {
+    label: string;
+    href: string;
+    children?: NavChild[];
+}
+
+const navLinks: NavLinkItem[] = [
     { label: 'Home', href: '/' },
     { label: 'About', href: '/about' },
     {
         label: 'What We Do',
         href: '/what-we-do',
         children: [
-            { label: 'Human Rights & Constitutionalism', href: '/what-we-do/human-rights' },
-            { label: 'Access to Justice', href: '/what-we-do/access-to-justice' },
-            { label: 'Democracy & Governance', href: '/what-we-do/democracy-governance' },
-            { label: 'Civic & Human Rights Education', href: '/what-we-do/civic-education' },
-            { label: 'Policy & Legislative Advocacy', href: '/what-we-do/policy-advocacy' },
-            { label: 'Protection of Vulnerable Groups', href: '/what-we-do/vulnerable-groups' },
-            { label: 'Accountability & Monitoring', href: '/what-we-do/accountability' },
-            { label: 'Research & Knowledge', href: '/what-we-do/research' },
+            { label: 'Human Rights & Constitutionalism', href: '/what-we-do/human-rights', desc: 'Safeguarding fundamental civil liberties under Chapter IV.', icon: Shield },
+            { label: 'Access to Justice & Legal Aid', href: '/what-we-do/access-to-justice', desc: 'Pro-bono representation and grassroots paralegal clinics.', icon: Scale },
+            { label: 'Democracy & Good Governance', href: '/what-we-do/democracy-governance', desc: 'Fostering participatory democracy and institutional integrity.', icon: Globe },
+            { label: 'Civic & Rights Education', href: '/what-we-do/civic-education', desc: 'Empowering communities to claim rights and hold leaders accountable.', icon: BookOpen },
+            { label: 'Policy & Legislative Advocacy', href: '/what-we-do/policy-advocacy', desc: 'Strategic public interest litigation and statutory reform.', icon: FileText },
+            { label: 'Protection of Vulnerable Groups', href: '/what-we-do/vulnerable-groups', desc: 'Defending women, children, persons with disabilities, and minorities.', icon: Heart },
+            { label: 'Accountability & Monitoring', href: '/what-we-do/accountability', desc: 'Tracking human rights violations and state compliance.', icon: Search },
+            { label: 'Research & Legal Knowledge', href: '/what-we-do/research', desc: 'Authoritative evidence, empirical reports, and legal publications.', icon: Users },
         ],
     },
+    { label: 'Projects', href: '/projects' },
     { label: 'Resources', href: '/resources' },
     { label: 'News', href: '/news' },
     { label: 'Contact', href: '/contact' },
 ];
-
-const footerLinks = {
-    'What We Do': [
-        { label: 'Human Rights', href: '/what-we-do/human-rights' },
-        { label: 'Access to Justice', href: '/what-we-do/access-to-justice' },
-        { label: 'Democracy & Governance', href: '/what-we-do/democracy-governance' },
-        { label: 'Civic Education', href: '/what-we-do/civic-education' },
-        { label: 'Policy Advocacy', href: '/what-we-do/policy-advocacy' },
-        { label: 'Accountability', href: '/what-we-do/accountability' },
-    ],
-    'Resources': [
-        { label: 'Publications', href: '/resources?type=publications' },
-        { label: 'Reports', href: '/resources?type=reports' },
-        { label: 'Statements', href: '/resources?type=statements' },
-        { label: 'Press Releases', href: '/resources?type=press-releases' },
-        { label: 'Research', href: '/resources?type=research' },
-    ],
-    'Get Involved': [
-        { label: 'Partner With Us', href: '/get-involved#partner' },
-        { label: 'Volunteer', href: '/get-involved#volunteer' },
-        { label: 'Support Our Work', href: '/get-involved#support' },
-        { label: 'Report a Concern', href: '/get-involved#report' },
-        { label: 'Newsletter', href: '#newsletter' },
-    ],
-    'Organisation': [
-        { label: 'About Us', href: '/about' },
-        { label: 'Our Team', href: '/about#team' },
-        { label: 'Our Story', href: '/about#story' },
-        { label: 'Partners', href: '/about#partners' },
-        { label: 'Contact Us', href: '/contact' },
-    ],
-};
 
 export default function PublicLayout({ children }: PropsWithChildren) {
     const { url } = usePage();
@@ -67,30 +52,20 @@ export default function PublicLayout({ children }: PropsWithChildren) {
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const [email, setEmail] = useState('');
     const [subscribed, setSubscribed] = useState(false);
-    const dropdownRef = useRef<HTMLDivElement>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
-        const handleScroll = () => setScrolled(window.scrollY > 60);
+        const handleScroll = () => setScrolled(window.scrollY > 40);
         window.addEventListener('scroll', handleScroll, { passive: true });
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
     useEffect(() => {
-        const handleClickOutside = (e: MouseEvent) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-                setOpenDropdown(null);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, []);
+        setMobileOpen(false);
+        setOpenDropdown(null);
+    }, [url]);
 
-    // Close mobile menu on route change
-    useEffect(() => { setMobileOpen(false); }, [url]);
-
-    const isActive = (href: string) => href === '/' ? url === '/' : url.startsWith(href);
-
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const isActive = (href: string) => (href === '/' ? url === '/' : url.startsWith(href));
 
     const handleSubscribe = (e: React.FormEvent) => {
         e.preventDefault();
@@ -110,83 +85,188 @@ export default function PublicLayout({ children }: PropsWithChildren) {
     };
 
     return (
-        <div className="min-h-screen bg-navy-950 text-white">
-            {/* ─── NAVIGATION ─────────────────────────────────────────── */}
-            <nav
-                id="main-nav"
-                className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-                    scrolled
-                        ? 'glass-dark shadow-glass border-b border-white/8'
-                        : 'bg-transparent'
-                }`}
+        <div className="min-h-screen flex flex-col bg-white text-slate-800 antialiased selection:bg-brand-rust selection:text-white">
+            {/* ─── LOTTIE PRELOADER ON PAGE TRANSITIONS & LOAD ──────────────────── */}
+            <PageLoader />
+
+            {/* ─── TOP UTILITY BAR (Contacts Bar on Top with z-50) ───────────────── */}
+            <aside className="bg-brand-dark text-white text-xs py-2 px-4 sm:px-8 border-b border-white/10 relative z-50" data-purpose="top-utility-bar">
+                <div className="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-3">
+                    {/* Contact Details */}
+                    <div className="flex items-center flex-wrap gap-x-6 gap-y-1">
+                        <a
+                            className="flex items-center gap-1.5 text-slate-200 hover:text-brand-amber transition"
+                            href="mailto:info@chapterfourmw.org"
+                        >
+                            <Mail className="w-3.5 h-3.5 text-brand-amber" />
+                            <span className="text-[11px] sm:text-xs">info@chapterfourmw.org</span>
+                        </a>
+                        <a
+                            className="flex items-center gap-1.5 text-slate-200 hover:text-brand-amber transition"
+                            href="tel:+265888596275"
+                        >
+                            <Phone className="w-3.5 h-3.5 text-brand-amber" />
+                            <span className="text-[11px] sm:text-xs">+265 888 596 275</span>
+                        </a>
+                    </div>
+
+                    {/* Social Media & Tagline */}
+                    <div className="flex items-center space-x-5">
+                        <span className="hidden md:inline text-[11px] text-slate-300 font-medium border-r border-white/20 pr-4">
+                            Defending Constitutional Rights & Freedoms
+                        </span>
+                        <div className="flex items-center space-x-3 text-slate-300">
+                            <a aria-label="Facebook" className="hover:text-brand-amber transition" href="https://facebook.com" target="_blank" rel="noreferrer">
+                                <Facebook className="w-3.5 h-3.5" />
+                            </a>
+                            <a aria-label="X Twitter" className="hover:text-brand-amber transition" href="https://twitter.com" target="_blank" rel="noreferrer">
+                                <Twitter className="w-3.5 h-3.5" />
+                            </a>
+                            <a aria-label="LinkedIn" className="hover:text-brand-amber transition" href="https://linkedin.com" target="_blank" rel="noreferrer">
+                                <Linkedin className="w-3.5 h-3.5" />
+                            </a>
+                            <a aria-label="Instagram" className="hover:text-brand-amber transition" href="https://instagram.com" target="_blank" rel="noreferrer">
+                                <Instagram className="w-3.5 h-3.5" />
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            {/* ─── STICKY MAIN HEADER (Overlays Hero with z-40, Glassmorphic) ────── */}
+            <header
+                className={`sticky top-0 z-40 transition-all duration-300 ${scrolled
+                    ? 'bg-white/95 backdrop-blur-md border-b border-white/10 shadow-xl py-2'
+                    : 'bg-white/5 backdrop-blur-md border-b border-white/10 shadow-lg py-2.5 sm:py-3'
+                    }`}
+                data-purpose="site-header"
             >
-                <div className="container-cf">
-                    <div className="flex items-center justify-between h-20">
-                        {/* Logo */}
-                        <Link href="/" className="flex items-center gap-3 group" aria-label="Chapter Four Home">
-                            <div className="relative w-10 h-10">
-                                <div className="absolute inset-0 bg-gold-500 rounded-lg opacity-20 group-hover:opacity-30 transition-opacity" />
-                                <div className="relative flex items-center justify-center w-full h-full">
-                                    <span className="font-display text-gold-400 text-xl font-normal leading-none">IV</span>
-                                </div>
-                            </div>
-                            <div className="flex flex-col leading-none">
-                                <span className="font-display text-white text-lg font-normal tracking-wide">Chapter Four</span>
-                                <span className="text-gold-400/70 text-[10px] font-sans font-medium tracking-[0.2em] uppercase">Malawi</span>
-                            </div>
+                <div className="max-w-7xl mx-auto px-4 sm:px-8 relative">
+                    <div className="flex items-center justify-between h-16 sm:h-20">
+                        {/* Official Chapter Four Logo (Prominent Size) */}
+                        <Link href="/" className="flex items-center gap-3 group shrink-0" aria-label="Chapter Four Home">
+                            <ChapterFourLogo variant={scrolled ? 'full' : 'white'} imgClassName="h-14 sm:h-16 lg:h-18 w-auto drop-shadow-md transition-all duration-300" />
                         </Link>
 
-                        {/* Desktop Nav */}
-                        <div ref={dropdownRef} className="hidden lg:flex items-center gap-1">
+                        {/* Desktop Navigation Menu */}
+                        <nav className="hidden lg:flex items-center h-full space-x-7 text-sm font-semibold" data-purpose="primary-navigation">
                             {navLinks.map((link) => (
-                                <div key={link.label} className="relative">
-                                    {link.children ? (
-                                        <button
-                                            onClick={() => setOpenDropdown(openDropdown === link.label ? null : link.label)}
-                                            className={`flex items-center gap-1 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
-                                                ${isActive(link.href) ? 'text-gold-400' : 'text-white/80 hover:text-white hover:bg-white/5'}`}
-                                        >
-                                            {link.label}
-                                            <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openDropdown === link.label ? 'rotate-180' : ''}`} />
-                                        </button>
-                                    ) : (
-                                        <Link
-                                            href={link.href}
-                                            className={`flex items-center px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200
-                                                ${isActive(link.href) ? 'text-gold-400' : 'text-white/80 hover:text-white hover:bg-white/5'}`}
-                                        >
-                                            {link.label}
-                                        </Link>
-                                    )}
+                                <div key={link.label} className="group h-full flex items-center relative">
+                                    <Link
+                                        href={link.href}
+                                        className={`relative text-sm font-semibold transition-colors duration-200 py-2 flex items-center gap-1.5 ${isActive(link.href)
+                                            ? 'text-brand-amber'
+                                            : scrolled ? 'text-slate-700 hover:text-brand-rust' : 'text-slate-200 hover:text-white'
+                                            }`}
+                                    >
+                                        <span>{link.label}</span>
+                                        {link.children && (
+                                            <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-180 ${scrolled ? 'text-slate-500 group-hover:text-brand-rust' : 'text-slate-400 group-hover:text-brand-amber'}`} />
+                                        )}
+                                        {/* Animated Bottom Line */}
+                                        <span
+                                            className={`absolute left-0 -bottom-1 h-0.5 bg-brand-amber transition-all duration-300 ${isActive(link.href) ? 'w-full' : 'w-0 group-hover:w-full'
+                                                }`}
+                                        />
+                                    </Link>
 
-                                    {/* Dropdown */}
-                                    {link.children && openDropdown === link.label && (
-                                        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-64 glass-dark rounded-2xl p-2 shadow-glass border border-white/10 animate-fade-in">
-                                            {link.children.map((child) => (
-                                                <Link
-                                                    key={child.label}
-                                                    href={child.href}
-                                                    className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm text-white/70 hover:text-white hover:bg-white/5 transition-all duration-150"
-                                                >
-                                                    <span className="w-1.5 h-1.5 rounded-full bg-gold-500/60 flex-shrink-0" />
-                                                    {child.label}
-                                                </Link>
-                                            ))}
+                                    {/* Submenu Mega Menu (Appears on Hover) */}
+                                    {link.children && (
+                                        <div className="absolute top-full left-1/2 -translate-x-1/2 w-[840px] max-w-[90vw] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-3 group-hover:translate-y-0 z-50 pointer-events-none group-hover:pointer-events-auto">
+                                            {/* Invisible bridge so mouse moves cleanly from link to dropdown */}
+                                            <div className="h-5 w-full absolute -top-5" />
+
+                                            {/* Dropdown Modal Box */}
+                                            <div className="bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden flex text-left">
+                                                {/* Left: Image Area (40%) */}
+                                                <div className="w-2/5 relative bg-slate-900 hidden sm:block">
+                                                    <img
+                                                        src="/images/hero/pexels-akoonie-10875242.jpg"
+                                                        alt="Chapter Four Advocacy and Constitutional Rights"
+                                                        className="absolute inset-0 w-full h-full object-cover opacity-80"
+                                                    />
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0503] via-[#0a0503]/60 to-transparent" />
+                                                    <div className="absolute bottom-0 left-0 p-6 z-10">
+                                                        <span className="text-[10px] font-bold uppercase tracking-wider text-brand-amber bg-brand-rust/50 px-2 py-0.5 rounded backdrop-blur-xs inline-block mb-2">
+                                                            Chapter IV Mandate
+                                                        </span>
+                                                        <h4 className="text-white text-base font-bold leading-snug">
+                                                            Defending Constitutional Freedoms
+                                                        </h4>
+                                                        <p className="text-slate-300 text-xs mt-1 leading-relaxed">
+                                                            Promoting human rights, rule of law, and grassroots justice across Malawi.
+                                                        </p>
+                                                        <Link
+                                                            href="/what-we-do"
+                                                            className="inline-flex items-center gap-1.5 text-brand-amber text-xs font-bold mt-3 hover:underline"
+                                                        >
+                                                            <span>Explore All Pillars</span>
+                                                            <ArrowRight className="w-3.5 h-3.5" />
+                                                        </Link>
+                                                    </div>
+                                                </div>
+
+                                                {/* Right: Bullets / Submenu Items (60%) */}
+                                                <div className="w-full sm:w-3/5 p-6 bg-white">
+                                                    <div className="flex items-center justify-between border-b border-slate-100 pb-2.5 mb-3">
+                                                        <h3 className="text-xs font-bold tracking-wider text-brand-rust uppercase">
+                                                            Core Thematic Pillars
+                                                        </h3>
+                                                        <Link href="/what-we-do" className="text-[11px] text-slate-400 hover:text-brand-rust transition font-medium">
+                                                            View all &rarr;
+                                                        </Link>
+                                                    </div>
+                                                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                                        {link.children.map((child) => {
+                                                            const IconComp = child.icon || Shield;
+                                                            return (
+                                                                <li key={child.label}>
+                                                                    <Link
+                                                                        href={child.href}
+                                                                        className="flex items-start p-2 rounded-lg group/item hover:bg-slate-50 transition"
+                                                                    >
+                                                                        <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-brand-rust-light text-brand-rust flex items-center justify-center group-hover/item:bg-brand-rust group-hover/item:text-white transition-colors mt-0.5">
+                                                                            <IconComp className="w-4 h-4" />
+                                                                        </div>
+                                                                        <div className="ml-2.5">
+                                                                            <p className="text-slate-900 font-semibold text-xs group-hover/item:text-brand-rust transition-colors leading-snug">
+                                                                                {child.label}
+                                                                            </p>
+                                                                            {child.desc && (
+                                                                                <p className="text-slate-500 text-[10px] mt-0.5 line-clamp-1">
+                                                                                    {child.desc}
+                                                                                </p>
+                                                                            )}
+                                                                        </div>
+                                                                    </Link>
+                                                                </li>
+                                                            );
+                                                        })}
+                                                    </ul>
+                                                </div>
+                                            </div>
                                         </div>
                                     )}
                                 </div>
                             ))}
-                        </div>
+                        </nav>
 
-                        {/* CTA + Mobile toggle */}
-                        <div className="flex items-center gap-3">
-                            <Link href="/get-involved" className="hidden lg:inline-flex btn-primary text-sm px-6 py-3">
-                                Get Involved
-                                <ArrowRight className="w-4 h-4" />
+                        {/* Action Button & Mobile Toggle */}
+                        <div className="flex items-center space-x-3">
+                            <Link
+                                href="/contact"
+                                className="hidden sm:inline-flex bg-brand-rust hover:bg-brand-rust-dark text-white px-5 py-2.5 rounded-lg text-xs sm:text-sm font-semibold tracking-wide transition shadow-lg shadow-brand-rust/25 items-center gap-1.5"
+                            >
+                                <span>Contact Us</span>
+                                <ArrowRight className="w-3.5 h-3.5" />
                             </Link>
+
                             <button
                                 id="mobile-menu-toggle"
-                                className="lg:hidden p-2.5 rounded-xl glass text-white hover:text-gold-400 transition-colors"
+                                className={`lg:hidden p-2 rounded-lg border transition ${scrolled
+                                    ? 'border-slate-200 text-slate-700 hover:bg-slate-100'
+                                    : 'border-white/20 text-slate-200 hover:text-white hover:bg-white/10'
+                                    }`}
                                 onClick={() => setMobileOpen(!mobileOpen)}
                                 aria-label="Toggle mobile menu"
                                 aria-expanded={mobileOpen}
@@ -197,186 +277,174 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                     </div>
                 </div>
 
-                {/* ─── MOBILE MENU ─────────────────────────────────────── */}
-                <div
-                    className={`lg:hidden transition-all duration-500 ease-expo-out overflow-hidden ${
-                        mobileOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
-                    }`}
-                >
-                    <div className="glass-dark border-t border-white/8 px-4 py-6 space-y-1">
-                        {navLinks.map((link, i) => (
-                            <div key={link.label}>
-                                <Link
-                                    href={link.href}
-                                    className={`flex items-center justify-between w-full px-4 py-4 rounded-xl text-lg font-medium transition-all duration-200
-                                        ${isActive(link.href) ? 'text-gold-400 bg-gold-500/10' : 'text-white/80 hover:text-white hover:bg-white/5'}`}
-                                    style={{ animationDelay: `${i * 0.05}s` }}
-                                >
-                                    {link.label}
-                                    {link.children && <ChevronDown className="w-4 h-4 text-white/40" />}
-                                </Link>
-                            </div>
-                        ))}
-                        <div className="pt-4 border-t border-white/10">
-                            <Link href="/get-involved" className="btn-primary w-full justify-center">
-                                Get Involved <ArrowRight className="w-4 h-4" />
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
-            {/* ─── MAIN CONTENT ────────────────────────────────────────── */}
-            <main id="main-content">{children}</main>
-
-            {/* ─── FOOTER ──────────────────────────────────────────────── */}
-            <footer className="bg-navy-950 border-t border-white/8 pt-20 pb-8">
-                <div className="container-cf">
-                    {/* Newsletter bar */}
-                    <div id="newsletter" className="glass rounded-3xl p-8 lg:p-12 mb-16 relative overflow-hidden">
-                        <div className="absolute inset-0 dot-grid opacity-50" />
-                        <div className="relative flex flex-col lg:flex-row items-center gap-8">
-                            <div className="flex-1 text-center lg:text-left">
-                                <h3 className="font-display text-3xl text-white mb-2">Stay Informed</h3>
-                                <p className="text-white/60 text-sm">Human rights updates, reports and advocacy news from Chapter Four.</p>
-                            </div>
-                            <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto min-w-0 lg:min-w-[480px]">
-                                {subscribed ? (
-                                    <div className="flex-1 flex items-center gap-2 text-gold-400 justify-center">
-                                        <span className="text-lg">✓</span>
-                                        <span>Thank you for subscribing!</span>
+                {/* ─── MOBILE DRAWER MENU ─────────────────────────────────────── */}
+                {mobileOpen && (
+                    <div className="lg:hidden bg-[#0e0704] border-b border-white/10 px-4 pt-4 pb-6 space-y-3 animate-fade-in shadow-2xl text-left">
+                        {navLinks.map((link) => (
+                            <div key={link.label} className="border-b border-white/10 pb-2">
+                                {link.children ? (
+                                    <div>
+                                        <button
+                                            onClick={() => setOpenDropdown(openDropdown === link.label ? null : link.label)}
+                                            className="w-full flex items-center justify-between py-2 text-sm font-semibold text-slate-200 hover:text-white"
+                                        >
+                                            <span>{link.label}</span>
+                                            <ChevronDown className={`w-4 h-4 transition-transform ${openDropdown === link.label ? 'rotate-180 text-brand-amber' : ''}`} />
+                                        </button>
+                                        {openDropdown === link.label && (
+                                            <div className="pl-3 space-y-1.5 pt-1">
+                                                {link.children.map((child) => (
+                                                    <Link
+                                                        key={child.label}
+                                                        href={child.href}
+                                                        className="block py-1.5 text-xs text-slate-400 hover:text-brand-amber"
+                                                    >
+                                                        {child.label}
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 ) : (
-                                    <>
-                                        <input
-                                            type="email"
-                                            id="newsletter-email"
-                                            value={email}
-                                            onChange={(e) => setEmail(e.target.value)}
-                                            placeholder="Your email address"
-                                            required
-                                            className="flex-1 px-5 py-3.5 bg-white/10 border border-white/20 rounded-full text-white placeholder-white/40
-                                                       focus:outline-none focus:border-gold-400 focus:bg-white/15 transition-all duration-200 text-sm"
-                                        />
-                                        <button type="submit" id="newsletter-submit" className="btn-primary py-3.5 px-6 text-sm whitespace-nowrap">
-                                            Subscribe
-                                        </button>
-                                    </>
-                                )}
-                            </form>
-                        </div>
-                    </div>
-
-                    {/* Footer grid */}
-                    <div className="grid grid-cols-2 lg:grid-cols-6 gap-8 mb-16">
-                        {/* Brand column */}
-                        <div className="col-span-2">
-                            <Link href="/" className="flex items-center gap-3 mb-6">
-                                <div className="w-10 h-10 bg-gold-500/20 rounded-lg flex items-center justify-center">
-                                    <span className="font-display text-gold-400 text-xl">IV</span>
-                                </div>
-                                <div>
-                                    <div className="font-display text-white text-lg">Chapter Four</div>
-                                    <div className="text-gold-400/70 text-[10px] tracking-[0.2em] uppercase font-sans">Malawi</div>
-                                </div>
-                            </Link>
-                            <p className="text-white/50 text-sm leading-relaxed mb-6">
-                                A youth-led organization advancing human rights, constitutionalism, democracy and social justice in Malawi.
-                            </p>
-                            <p className="text-white/40 text-xs italic font-display mb-6">
-                                "Deriving our name from Chapter Four of the Constitution of the Republic of Malawi — the foundation of our fundamental rights."
-                            </p>
-                            {/* Socials */}
-                            <div className="flex items-center gap-3">
-                                {[
-                                    { Icon: Facebook, href: (usePage().props as any)?.site?.facebook_url || '#', label: 'Facebook' },
-                                    { Icon: Twitter, href: (usePage().props as any)?.site?.twitter_url || '#', label: 'Twitter' },
-                                    { Icon: Instagram, href: (usePage().props as any)?.site?.instagram_url || '#', label: 'Instagram' },
-                                    { Icon: Linkedin, href: (usePage().props as any)?.site?.linkedin_url || '#', label: 'LinkedIn' },
-                                ].map(({ Icon, href, label }) => (
-                                    <a
-                                        key={label}
-                                        href={href}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        aria-label={label}
-                                        className="w-9 h-9 rounded-lg glass flex items-center justify-center text-white/50 hover:text-gold-400 hover:border-gold-500/30 transition-all duration-200"
+                                    <Link
+                                        href={link.href}
+                                        className={`block py-2 text-sm font-semibold ${isActive(link.href) ? 'text-brand-amber' : 'text-slate-200 hover:text-white'
+                                            }`}
                                     >
-                                        <Icon className="w-4 h-4" />
-                                    </a>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Link columns */}
-                        {Object.entries(footerLinks).map(([section, links]) => (
-                            <div key={section}>
-                                <h4 className="font-sans font-semibold text-white text-sm uppercase tracking-[0.1em] mb-4">{section}</h4>
-                                <ul className="space-y-2.5">
-                                    {links.map((link) => (
-                                        <li key={link.label}>
-                                            <Link
-                                                href={link.href}
-                                                className="text-white/50 hover:text-gold-400 text-sm transition-colors duration-200"
-                                            >
-                                                {link.label}
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
+                                        {link.label}
+                                    </Link>
+                                )}
                             </div>
                         ))}
-                    </div>
-
-                    {/* Contact info */}
-                    <div className="flex flex-wrap gap-6 mb-10 pb-10 border-b border-white/8">
-                        {[
-                            {
-                                Icon: Mail,
-                                text: (usePage().props as any)?.site?.contact_email || 'info@chapterfour.mw',
-                                href: `mailto:${(usePage().props as any)?.site?.contact_email || 'info@chapterfour.mw'}`,
-                            },
-                            {
-                                Icon: Phone,
-                                text: (usePage().props as any)?.site?.contact_phone || '+265 (0) 1 770 000',
-                                href: `tel:${(usePage().props as any)?.site?.contact_phone || '+2651770000'}`,
-                            },
-                            {
-                                Icon: MapPin,
-                                text: (usePage().props as any)?.site?.office_address || 'City Centre, Lilongwe, Malawi',
-                                href: '/contact',
-                            },
-                        ].map(({ Icon, text, href }) => (
-                            <a
-                                key={text}
-                                href={href}
-                                className="flex items-center gap-2 text-white/60 hover:text-gold-400 text-sm transition-colors duration-200"
+                        <div className="pt-2">
+                            <Link
+                                href="/get-involved"
+                                className="w-full bg-brand-rust hover:bg-brand-rust-dark text-white text-center py-2.5 rounded-lg text-sm font-semibold block shadow-md"
                             >
-                                <Icon className="w-4 h-4 text-gold-500/80" />
-                                {text}
-                            </a>
-                        ))}
+                                Get Involved
+                            </Link>
+                        </div>
+                    </div>
+                )}
+            </header>
+
+            {/* ─── PAGE CONTENT (Hero starts right after contacts bar on homepage) ── */}
+            <main className={`flex-grow ${url === '/' ? '-mt-[100px] lg:-mt-[112px]' : ''}`}>
+                {children}
+            </main>
+
+            {/* ─── MAIN NGO FOOTER (Google Stitch replica) ───────────────────── */}
+            <footer className="bg-brand-dark text-slate-300 pt-16 pb-8 border-t border-brand-mahogany/40" data-purpose="site-footer">
+                <div className="max-w-7xl mx-auto px-4 sm:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-white/10">
+                    {/* Col 1: About Info & Address */}
+                    <div className="lg:col-span-4">
+                        <div className="mb-5">
+                            <ChapterFourLogo variant="white" imgClassName="h-10 w-auto" />
+                        </div>
+                        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6 max-w-sm">
+                            Chapter Four is a non-partisan, public interest legal and civic organization dedicated to defending constitutionalism, human rights, and the rule of law in Malawi.
+                        </p>
+                        <div className="space-y-2.5 text-xs sm:text-sm text-slate-300">
+                            <div className="flex items-start gap-2.5">
+                                <MapPin className="w-4 h-4 text-brand-amber mt-0.5 shrink-0" />
+                                <span>P.O. Box 30384, Capital City, Lilongwe, Malawi</span>
+                            </div>
+                            <div className="flex items-center gap-2.5">
+                                <Phone className="w-4 h-4 text-brand-amber shrink-0" />
+                                <a className="hover:text-white transition" href="tel:+265888596275">+265 888 596 275</a>
+                            </div>
+                            <div className="flex items-center gap-2.5">
+                                <Mail className="w-4 h-4 text-brand-amber shrink-0" />
+                                <a className="hover:text-white transition" href="mailto:info@chapterfourmw.org">info@chapterfourmw.org</a>
+                            </div>
+                        </div>
                     </div>
 
-                    {/* Bottom bar */}
-                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-white/30 text-xs">
-                        <span>© {new Date().getFullYear()} Chapter Four. All rights reserved.</span>
-                        <div className="flex items-center gap-6">
-                            {[
-                                { label: 'Privacy Policy', href: '/privacy' },
-                                { label: 'Terms of Use', href: '/terms' },
-                                { label: 'Safeguarding', href: '/safeguarding' },
-                                { label: 'Accessibility', href: '/accessibility' },
-                            ].map((link) => (
-                                <Link
-                                    key={link.label}
-                                    href={link.href}
-                                    className="hover:text-white/60 transition-colors duration-200"
-                                >
-                                    {link.label}
-                                </Link>
-                            ))}
-                        </div>
+                    {/* Col 2: Quick Links */}
+                    <div className="lg:col-span-2">
+                        <h3 className="text-white text-xs font-bold uppercase tracking-wider mb-4 border-b border-brand-amber/30 pb-1">
+                            Resources
+                        </h3>
+                        <ul className="space-y-2.5 text-xs sm:text-sm">
+                            <li><Link className="hover:text-brand-amber transition" href="/resources?type=reports">Field Reports</Link></li>
+                            <li><Link className="hover:text-brand-amber transition" href="/resources?type=statements">Legal Statements</Link></li>
+                            <li><Link className="hover:text-brand-amber transition" href="/resources?type=press-releases">Press Releases</Link></li>
+                            <li><Link className="hover:text-brand-amber transition" href="/resources?type=publications">Publications</Link></li>
+                            <li><Link className="hover:text-brand-amber transition" href="/resources?type=research">Legal Research</Link></li>
+                        </ul>
+                    </div>
+
+                    {/* Col 3: Explore */}
+                    <div className="lg:col-span-2">
+                        <h3 className="text-white text-xs font-bold uppercase tracking-wider mb-4 border-b border-brand-amber/30 pb-1">
+                            Explore
+                        </h3>
+                        <ul className="space-y-2.5 text-xs sm:text-sm">
+                            <li><Link className="hover:text-brand-amber transition" href="/about">About Us</Link></li>
+                            <li><Link className="hover:text-brand-amber transition" href="/about#team">Our Team</Link></li>
+                            <li><Link className="hover:text-brand-amber transition" href="/what-we-do">What We Do</Link></li>
+                            <li><Link className="hover:text-brand-amber transition" href="/projects">Field Projects</Link></li>
+                            <li><Link className="hover:text-brand-amber transition" href="/contact">Contact Us</Link></li>
+                        </ul>
+                    </div>
+
+                    {/* Col 4: Newsletter */}
+                    <div className="lg:col-span-4" id="newsletter">
+                        <h3 className="text-white text-xs font-bold uppercase tracking-wider mb-2 border-b border-brand-amber/30 pb-1">
+                            Newsletter
+                        </h3>
+                        <p className="text-xs sm:text-sm text-slate-300 mb-4">
+                            Subscribe to receive updates on legal advisories, reports, and constitutional monitoring.
+                        </p>
+                        {subscribed ? (
+                            <div className="bg-emerald-950/60 border border-emerald-500/40 rounded p-3 flex items-center gap-2 text-emerald-300 text-xs">
+                                <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+                                <span>Thank you for subscribing to Chapter Four updates!</span>
+                            </div>
+                        ) : (
+                            <form className="space-y-3" onSubmit={handleSubscribe} data-purpose="newsletter-form">
+                                <div className="flex items-center bg-[#1c120b] rounded border border-white/20 p-1 focus-within:border-brand-amber">
+                                    <input
+                                        className="bg-transparent border-none text-white placeholder-slate-400 text-xs sm:text-sm px-3 py-1.5 w-full focus:ring-0 focus:outline-none"
+                                        placeholder="Enter your email address"
+                                        required
+                                        type="email"
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
+                                    />
+                                    <button
+                                        className="bg-brand-rust hover:bg-brand-rust-dark text-white text-xs font-bold py-2 px-4 rounded transition shrink-0"
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                    >
+                                        {isSubmitting ? '...' : 'Subscribe'}
+                                    </button>
+                                </div>
+                                <div className="flex items-start gap-2">
+                                    <input
+                                        className="mt-0.5 rounded border-slate-600 bg-black/40 text-brand-amber focus:ring-0 w-3.5 h-3.5"
+                                        id="terms"
+                                        required
+                                        type="checkbox"
+                                    />
+                                    <label className="text-[11px] text-slate-400" htmlFor="terms">
+                                        I agree to the <Link href="/privacy" className="underline hover:text-white">privacy policy</Link> and to receive advocacy updates.
+                                    </label>
+                                </div>
+                            </form>
+                        )}
+                    </div>
+                </div>
+
+                {/* Bottom Copyright and Socials */}
+                <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
+                    <p>© {new Date().getFullYear()} Chapter Four Malawi. All Rights Reserved. Chapter IV of the Constitution of Malawi.</p>
+                    <div className="flex items-center space-x-4">
+                        <Link href="/privacy" className="hover:text-white transition">Privacy Policy</Link>
+                        <span>•</span>
+                        <Link href="/terms" className="hover:text-white transition">Terms of Use</Link>
+                        <span>•</span>
+                        <Link href="/safeguarding" className="hover:text-white transition">Safeguarding</Link>
                     </div>
                 </div>
             </footer>

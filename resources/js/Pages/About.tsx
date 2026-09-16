@@ -1,352 +1,315 @@
 import PublicLayout from '@/Layouts/PublicLayout';
 import { Head, Link } from '@inertiajs/react';
-import { motion } from 'framer-motion';
 import {
     Shield, Scale, Users, Heart, Award, ArrowRight,
-    BookOpen, CheckCircle2, Globe, Compass, Target, Sparkles
+    BookOpen, CheckCircle2, Globe, Compass, Target,
+    Share2, Mail, ExternalLink, MapPin
 } from 'lucide-react';
 
-const values = [
-    {
-        title: 'Constitutional Supremacy',
-        desc: 'Upholding Chapter IV of the Republic of Malawi Constitution as the cornerstone of our freedoms and governance.',
-        icon: Scale,
-        color: 'from-amber-500/20 to-amber-600/5',
-        border: 'border-amber-500/30',
-        textColor: 'text-amber-400',
-    },
-    {
-        title: 'Youth Agency',
-        desc: 'Placing young Malawians at the center of civic leadership, human rights defense, and national policy transformation.',
-        icon: Users,
-        color: 'from-red-500/20 to-red-600/5',
-        border: 'border-red-500/30',
-        textColor: 'text-red-400',
-    },
-    {
-        title: 'Integrity & Independence',
-        desc: 'Operating with unwavering ethical standards, transparency, and principled independence in all advocacy.',
-        icon: Shield,
-        color: 'from-emerald-500/20 to-emerald-600/5',
-        border: 'border-emerald-500/30',
-        textColor: 'text-emerald-400',
-    },
-    {
-        title: 'Intersectionality & Inclusion',
-        desc: 'Ensuring women, persons with disabilities, marginalized communities, and rural citizens are never left behind.',
-        icon: Heart,
-        color: 'from-purple-500/20 to-purple-600/5',
-        border: 'border-purple-500/30',
-        textColor: 'text-purple-400',
-    },
-];
-
-const defaultTeam = [
-    {
-        name: 'Executive Director',
-        role: 'Leadership & Strategy',
-        bio: 'Constitutional lawyer and human rights activist dedicated to public interest litigation and civic empowerment in Malawi.',
-        initials: 'ED',
-    },
-    {
-        name: 'Head of Programs & Advocacy',
-        role: 'Programmatic Oversight',
-        bio: 'Specialist in human rights-based approaches, civic education campaigns, and regional advocacy networks.',
-        initials: 'PA',
-    },
-    {
-        name: 'Lead Counsel - Legal Aid',
-        role: 'Access to Justice Unit',
-        bio: 'Pioneering community mobile legal clinics and pro-bono defense for vulnerable youth across Malawian districts.',
-        initials: 'LC',
-    },
-    {
-        name: 'Research & Policy Director',
-        role: 'Knowledge & Monitoring',
-        bio: 'Economist and policy analyst tracking legislative governance, public expenditure, and civic space freedoms.',
-        initials: 'RP',
-    },
-];
-
-const milestones = [
-    { year: 'Founding', title: 'Named After Chapter IV', text: 'Established with inspiration from Chapter IV (The Bill of Rights) of the 1994 Constitution of the Republic of Malawi.' },
-    { year: 'Expansion', title: 'Community Legal Clinics', text: 'Launched mobile legal awareness and legal clinics reaching thousands of youth and vulnerable community members.' },
-    { year: 'Impact', title: 'Policy Advocacy', text: 'Successfully contributed to policy submissions on electoral reform, youth access to justice, and digital freedom.' },
-    { year: 'Today', title: 'Pan-Malawian Movement', text: 'Mobilizing youth leaders across all regions of Malawi to champion democracy, rule of law, and active citizenship.' },
-];
-
 interface TeamMemberItem {
-    id: number;
+    id?: number;
     name: string;
     role: string;
-    department?: string;
-    category?: string;
-    biography?: string;
+    bio?: string;
     photo?: string;
+    email?: string;
+    linkedin?: string;
+}
+
+interface StatItem {
+    label: string;
+    value: string | number;
+    prefix?: string;
+    suffix?: string;
+    description?: string;
 }
 
 interface PartnerItem {
-    id: number;
     name: string;
-    category?: string;
-    description?: string;
-    website?: string;
     logo?: string;
+    website?: string;
+    description?: string;
 }
 
 interface AboutProps {
     teamMembers?: TeamMemberItem[];
-    stats?: any[];
+    stats?: StatItem[];
     partners?: PartnerItem[];
 }
 
-export default function About({ teamMembers, stats, partners }: AboutProps) {
-    const displayTeam = (teamMembers && teamMembers.length > 0)
-        ? teamMembers.map(m => ({
-            name: m.name,
-            role: m.role,
-            bio: m.biography || '',
-            initials: m.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase(),
-        }))
-        : defaultTeam;
+const coreValues = [
+    {
+        title: 'Constitutional Supremacy',
+        desc: 'Upholding Chapter IV of the Republic of Malawi Constitution as the cornerstone of our freedoms, rights, and administrative governance.',
+        icon: Scale,
+    },
+    {
+        title: 'Integrity & Independence',
+        desc: 'Operating with unwavering ethical rigor, transparency, and non-partisan independence in all research, reports, and litigation.',
+        icon: Shield,
+    },
+    {
+        title: 'Grassroots Empowerment',
+        desc: 'Placing vulnerable citizens, youth, women, and rural communities at the center of legal literacy and civic action.',
+        icon: Users,
+    },
+    {
+        title: 'Equality & Non-Discrimination',
+        desc: 'Ensuring that rights and institutional protections apply equally without prejudice across all sectors of society.',
+        icon: Heart,
+    },
+];
+
+const defaultTeam: TeamMemberItem[] = [
+    {
+        name: 'Tuntufye Simwimba',
+        role: 'Programs Coordinator',
+        bio: 'Constitutional legal advocate leading strategic human rights programs, grassroots paralegal deployments, and public interest litigation.',
+    },
+    {
+        name: 'Monica Ndalama',
+        role: 'Project Officer (Human Rights)',
+        bio: 'Specialist in human rights monitoring, community civic literacy, and defending civic space freedoms in regional jurisdictions.',
+    },
+    {
+        name: 'Frackson Makangwala',
+        role: 'Monitoring & Evidence Lead',
+        bio: 'Statistician and empirical researcher analyzing justice indicators, detention metrics, and institutional accountability data.',
+    },
+    {
+        name: 'Stella Chikombole',
+        role: 'Legal Aid & Community Outreach',
+        bio: 'Community legal counsel coordinating grassroots mobile clinics, pro-bono defense, and rights education for vulnerable youth.',
+    },
+];
+
+export default function About({
+    teamMembers = [],
+    stats = [],
+    partners = [],
+}: AboutProps) {
+    const displayTeam = teamMembers.length > 0 ? teamMembers : defaultTeam;
+
     return (
         <PublicLayout>
-            <Head title="About Us - Chapter Four" />
+            <Head>
+                <title>About Us — Chapter Four Malawi</title>
+                <meta
+                    name="description"
+                    content="Learn about Chapter Four Malawi: our mission, values, leadership team, and our commitment to constitutional rights."
+                />
+            </Head>
 
-            {/* Hero Section */}
-            <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(245,158,11,0.15),transparent)]" />
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="text-center max-w-3xl mx-auto"
-                    >
-                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-6">
-                            <Compass className="w-3.5 h-3.5" /> Our Identity & Purpose
-                        </span>
-                        <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal text-white tracking-tight leading-tight">
-                            The Guardians of <span className="italic text-gradient-gold">Chapter IV</span>
-                        </h1>
-                        <p className="mt-6 text-lg sm:text-xl text-navy-200 leading-relaxed font-light">
-                            Chapter Four is a vibrant, youth-led Malawian civil society organization dedicated to defending
-                            constitutionalism, amplifying democratic participation, and ensuring social justice for every citizen.
-                        </p>
-                    </motion.div>
+            {/* ═══════════════════════════════════════════════════════════════════ */}
+            {/* HERO BANNER (Stitch Replica)                                        */}
+            {/* ═══════════════════════════════════════════════════════════════════ */}
+            <section className="hero-pattern text-white py-16 px-4 sm:px-8 border-b border-white/10" data-purpose="hero-banner">
+                <div className="max-w-7xl mx-auto">
+                    {/* Breadcrumb Navigation */}
+                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-300 mb-4 font-semibold uppercase tracking-wider">
+                        <Link href="/" className="hover:text-brand-amber transition">Home</Link>
+                        <span className="text-slate-500">›</span>
+                        <span className="text-brand-amber">About Us</span>
+                    </nav>
+
+                    <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-4">
+                        Defending Constitutional Freedoms & Rule of Law
+                    </h1>
+                    <p className="text-base sm:text-lg text-slate-200 max-w-3xl font-normal leading-relaxed">
+                        Real people. Real stories. Real impact. Chapter Four is a non-partisan, citizen-led legal and civic organization dedicated to advancing human rights under Chapter IV of the Constitution of Malawi.
+                    </p>
                 </div>
             </section>
 
-            {/* The Story & Bill of Rights Origin */}
-            <section className="py-20 bg-navy-950 border-t border-navy-800/60">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                        <motion.div
-                            initial={{ opacity: 0, x: -20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            className="lg:col-span-6 space-y-6"
-                        >
-                            <span className="text-amber-400 font-semibold tracking-wider text-xs uppercase">Why Chapter Four?</span>
-                            <h2 className="font-serif text-3xl sm:text-4xl text-white font-normal leading-snug">
-                                Rooted in Malawi’s Bill of Rights
-                            </h2>
-                            <p className="text-navy-200 leading-relaxed font-light">
-                                In the 1994 Constitution of the Republic of Malawi, <strong className="text-white font-medium">Chapter IV</strong> enshrines the fundamental Human Rights of all people: the right to life, human dignity, equality, freedom of expression, access to justice, and lawful administrative action.
-                            </p>
-                            <p className="text-navy-200 leading-relaxed font-light">
-                                Our organization takes its name and mandate directly from this sacred constitutional charter. We believe constitutional rights are not abstract declarations—they are living guarantees that must protect every market vendor, youth organizer, student, and rural family.
-                            </p>
-                            <div className="pt-2">
-                                <Link
-                                    href="/what-we-do"
-                                    className="inline-flex items-center gap-2 text-amber-400 hover:text-amber-300 font-medium text-sm transition-colors group"
-                                >
-                                    Explore our thematic work areas
-                                    <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                                </Link>
-                            </div>
-                        </motion.div>
-
-                        <motion.div
-                            initial={{ opacity: 0, x: 20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            viewport={{ once: true }}
-                            className="lg:col-span-6"
-                        >
-                            <div className="p-8 rounded-2xl bg-gradient-to-br from-navy-900 to-navy-950 border border-navy-800 shadow-2xl relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
-                                <div className="flex items-center gap-3 text-amber-400 mb-6">
-                                    <BookOpen className="w-6 h-6" />
-                                    <span className="font-serif text-xl text-white">Constitution of Malawi</span>
-                                </div>
-                                <blockquote className="italic font-serif text-lg text-navy-100 border-l-2 border-amber-500/50 pl-4 my-4">
-                                    "The fundamental human rights and freedoms enshrined in this Chapter shall be respected and upheld by the executive, legislature and judiciary and all organs of the Government and its agencies and, where applicable to them, by all natural and legal persons in Malawi."
-                                </blockquote>
-                                <div className="mt-4 text-xs uppercase tracking-widest text-navy-400">
-                                    — Section 15(1), Chapter IV, Constitution of Malawi
-                                </div>
-                            </div>
-                        </motion.div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Vision & Mission */}
-            <section className="py-20 bg-navy-900/60 border-t border-navy-800/60">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* ═══════════════════════════════════════════════════════════════════ */}
+            {/* MISSION & VISION                                                   */}
+            {/* ═══════════════════════════════════════════════════════════════════ */}
+            <section className="py-16 bg-white" aria-label="Mission and Vision">
+                <div className="max-w-7xl mx-auto px-4 sm:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="p-8 sm:p-10 rounded-2xl bg-navy-950/80 border border-navy-800 hover:border-amber-500/30 transition-all">
-                            <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-6">
-                                <Sparkles className="w-6 h-6" />
-                            </div>
-                            <h3 className="font-serif text-2xl text-white font-normal mb-4">Our Vision</h3>
-                            <p className="text-navy-200 leading-relaxed font-light">
-                                A democratic, just, and prosperous Malawi where constitutionalism is upheld, human rights are respected, young people actively lead governance, and the rule of law guarantees dignity and equality for all.
-                            </p>
-                        </div>
-
-                        <div className="p-8 sm:p-10 rounded-2xl bg-navy-950/80 border border-red-500/20 hover:border-red-500/40 transition-all">
-                            <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 mb-6">
+                        {/* Mission */}
+                        <div className="bg-[#FAF8F5] rounded-xl p-8 border border-slate-200/80 shadow-xs relative overflow-hidden">
+                            <div className="w-12 h-12 rounded-lg bg-brand-rust-light border border-brand-rust/20 flex items-center justify-center text-brand-rust mb-6">
                                 <Target className="w-6 h-6" />
                             </div>
-                            <h3 className="font-serif text-2xl text-white font-normal mb-4">Our Mission</h3>
-                            <p className="text-navy-200 leading-relaxed font-light">
-                                To champion constitutionalism, defend human rights, foster social cohesion, and expand access to justice through youth empowerment, strategic advocacy, civic education, and rigorous public monitoring.
+                            <span className="text-xs font-bold uppercase tracking-wider text-brand-rust block mb-2">Our Mission</span>
+                            <h2 className="text-2xl font-bold text-slate-900 mb-4">
+                                Protecting Rights Through Law & Empowerment
+                            </h2>
+                            <p className="text-sm text-slate-600 leading-relaxed">
+                                To champion constitutionalism, protect and advance human rights, and promote access to justice for all Malawians through strategic litigation, independent research, legal aid, and grassroots civic empowerment.
+                            </p>
+                        </div>
+
+                        {/* Vision */}
+                        <div className="bg-[#FAF8F5] rounded-xl p-8 border border-slate-200/80 shadow-xs relative overflow-hidden">
+                            <div className="w-12 h-12 rounded-lg bg-brand-amber-light border border-brand-amber/30 flex items-center justify-center text-brand-amber mb-6">
+                                <Compass className="w-6 h-6" />
+                            </div>
+                            <span className="text-xs font-bold uppercase tracking-wider text-brand-amber block mb-2">Our Vision</span>
+                            <h2 className="text-2xl font-bold text-slate-900 mb-4">
+                                A Just, Accountable & Democratic Malawi
+                            </h2>
+                            <p className="text-sm text-slate-600 leading-relaxed">
+                                A democratic Malawi where constitutional supremacy reigns, public institutions are accountable to the people, and fundamental human rights and freedoms are enjoyed by all without fear or discrimination.
                             </p>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Core Values */}
-            <section className="py-20 bg-navy-950 border-t border-navy-800/60">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center max-w-2xl mx-auto mb-16">
-                        <span className="text-amber-400 font-semibold tracking-wider text-xs uppercase">What Guides Us</span>
-                        <h2 className="font-serif text-3xl sm:text-4xl text-white font-normal mt-2">
-                            Our Core Principles
-                        </h2>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {values.map((v, i) => (
-                            <div
-                                key={i}
-                                className={`p-6 rounded-xl bg-navy-900/50 border ${v.border} relative overflow-hidden group hover:bg-navy-900/80 transition-all`}
-                            >
-                                <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-4 ${v.textColor} bg-white/5`}>
-                                    <v.icon className="w-5 h-5" />
-                                </div>
-                                <h4 className="text-white font-medium text-base mb-2">{v.title}</h4>
-                                <p className="text-navy-300 text-sm font-light leading-relaxed">{v.desc}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Milestones / Journey */}
-            <section className="py-20 bg-navy-900/40 border-t border-navy-800/60">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center max-w-2xl mx-auto mb-16">
-                        <span className="text-amber-400 font-semibold tracking-wider text-xs uppercase">Our Path</span>
-                        <h2 className="font-serif text-3xl sm:text-4xl text-white font-normal mt-2">
-                            The Chapter Four Journey
-                        </h2>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        {milestones.map((m, idx) => (
-                            <div key={idx} className="relative p-6 rounded-xl bg-navy-950 border border-navy-800">
-                                <div className="text-amber-400 font-serif text-2xl mb-2">{m.year}</div>
-                                <h4 className="text-white font-medium text-base mb-2">{m.title}</h4>
-                                <p className="text-navy-300 text-xs font-light leading-relaxed">{m.text}</p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Team */}
-            <section className="py-20 bg-navy-950 border-t border-navy-800/60">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center max-w-2xl mx-auto mb-16">
-                        <span className="text-amber-400 font-semibold tracking-wider text-xs uppercase">People & Leadership</span>
-                        <h2 className="font-serif text-3xl sm:text-4xl text-white font-normal mt-2">
-                            Led by Passionate Malawian Youth
-                        </h2>
-                        <p className="mt-3 text-sm text-navy-300 font-light">
-                            Combining legal acumen, grassroots organizing, research rigour, and unyielding dedication.
+            {/* ═══════════════════════════════════════════════════════════════════ */}
+            {/* CORE VALUES                                                        */}
+            {/* ═══════════════════════════════════════════════════════════════════ */}
+            <section className="py-16 bg-[#FAF8F5] border-y border-slate-200/70" aria-label="Core Values">
+                <div className="max-w-7xl mx-auto px-4 sm:px-8">
+                    <div className="text-center max-w-2xl mx-auto mb-12">
+                        <span className="text-xs font-bold uppercase tracking-wider text-brand-rust block mb-2">Guiding Principles</span>
+                        <h2 className="text-3xl font-black text-slate-900 tracking-tight">Our Core Values</h2>
+                        <p className="text-sm text-slate-600 mt-2">
+                            The ethical foundations that guide our public interest litigation, research, and civic engagement.
                         </p>
                     </div>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {displayTeam.map((member, i) => (
-                            <div key={i} className="p-6 rounded-2xl bg-navy-900/60 border border-navy-800 text-center flex flex-col items-center">
-                                <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-amber-500/20 to-red-500/20 border border-amber-500/30 flex items-center justify-center text-xl font-serif text-amber-400 mb-4">
-                                    {member.initials}
-                                </div>
-                                <h4 className="text-white font-medium text-base">{member.name}</h4>
-                                <span className="text-xs text-amber-400 font-medium mb-3">{member.role}</span>
-                                <p className="text-xs text-navy-300 font-light leading-relaxed">{member.bio}</p>
-                            </div>
-                        ))}
-                    </div>
-
-                    {/* Strategic Coalitions & Partners */}
-                    {partners && partners.length > 0 && (
-                        <div className="mt-20 pt-16 border-t border-navy-800/60">
-                            <div className="text-center max-w-2xl mx-auto mb-10">
-                                <span className="text-amber-400 font-semibold tracking-wider text-xs uppercase">Allies in Human Rights</span>
-                                <h3 className="font-serif text-2xl sm:text-3xl text-white font-normal mt-2">
-                                    Coalition & Institutional Partners
-                                </h3>
-                            </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {partners.map((partner) => (
-                                    <div key={partner.id} className="p-6 rounded-xl bg-navy-900/40 border border-navy-800/80 hover:border-amber-500/30 transition-all">
-                                        <h4 className="text-white font-semibold text-base mb-2">{partner.name}</h4>
-                                        <p className="text-navy-300 text-xs leading-relaxed font-light mb-3">{partner.description}</p>
-                                        {partner.website && (
-                                            <a
-                                                href={partner.website}
-                                                target="_blank"
-                                                rel="noreferrer"
-                                                className="text-amber-400 hover:text-amber-300 text-xs inline-flex items-center gap-1 font-medium"
-                                            >
-                                                Visit Partner Site <ArrowRight className="w-3 h-3" />
-                                            </a>
-                                        )}
+                        {coreValues.map((val) => {
+                            const IconComp = val.icon;
+                            return (
+                                <div key={val.title} className="bg-white rounded-lg p-6 border border-slate-200 shadow-xs flex flex-col justify-between">
+                                    <div>
+                                        <div className="w-10 h-10 rounded-lg bg-brand-rust-light text-brand-rust flex items-center justify-center mb-4">
+                                            <IconComp className="w-5 h-5" />
+                                        </div>
+                                        <h3 className="font-bold text-slate-900 text-base mb-2">{val.title}</h3>
+                                        <p className="text-xs text-slate-600 leading-relaxed">{val.desc}</p>
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-                    )}
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
             </section>
 
-            {/* Bottom CTA */}
-            <section className="py-20 bg-gradient-to-r from-amber-600/20 via-navy-900 to-red-600/20 border-t border-navy-800">
-                <div className="max-w-4xl mx-auto px-4 text-center">
-                    <h2 className="font-serif text-3xl sm:text-4xl text-white font-normal">
-                        Ready to Stand with Malawi’s Youth?
+            {/* ═══════════════════════════════════════════════════════════════════ */}
+            {/* THE TEAM SECTION (Google Stitch Replica — chisankho_watch_the_team) */}
+            {/* ═══════════════════════════════════════════════════════════════════ */}
+            <section id="team" className="py-20 bg-white" data-purpose="team-members-grid">
+                <div className="max-w-7xl mx-auto px-4 sm:px-8">
+                    <div className="text-center max-w-2xl mx-auto mb-14">
+                        <span className="text-xs font-bold uppercase tracking-wider text-brand-rust block mb-2">Leadership & Experts</span>
+                        <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+                            The Team Behind Chapter Four
+                        </h2>
+                        <p className="text-sm text-slate-600 mt-2">
+                            Dedicated human rights practitioners, constitutional lawyers, and researchers fighting for civic justice.
+                        </p>
+                    </div>
+
+                    {/* 4-Column Grid mirroring Stitch The Team template */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-8 gap-y-12">
+                        {displayTeam.map((member, idx) => (
+                            <article key={member.name + idx} className="flex flex-col items-center text-center group">
+                                <div className="relative w-full aspect-[4/5] bg-gradient-to-br from-brand-dark via-[#382015] to-brand-rust rounded-lg overflow-hidden mb-4 shadow-sm border border-slate-200 flex items-center justify-center">
+                                    {member.photo ? (
+                                        <img
+                                            src={member.photo}
+                                            alt={member.name}
+                                            className="w-full h-full object-cover object-top transition-transform duration-300 group-hover:scale-105"
+                                        />
+                                    ) : (
+                                        <div className="flex flex-col items-center justify-center p-6 text-white text-center">
+                                            <div className="w-16 h-16 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-brand-amber font-black text-xl mb-3">
+                                                {member.name.split(' ').map((n) => n[0]).join('').slice(0, 2)}
+                                            </div>
+                                            <span className="text-xs font-bold tracking-wider text-brand-amber uppercase">Advocate</span>
+                                        </div>
+                                    )}
+
+                                    {/* Action Button */}
+                                    <button
+                                        type="button"
+                                        aria-label="Share profile"
+                                        className="absolute top-3 right-3 w-8 h-8 rounded bg-white/90 hover:bg-white text-slate-700 hover:text-slate-900 shadow-sm flex items-center justify-center transition"
+                                        onClick={() => {
+                                            if (navigator.clipboard) {
+                                                navigator.clipboard.writeText(window.location.href);
+                                                alert('Profile link copied to clipboard!');
+                                            }
+                                        }}
+                                    >
+                                        <Share2 className="w-3.5 h-3.5" />
+                                    </button>
+                                </div>
+
+                                <h3 className="text-lg font-bold text-slate-900 leading-snug group-hover:text-brand-rust transition">
+                                    {member.name}
+                                </h3>
+                                <p className="text-xs font-semibold text-brand-rust mt-1 uppercase tracking-wide">
+                                    {member.role}
+                                </p>
+                                {member.bio && (
+                                    <p className="text-xs text-slate-500 mt-2 leading-relaxed line-clamp-3">
+                                        {member.bio}
+                                    </p>
+                                )}
+                            </article>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════════════════════ */}
+            {/* HUMAN RIGHTS-BASED APPROACH (HRBA) FRAMEWORK                       */}
+            {/* ═══════════════════════════════════════════════════════════════════ */}
+            <section className="py-20 bg-brand-dark text-white relative overflow-hidden" aria-label="Our Approach">
+                <div className="max-w-7xl mx-auto px-4 sm:px-8">
+                    <div className="max-w-3xl mb-12">
+                        <span className="text-xs font-bold uppercase tracking-wider text-brand-amber block mb-2">Our Methodology</span>
+                        <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+                            The Human Rights-Based Approach (HRBA)
+                        </h2>
+                        <p className="text-sm sm:text-base text-slate-300 mt-3 leading-relaxed">
+                            Our interventions systematically identify duty-bearers and their legal obligations, and rights-holders and their entitlements, ensuring transparent accountability at every stage.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {[
+                            { title: 'Empowering Rights Holders', desc: 'Equipping citizens and local communities with the legal knowledge and confidence to claim their entitlements.' },
+                            { title: 'Holding Duty Bearers Accountable', desc: 'Ensuring police, ministries, courts, and public officials fulfill their constitutional duties.' },
+                            { title: 'Meaningful Participation', desc: 'Promoting direct civic inclusion in national policy-making and legislative reform.' },
+                            { title: 'Empirical Evidence', desc: 'Grounding all advocacy in verifiable data, court monitoring, and documented field incidents.' },
+                            { title: 'Strategic Litigation', desc: 'Taking key human rights and constitutional questions before superior courts to set enduring precedents.' },
+                            { title: 'Accessible Legal Redress', desc: 'Removing barriers of cost, geography, and language to ensure equal access to court justice.' },
+                        ].map((point, idx) => (
+                            <div key={point.title} className="bg-white/5 border border-white/10 rounded-xl p-6 hover:bg-white/10 transition">
+                                <span className="text-xs font-bold text-brand-amber">0{idx + 1}.</span>
+                                <h3 className="text-base font-bold text-white mt-1 mb-2">{point.title}</h3>
+                                <p className="text-xs text-slate-300 leading-relaxed">{point.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ═══════════════════════════════════════════════════════════════════ */}
+            {/* CALL TO ACTION                                                     */}
+            {/* ═══════════════════════════════════════════════════════════════════ */}
+            <section className="py-16 bg-[#FAF8F5]" aria-label="Join Us">
+                <div className="max-w-4xl mx-auto px-4 sm:px-8 text-center">
+                    <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight mb-4">
+                        Collaborate With Chapter Four
                     </h2>
-                    <p className="mt-4 text-navy-200 text-base font-light max-w-2xl mx-auto">
-                        Whether you want to partner on public interest advocacy, volunteer as a paralegal, or support our community outreach clinics, there is a place for you.
+                    <p className="text-sm text-slate-600 mb-8 max-w-xl mx-auto">
+                        Whether you are a human rights organization, legal practitioner, academic researcher, or concerned citizen, there are multiple ways to partner with us.
                     </p>
-                    <div className="mt-8 flex flex-wrap justify-center gap-4">
-                        <Link
-                            href="/get-involved"
-                            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-navy-950 font-semibold text-sm transition-all shadow-lg shadow-amber-500/20"
-                        >
-                            Get Involved <ArrowRight className="w-4 h-4" />
+                    <div className="flex flex-wrap justify-center gap-4">
+                        <Link href="/contact" className="btn-primary">
+                            <span>Get in Touch</span>
+                            <ArrowRight className="w-4 h-4" />
                         </Link>
-                        <Link
-                            href="/contact"
-                            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-navy-900/80 hover:bg-navy-800 text-white font-medium text-sm border border-navy-700 transition-all"
-                        >
-                            Contact Our Team
+                        <Link href="/what-we-do" className="btn-secondary">
+                            <span>Explore What We Do</span>
                         </Link>
                     </div>
                 </div>

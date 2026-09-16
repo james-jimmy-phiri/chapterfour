@@ -111,13 +111,13 @@ export default function TeamIndex({ teamMembers = [] }: TeamProps) {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Search team members..."
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-slate-500 text-xs focus:ring-2 focus:ring-amber-500/50"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:ring-2 focus:ring-brand-rust/50 focus:outline-none shadow-sm"
                     />
                 </div>
 
                 <button
                     onClick={openCreate}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-navy-950 transition-all shadow-md"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-brand-rust hover:bg-brand-crimson text-white transition-all shadow-md shadow-brand-rust/20"
                 >
                     <Plus className="w-4 h-4" /> Add Team Member
                 </button>
@@ -128,48 +128,50 @@ export default function TeamIndex({ teamMembers = [] }: TeamProps) {
                 {filtered.map((member) => (
                     <div
                         key={member.id}
-                        className="p-6 rounded-2xl bg-[#0a0e1a]/90 border border-white/[0.06] hover:border-amber-500/30 transition-all flex flex-col justify-between group"
+                        className="p-6 rounded-2xl bg-white dark:bg-[#0a0e1a] border border-slate-200 dark:border-white/10 hover:border-brand-rust/40 dark:hover:border-brand-rust/40 transition-all flex flex-col justify-between group shadow-sm"
                     >
                         <div>
                             <div className="flex items-start justify-between gap-3 mb-4">
-                                <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-amber-500/20 to-red-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400 font-serif font-bold text-lg">
+                                <div className="w-12 h-12 rounded-full bg-brand-rust/10 border border-brand-rust/20 flex items-center justify-center text-brand-rust dark:text-brand-amber font-serif font-bold text-lg">
                                     {member.name.split(' ').map((n) => n[0]).join('').slice(0, 2)}
                                 </div>
                                 <span className={`text-[10px] uppercase font-bold px-2.5 py-0.5 rounded-full ${
-                                    member.category === 'board' ? 'bg-purple-500/20 text-purple-300' : 'bg-blue-500/20 text-blue-300'
+                                    member.category === 'board' 
+                                        ? 'bg-purple-50 text-purple-700 dark:bg-purple-500/20 dark:text-purple-300 border border-purple-200 dark:border-purple-500/20' 
+                                        : 'bg-blue-50 text-blue-700 dark:bg-blue-500/20 dark:text-blue-300 border border-blue-200 dark:border-blue-500/20'
                                 }`}>
                                     {member.category}
                                 </span>
                             </div>
 
-                            <h3 className="font-serif text-lg text-white font-normal group-hover:text-amber-300 transition-colors">
+                            <h3 className="font-serif text-lg text-slate-900 dark:text-white font-bold group-hover:text-brand-rust dark:group-hover:text-brand-amber transition-colors">
                                 {member.name}
                             </h3>
-                            <div className="text-xs text-amber-400 font-medium mt-0.5">{member.role}</div>
+                            <div className="text-xs text-brand-rust dark:text-brand-amber font-semibold mt-0.5">{member.role}</div>
                             {member.department && (
-                                <div className="text-[11px] text-slate-500">{member.department}</div>
+                                <div className="text-[11px] text-slate-500 dark:text-slate-400">{member.department}</div>
                             )}
 
-                            <p className="mt-3 text-xs text-slate-400 font-light leading-relaxed line-clamp-3">
+                            <p className="mt-3 text-xs text-slate-600 dark:text-slate-400 font-light leading-relaxed line-clamp-3">
                                 {member.biography || 'No biography details recorded.'}
                             </p>
                         </div>
 
-                        <div className="mt-5 pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs">
-                            <span className="text-[11px] text-slate-500 font-mono">
+                        <div className="mt-5 pt-4 border-t border-slate-100 dark:border-white/[0.06] flex items-center justify-between text-xs">
+                            <span className="text-[11px] text-slate-400 font-mono">
                                 Order #{member.sort_order}
                             </span>
                             <div className="flex items-center gap-2">
                                 <button
                                     onClick={() => openEdit(member)}
-                                    className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors"
+                                    className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
                                     title="Edit profile"
                                 >
                                     <Edit3 className="w-3.5 h-3.5" />
                                 </button>
                                 <button
                                     onClick={() => handleDelete(member.id, member.name)}
-                                    className="p-1.5 rounded-lg bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-colors"
+                                    className="p-1.5 rounded-lg bg-slate-100 hover:bg-red-50 dark:bg-white/5 dark:hover:bg-red-500/20 text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
                                     title="Remove member"
                                 >
                                     <Trash2 className="w-3.5 h-3.5" />
@@ -180,17 +182,23 @@ export default function TeamIndex({ teamMembers = [] }: TeamProps) {
                 ))}
             </div>
 
+            {filtered.length === 0 && (
+                <div className="text-center py-16 text-slate-400 dark:text-slate-500 bg-white dark:bg-[#0a0e1a] rounded-2xl border border-slate-200 dark:border-white/10">
+                    No team members found. Click "+ Add Team Member" to add one.
+                </div>
+            )}
+
             {/* Modal for Create/Edit */}
             {modalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-                    <div className="w-full max-w-lg p-6 sm:p-8 rounded-3xl bg-[#0c111e] border border-white/10 shadow-2xl relative">
-                        <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
-                            <h2 className="font-serif text-xl text-white font-normal">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/80 backdrop-blur-sm">
+                    <div className="w-full max-w-lg p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#0c111e] border border-slate-200 dark:border-white/10 shadow-2xl relative">
+                        <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/10 mb-6">
+                            <h2 className="font-serif text-xl text-slate-900 dark:text-white font-bold">
                                 {editingItem ? 'Edit Team Member' : 'Add Team Member'}
                             </h2>
                             <button
                                 onClick={() => setModalOpen(false)}
-                                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5"
+                                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -198,7 +206,7 @@ export default function TeamIndex({ teamMembers = [] }: TeamProps) {
 
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
-                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                                     Full Name & Credentials
                                 </label>
                                 <input
@@ -206,13 +214,13 @@ export default function TeamIndex({ teamMembers = [] }: TeamProps) {
                                     value={data.name}
                                     onChange={(e) => setData('name', e.target.value)}
                                     required
-                                    className="w-full px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white text-xs focus:ring-2 focus:ring-amber-500/50"
+                                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-rust/50 focus:outline-none"
                                 />
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                                         Official Role
                                     </label>
                                     <input
@@ -220,60 +228,60 @@ export default function TeamIndex({ teamMembers = [] }: TeamProps) {
                                         value={data.role}
                                         onChange={(e) => setData('role', e.target.value)}
                                         required
-                                        className="w-full px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white text-xs"
+                                        className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-brand-rust"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                                         Category
                                     </label>
                                     <select
                                         value={data.category}
                                         onChange={(e) => setData('category', e.target.value)}
-                                        className="w-full px-4 py-2.5 rounded-xl bg-[#090d16] border border-white/10 text-white text-xs"
+                                        className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-[#090d16] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-brand-rust"
                                     >
-                                        <option value="staff">Secretariat Staff</option>
-                                        <option value="board">Board of Trustees</option>
+                                        <option value="staff" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Secretariat Staff</option>
+                                        <option value="board" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Board of Trustees</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                                     Department / Division
                                 </label>
                                 <input
                                     type="text"
                                     value={data.department}
                                     onChange={(e) => setData('department', e.target.value)}
-                                    className="w-full px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white text-xs"
+                                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-brand-rust"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                                     Professional Biography
                                 </label>
                                 <textarea
                                     rows={3}
                                     value={data.biography}
                                     onChange={(e) => setData('biography', e.target.value)}
-                                    className="w-full px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white text-xs leading-relaxed"
+                                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs leading-relaxed focus:outline-none focus:border-brand-rust"
                                 />
                             </div>
 
-                            <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+                            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-white/10">
                                 <button
                                     type="button"
                                     onClick={() => setModalOpen(false)}
-                                    className="px-4 py-2 rounded-xl text-xs text-slate-400 hover:text-white bg-white/5"
+                                    className="px-4 py-2 rounded-xl text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-white/5 transition-colors"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-navy-950 transition-all shadow-md"
+                                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold bg-brand-rust hover:bg-brand-crimson text-white transition-all shadow-md"
                                 >
                                     <Save className="w-3.5 h-3.5" />
                                     {editingItem ? 'Update Profile' : 'Save Member'}

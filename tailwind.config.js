@@ -3,6 +3,7 @@ import forms from '@tailwindcss/forms';
 
 /** @type {import('tailwindcss').Config} */
 export default {
+    darkMode: 'class',
     content: [
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
@@ -13,24 +14,48 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Inter', ...defaultTheme.fontFamily.sans],
+                sans: ['"League Spartan"', '"Spartan"', '"Plus Jakarta Sans"', ...defaultTheme.fontFamily.sans],
+                display: ['"League Spartan"', '"Spartan"', '"Plus Jakarta Sans"', ...defaultTheme.fontFamily.sans],
                 serif: ['"DM Serif Display"', ...defaultTheme.fontFamily.serif],
-                display: ['"DM Serif Display"', ...defaultTheme.fontFamily.serif],
+            },
+            boxShadow: {
+                'xs': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
             },
             colors: {
-                // Chapter Four Brand Palette
+                // Official Chapter Four Brand Palette
+                brand: {
+                    rust: '#ca583b',
+                    'rust-dark': '#b54b30',
+                    'rust-light': '#fdf2ef',
+                    brick: '#893629',
+                    mahogany: '#6e2316',
+                    amber: '#f0a552',
+                    'amber-dark': '#d98b36',
+                    'amber-light': '#fef7ee',
+                    gold: '#f3a451',
+                    peach: '#e6a96f',
+                    olive: '#a2c35a',
+                    'olive-dark': '#8aa848',
+                    'olive-light': '#f5f9ee',
+                    dark: '#23170e',
+                    espresso: '#1c120b',
+                    cream: '#FAF8F5',
+                    sand: '#F5EFEB',
+                    slate: '#2c2523',
+                },
+                // Legacy palette support mapping to brand colors
                 navy: {
-                    50:  '#f0f4ff',
-                    100: '#dbe4ff',
-                    200: '#bfcfff',
-                    300: '#93aeff',
-                    400: '#6080ff',
-                    500: '#3a58f0',
-                    600: '#2538e5',
-                    700: '#1e2dcb',
-                    800: '#1d28a4',
-                    900: '#1c2882',
-                    950: '#0f172a',
+                    50:  '#f8fafc',
+                    100: '#f1f5f9',
+                    200: '#e2e8f0',
+                    300: '#cbd5e1',
+                    400: '#94a3b8',
+                    500: '#64748b',
+                    600: '#475569',
+                    700: '#334155',
+                    800: '#1e293b',
+                    900: '#0f172a',
+                    950: '#090d16',
                 },
                 gold: {
                     50:  '#fffbeb',
@@ -38,8 +63,8 @@ export default {
                     200: '#fde68a',
                     300: '#fcd34d',
                     400: '#fbbf24',
-                    500: '#f59e0b',
-                    600: '#d97706',
+                    500: '#f0a552', // Chapter 4 amber
+                    600: '#d98b36',
                     700: '#b45309',
                     800: '#92400e',
                     900: '#78350f',
@@ -51,22 +76,19 @@ export default {
                     200: '#fecdd3',
                     300: '#fda4af',
                     400: '#fb7185',
-                    500: '#f43f5e',
-                    600: '#e11d48',
-                    700: '#be123c',
-                    800: '#9f1239',
-                    900: '#881337',
-                    950: '#4c0519',
-                },
-                slate: {
-                    ...defaultTheme.colors?.slate,
-                    950: '#020617',
+                    500: '#ca583b', // Chapter 4 rust
+                    600: '#893629', // Chapter 4 brick
+                    700: '#6e2316', // Chapter 4 mahogany
+                    800: '#542923',
+                    900: '#3d1c17',
+                    950: '#23170e',
                 },
             },
             backgroundImage: {
-                'hero-gradient': 'linear-gradient(135deg, #0f172a 0%, #1e2882 50%, #0f172a 100%)',
-                'gold-gradient': 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
-                'section-gradient': 'linear-gradient(180deg, #0f172a 0%, #1a2150 100%)',
+                'hero-gradient': 'linear-gradient(135deg, #23170e 0%, #6e2316 50%, #23170e 100%)',
+                'rust-gradient': 'linear-gradient(115deg, #ca583b 0%, #b54b30 50%, #893629 100%)',
+                'amber-gradient': 'linear-gradient(135deg, #f0a552 0%, #f3a451 100%)',
+                'section-gradient': 'linear-gradient(180deg, #FAF8F5 0%, #ffffff 100%)',
             },
             animation: {
                 'fade-up': 'fadeUp 0.7s ease-out forwards',
@@ -104,18 +126,11 @@ export default {
                     '100%': { backgroundPosition: '200% 0' },
                 },
             },
-            transitionTimingFunction: {
-                'expo-out': 'cubic-bezier(0.16, 1, 0.3, 1)',
-            },
             boxShadow: {
-                'gold': '0 0 30px rgba(245, 158, 11, 0.3)',
-                'navy': '0 0 30px rgba(15, 23, 42, 0.5)',
-                'glass': '0 8px 32px rgba(0, 0, 0, 0.3)',
-                'card': '0 4px 24px rgba(0, 0, 0, 0.12)',
-                'card-hover': '0 20px 60px rgba(0, 0, 0, 0.2)',
-            },
-            backdropBlur: {
-                xs: '2px',
+                'rust': '0 0 30px rgba(202, 88, 59, 0.25)',
+                'amber': '0 0 30px rgba(240, 165, 82, 0.25)',
+                'card': '0 2px 12px rgba(35, 23, 14, 0.06)',
+                'card-hover': '0 12px 32px rgba(35, 23, 14, 0.12)',
             },
         },
     },

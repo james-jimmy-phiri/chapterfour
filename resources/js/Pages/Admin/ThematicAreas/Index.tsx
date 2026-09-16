@@ -111,13 +111,13 @@ export default function ThematicAreasIndex({ thematicAreas = [] }: ThematicAreas
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Search thematic pillars..."
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-slate-500 text-xs focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:ring-2 focus:ring-brand-rust/50 shadow-sm"
                     />
                 </div>
 
                 <button
                     onClick={openCreate}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-navy-950 transition-all shadow-md shadow-amber-500/10"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-brand-rust hover:bg-brand-crimson text-white transition-all shadow-md shadow-brand-rust/20"
                 >
                     <Plus className="w-4 h-4" /> Add Thematic Area
                 </button>
@@ -128,35 +128,37 @@ export default function ThematicAreasIndex({ thematicAreas = [] }: ThematicAreas
                 {filtered.map((item) => (
                     <div
                         key={item.id}
-                        className="p-5 rounded-2xl bg-[#0a0e1a]/90 border border-white/[0.06] hover:border-amber-500/30 transition-all flex flex-col justify-between group"
+                        className="p-5 rounded-2xl bg-white dark:bg-[#0a0e1a] border border-slate-200 dark:border-white/10 hover:border-brand-rust/40 dark:hover:border-brand-rust/40 transition-all flex flex-col justify-between group shadow-sm"
                     >
                         <div>
                             <div className="flex items-center justify-between gap-2 mb-3">
-                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-medium bg-brand-rust/10 text-brand-rust dark:bg-brand-rust/20 dark:text-brand-amber border border-brand-rust/20">
                                     Priority #{item.sort_order}
                                 </span>
                                 <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
-                                    item.status === 'published' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-500/20 text-slate-400'
+                                    item.status === 'published' 
+                                        ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-500/20' 
+                                        : 'bg-slate-100 text-slate-600 dark:bg-slate-500/20 dark:text-slate-400 border border-slate-200 dark:border-slate-500/20'
                                 }`}>
                                     {item.status}
                                 </span>
                             </div>
 
-                            <h3 className="font-serif text-lg text-white font-normal group-hover:text-amber-300 transition-colors">
+                            <h3 className="font-serif text-lg text-slate-900 dark:text-white font-bold group-hover:text-brand-rust dark:group-hover:text-brand-amber transition-colors">
                                 {item.title}
                             </h3>
 
-                            <p className="mt-2 text-xs text-slate-400 font-light leading-relaxed line-clamp-3">
+                            <p className="mt-2 text-xs text-slate-600 dark:text-slate-400 font-light leading-relaxed line-clamp-3">
                                 {item.short_description || 'No summary description provided.'}
                             </p>
                         </div>
 
-                        <div className="mt-5 pt-4 border-t border-white/[0.06] flex items-center justify-between text-xs">
+                        <div className="mt-5 pt-4 border-t border-slate-100 dark:border-white/[0.06] flex items-center justify-between text-xs">
                             <a
                                 href={`/what-we-do/${item.slug}`}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="text-slate-400 hover:text-amber-400 inline-flex items-center gap-1 text-[11px] transition-colors"
+                                className="text-slate-500 dark:text-slate-400 hover:text-brand-rust dark:hover:text-brand-amber inline-flex items-center gap-1 text-[11px] transition-colors"
                             >
                                 View Portal <ExternalLink className="w-3 h-3" />
                             </a>
@@ -164,14 +166,14 @@ export default function ThematicAreasIndex({ thematicAreas = [] }: ThematicAreas
                             <div className="flex items-center gap-2">
                                 <button
                                     onClick={() => openEdit(item)}
-                                    className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors"
+                                    className="p-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white transition-colors"
                                     title="Edit pillar"
                                 >
                                     <Edit3 className="w-3.5 h-3.5" />
                                 </button>
                                 <button
                                     onClick={() => handleDelete(item.id, item.title)}
-                                    className="p-1.5 rounded-lg bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-colors"
+                                    className="p-1.5 rounded-lg bg-slate-100 hover:bg-red-50 dark:bg-white/5 dark:hover:bg-red-500/20 text-slate-400 hover:text-red-600 dark:hover:text-red-400 transition-colors"
                                     title="Delete pillar"
                                 >
                                     <Trash2 className="w-3.5 h-3.5" />
@@ -182,17 +184,23 @@ export default function ThematicAreasIndex({ thematicAreas = [] }: ThematicAreas
                 ))}
             </div>
 
+            {filtered.length === 0 && (
+                <div className="text-center py-16 text-slate-400 dark:text-slate-500 bg-white dark:bg-[#0a0e1a] rounded-2xl border border-slate-200 dark:border-white/10">
+                    No thematic areas found. Click "+ Add Thematic Area" to create one.
+                </div>
+            )}
+
             {/* Modal for Create/Edit */}
             {modalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-                    <div className="w-full max-w-xl p-6 sm:p-8 rounded-3xl bg-[#0c111e] border border-white/10 shadow-2xl relative">
-                        <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
-                            <h2 className="font-serif text-xl text-white font-normal">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/80 backdrop-blur-sm">
+                    <div className="w-full max-w-xl p-6 sm:p-8 rounded-3xl bg-white dark:bg-[#0c111e] border border-slate-200 dark:border-white/10 shadow-2xl relative">
+                        <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/10 mb-6">
+                            <h2 className="font-serif text-xl text-slate-900 dark:text-white font-bold">
                                 {editingItem ? 'Edit Thematic Area' : 'Create New Thematic Area'}
                             </h2>
                             <button
                                 onClick={() => setModalOpen(false)}
-                                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5"
+                                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-colors"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -200,7 +208,7 @@ export default function ThematicAreasIndex({ thematicAreas = [] }: ThematicAreas
 
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
-                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                                     Pillar Title
                                 </label>
                                 <input
@@ -208,14 +216,14 @@ export default function ThematicAreasIndex({ thematicAreas = [] }: ThematicAreas
                                     value={data.title}
                                     onChange={(e) => setData('title', e.target.value)}
                                     required
-                                    className="w-full px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white text-xs focus:ring-2 focus:ring-amber-500/50"
+                                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-rust/50 focus:outline-none"
                                 />
-                                {errors.title && <p className="text-xs text-red-400 mt-1">{errors.title}</p>}
+                                {errors.title && <p className="text-xs text-red-500 mt-1">{errors.title}</p>}
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                                         Slug (Optional)
                                     </label>
                                     <input
@@ -223,60 +231,60 @@ export default function ThematicAreasIndex({ thematicAreas = [] }: ThematicAreas
                                         value={data.slug}
                                         onChange={(e) => setData('slug', e.target.value)}
                                         placeholder="e.g. human-rights"
-                                        className="w-full px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white text-xs"
+                                        className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-brand-rust"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                                         Sort Priority
                                     </label>
                                     <input
                                         type="number"
                                         value={data.sort_order}
                                         onChange={(e) => setData('sort_order', parseInt(e.target.value) || 0)}
-                                        className="w-full px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white text-xs"
+                                        className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-brand-rust"
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                                     Short Summary Description
                                 </label>
                                 <textarea
                                     rows={3}
                                     value={data.short_description}
                                     onChange={(e) => setData('short_description', e.target.value)}
-                                    className="w-full px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white text-xs leading-relaxed"
+                                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs leading-relaxed focus:outline-none focus:border-brand-rust"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                                     Status
                                 </label>
                                 <select
                                     value={data.status}
                                     onChange={(e) => setData('status', e.target.value)}
-                                    className="w-full px-4 py-2.5 rounded-xl bg-[#090d16] border border-white/10 text-white text-xs"
+                                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-[#090d16] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-brand-rust"
                                 >
-                                    <option value="published">Published</option>
-                                    <option value="draft">Draft</option>
+                                    <option value="published" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Published</option>
+                                    <option value="draft" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Draft</option>
                                 </select>
                             </div>
 
-                            <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+                            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-white/10">
                                 <button
                                     type="button"
                                     onClick={() => setModalOpen(false)}
-                                    className="px-4 py-2 rounded-xl text-xs text-slate-400 hover:text-white bg-white/5"
+                                    className="px-4 py-2 rounded-xl text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-white/5 transition-colors"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-navy-950 transition-all shadow-md"
+                                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold bg-brand-rust hover:bg-brand-crimson text-white transition-all shadow-md"
                                 >
                                     <Save className="w-3.5 h-3.5" />
                                     {editingItem ? 'Update Pillar' : 'Save Pillar'}

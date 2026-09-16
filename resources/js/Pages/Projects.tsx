@@ -1,9 +1,9 @@
 import PublicLayout from '@/Layouts/PublicLayout';
 import { Head, Link } from '@inertiajs/react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
 import {
     Briefcase, MapPin, Calendar, Users, ArrowRight,
-    CheckCircle2, Sparkles, FolderKanban
+    CheckCircle2, ChevronRight, Tag
 } from 'lucide-react';
 
 interface ProjectItem {
@@ -22,116 +22,154 @@ interface ProjectsProps {
     projects?: ProjectItem[];
 }
 
-export default function Projects({ projects = [] }: ProjectsProps) {
-    const defaultProjects: ProjectItem[] = [
-        {
-            title: 'Mobile Legal Defense Clinics for Rural Youth',
-            slug: 'mobile-legal-defense-clinics',
-            summary: 'Deploying traveling legal clinics to police stations and community courts to provide immediate representation.',
-            locations: ['Lilongwe Rural', 'Dowa', 'Salima', 'Dedza'],
-            beneficiaries: ['Detained Youth', 'Vulnerable Families', 'Community Paralegals'],
-            status: 'Active',
-        },
-        {
-            title: 'Youth Constitutional Literacy & Chapter IV Assemblies',
-            slug: 'youth-constitutional-literacy',
-            summary: 'Grassroots civic education assemblies training 1,000+ youth leaders on their Bill of Rights guarantees.',
-            locations: ['Blantyre', 'Zomba', 'Mangochi', 'Thyolo'],
-            beneficiaries: ['Youth Leaders', 'Student Associations', 'Community Radio Journalists'],
-            status: 'Active',
-        },
-        {
-            title: 'District Social Accountability & CDF Monitoring',
-            slug: 'district-social-accountability',
-            summary: 'Citizen monitoring groups tracking local government healthcare and education fund allocations.',
-            locations: ['Mzimba', 'Kasungu', 'Mchinji'],
-            beneficiaries: ['Rural Communities', 'Youth Advocates'],
-            status: 'Active',
-        },
-    ];
+const defaultProjects: ProjectItem[] = [
+    {
+        title: 'Mobile Legal Defense Clinics for Rural Communities',
+        slug: 'mobile-legal-defense-clinics',
+        summary: 'Deploying traveling legal clinics to police posts, magistrate benches, and community centers to provide immediate representation and bail assistance.',
+        locations: ['Lilongwe Rural', 'Dowa', 'Salima', 'Dedza'],
+        beneficiaries: ['Underprivileged Detainees', 'Vulnerable Families', 'Community Paralegals'],
+        status: 'Active',
+    },
+    {
+        title: 'Youth Constitutional Literacy & Chapter IV Assemblies',
+        slug: 'youth-constitutional-literacy',
+        summary: 'Grassroots civic education assemblies training youth leaders, school human rights clubs, and community radio advocates on Bill of Rights protections.',
+        locations: ['Blantyre', 'Zomba', 'Mangochi', 'Thyolo'],
+        beneficiaries: ['Youth Leaders', 'Student Associations', 'Community Journalists'],
+        status: 'Active',
+    },
+    {
+        title: 'District Social Accountability & Public Resource Monitoring',
+        slug: 'district-social-accountability',
+        summary: 'Citizen monitoring groups tracking constituency development funds (CDF) and local government healthcare budgets to prevent corruption.',
+        locations: ['Mzimba', 'Kasungu', 'Mchinji'],
+        beneficiaries: ['Rural Communities', 'Civic Watchdogs'],
+        status: 'Active',
+    },
+    {
+        title: 'Legal Protection Against Child Marriage & Harmful Traditional Rites',
+        slug: 'child-marriage-protection',
+        summary: 'Collaborative initiative with traditional authorities and child protection committees to enforce statutory age laws and rescue victims.',
+        locations: ['Phalombe', 'Mulanje', 'Machinga'],
+        beneficiaries: ['Adolescent Girls', 'Community Mothers Groups'],
+        status: 'Completed',
+    },
+];
 
+export default function Projects({ projects = [] }: ProjectsProps) {
     const items = projects.length > 0 ? projects : defaultProjects;
+    const [statusFilter, setStatusFilter] = useState('All');
+
+    const filtered = statusFilter === 'All'
+        ? items
+        : items.filter((p) => p.status?.toLowerCase() === statusFilter.toLowerCase());
 
     return (
         <PublicLayout>
-            <Head title="Our Projects & Initiatives - Chapter Four" />
+            <Head>
+                <title>Field Projects & Interventions — Chapter Four Malawi</title>
+                <meta
+                    name="description"
+                    content="Explore Chapter Four's active human rights field interventions, legal clinics, and community accountability projects across Malawi."
+                />
+            </Head>
 
-            {/* Header Hero */}
-            <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(245,158,11,0.12),transparent)]" />
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="max-w-3xl mx-auto"
-                    >
-                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-6">
-                            <FolderKanban className="w-3.5 h-3.5" /> Programs in Action
-                        </span>
-                        <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal text-white tracking-tight leading-tight">
-                            Frontline Advocacy & <span className="italic text-gradient-gold">Community Projects</span>
-                        </h1>
-                        <p className="mt-6 text-lg sm:text-xl text-navy-200 leading-relaxed font-light">
-                            Discover our targeted field programs delivering legal aid, civic literacy, and social accountability across Malawi.
-                        </p>
-                    </motion.div>
+            {/* ─── HERO BANNER ─────────────────────────────────────────────── */}
+            <section className="hero-pattern text-white py-16 px-4 sm:px-8 border-b border-white/10" data-purpose="hero-banner">
+                <div className="max-w-7xl mx-auto">
+                    {/* Breadcrumbs */}
+                    <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-300 mb-4 font-semibold">
+                        <Link href="/" className="hover:text-brand-amber transition">Home</Link>
+                        <span className="text-slate-500">›</span>
+                        <span className="text-brand-amber">Projects</span>
+                    </div>
+
+                    <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-4">
+                        Field Projects & Interventions
+                    </h1>
+                    <p className="text-base sm:text-lg text-slate-200 max-w-2xl font-normal leading-relaxed">
+                        Translating constitutional ideals into tangible protections through direct legal defense, local community empowerment, and empirical court monitoring.
+                    </p>
                 </div>
             </section>
 
-            {/* Projects Grid */}
-            <section className="py-20 bg-navy-950 border-t border-navy-800/60">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {items.map((project, i) => (
-                            <motion.div
-                                key={project.slug || i}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.4, delay: i * 0.05 }}
-                                className="p-8 rounded-2xl bg-navy-900/50 border border-navy-800 hover:border-amber-500/40 hover:bg-navy-900/80 transition-all flex flex-col justify-between group"
+            {/* ─── MAIN CATALOGUE ──────────────────────────────────────────── */}
+            <main className="py-14 bg-[#fafafa]">
+                <div className="max-w-7xl mx-auto px-4 sm:px-8">
+                    {/* Status Filter Tabs */}
+                    <div className="flex items-center gap-2 mb-10 border-b border-slate-200 pb-4">
+                        {['All', 'Active', 'Completed'].map((s) => (
+                            <button
+                                key={s}
+                                type="button"
+                                onClick={() => setStatusFilter(s)}
+                                className={`px-4 py-1.5 rounded text-xs font-bold uppercase tracking-wider transition ${
+                                    statusFilter === s
+                                        ? 'bg-brand-rust text-white shadow-xs'
+                                        : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-100'
+                                }`}
                             >
-                                <div>
-                                    <div className="flex items-center justify-between mb-4">
-                                        <span className="px-2.5 py-1 rounded-full text-[11px] font-semibold tracking-wider uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                                            {project.status || 'Active'}
+                                {s} Projects
+                            </button>
+                        ))}
+                    </div>
+
+                    {/* Project Cards Grid */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {filtered.map((item, idx) => (
+                            <article
+                                key={item.slug || idx}
+                                className="bg-white rounded-xl border border-slate-200 overflow-hidden flex flex-col justify-between hover:shadow-md hover:border-brand-rust/30 transition group"
+                            >
+                                <div className="p-6">
+                                    <div className="flex items-center justify-between gap-2 mb-3">
+                                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                                            item.status === 'Completed'
+                                                ? 'bg-slate-100 text-slate-600'
+                                                : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                        }`}>
+                                            {item.status || 'Active'}
                                         </span>
                                     </div>
 
-                                    <h3 className="font-serif text-2xl text-white font-normal mb-3 group-hover:text-amber-300 transition-colors">
-                                        {project.title}
-                                    </h3>
-                                    <p className="text-navy-300 text-sm font-light leading-relaxed mb-6">
-                                        {project.summary}
-                                    </p>
+                                    <h2 className="text-lg font-bold text-slate-900 leading-snug group-hover:text-brand-rust transition">
+                                        <Link href={`/projects/${item.slug}`}>
+                                            {item.title}
+                                        </Link>
+                                    </h2>
 
-                                    {project.locations && (
-                                        <div className="flex items-start gap-2 text-xs text-navy-400 mb-3">
-                                            <MapPin className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
-                                            <span>{project.locations.join(', ')}</span>
-                                        </div>
+                                    {item.summary && (
+                                        <p className="text-xs text-slate-600 mt-2.5 leading-relaxed line-clamp-3">
+                                            {item.summary}
+                                        </p>
                                     )}
 
-                                    {project.beneficiaries && (
-                                        <div className="flex items-start gap-2 text-xs text-navy-400 mb-6">
-                                            <Users className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
-                                            <span>{project.beneficiaries.join(', ')}</span>
+                                    {/* Locations */}
+                                    {item.locations && item.locations.length > 0 && (
+                                        <div className="mt-4 pt-3 border-t border-slate-100 flex items-start gap-1.5 text-xs text-slate-500">
+                                            <MapPin className="w-3.5 h-3.5 text-brand-rust shrink-0 mt-0.5" />
+                                            <span className="line-clamp-1">
+                                                {Array.isArray(item.locations) ? item.locations.join(', ') : item.locations}
+                                            </span>
                                         </div>
                                     )}
                                 </div>
 
-                                <Link
-                                    href={`/projects/${project.slug}`}
-                                    className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-400 hover:text-amber-300 transition-colors"
-                                >
-                                    View Project Overview <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                                </Link>
-                            </motion.div>
+                                <div className="px-6 py-3 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-brand-rust">
+                                    <Link
+                                        href={`/projects/${item.slug}`}
+                                        className="inline-flex items-center gap-1 hover:text-brand-brick transition"
+                                    >
+                                        <span>View Case Studies & Details</span>
+                                        <ChevronRight className="w-3.5 h-3.5" />
+                                    </Link>
+                                </div>
+                            </article>
                         ))}
                     </div>
                 </div>
-            </section>
+            </main>
         </PublicLayout>
     );
 }

@@ -1,13 +1,11 @@
 import PublicLayout from '@/Layouts/PublicLayout';
 import { Head, Link } from '@inertiajs/react';
-import { motion } from 'framer-motion';
 import {
-    Scale, Shield, Users, BookOpen, FileText, HeartHandshake,
-    Eye, Search, ArrowRight, CheckCircle, Sparkles, Compass
+    Scale, Shield, Users, BookOpen, FileText, Heart,
+    Search, Globe, ArrowRight, ChevronRight, CheckCircle2
 } from 'lucide-react';
-import { useState } from 'react';
 
-interface ThematicArea {
+interface ThematicAreaItem {
     id?: number;
     title: string;
     slug: string;
@@ -17,205 +15,166 @@ interface ThematicArea {
 }
 
 interface WhatWeDoProps {
-    thematicAreas?: ThematicArea[];
+    thematicAreas?: ThematicAreaItem[];
 }
 
-const defaultThematicAreas = [
+const defaultThematicAreas: ThematicAreaItem[] = [
     {
         title: 'Human Rights & Constitutionalism',
         slug: 'human-rights',
-        short_description: 'Safeguarding fundamental constitutional rights and advancing public interest litigation for Malawians.',
-        icon: Scale,
-        tags: ['Litigation', 'Constitutional Law', 'Civil Liberties'],
+        short_description: 'Safeguarding fundamental civil liberties, rights guarantees, and defending constitutional supremacy under Chapter IV of the Malawi Constitution.',
     },
     {
-        title: 'Access to Justice & Legal Empowerment',
+        title: 'Access to Justice & Legal Aid',
         slug: 'access-to-justice',
-        short_description: 'Delivering mobile community legal aid, paralegal clinics, and bail advocacy for marginalized youth.',
-        icon: Shield,
-        tags: ['Legal Aid', 'Paralegals', 'Detention Monitoring'],
+        short_description: 'Providing mobile legal aid clinics, pro-bono defense, paralegal training, and bail assistance for underprivileged citizens in magistrate courts.',
     },
     {
-        title: 'Democracy, Rule of Law & Governance',
+        title: 'Democracy & Good Governance',
         slug: 'democracy-governance',
-        short_description: 'Strengthening democratic institutions, electoral integrity, anti-corruption, and executive accountability.',
-        icon: Compass,
-        tags: ['Elections', 'Rule of Law', 'Accountability'],
+        short_description: 'Strengthening democratic institutions, promoting electoral integrity, anti-corruption safeguards, and responsive public governance.',
     },
     {
-        title: 'Civic & Human Rights Education',
+        title: 'Civic & Rights Education',
         slug: 'civic-education',
-        short_description: 'Empowering communities and grassroots youth with practical knowledge of their rights under Chapter IV.',
-        icon: BookOpen,
-        tags: ['Youth Clubs', 'Community Radio', 'Workshops'],
+        short_description: 'Equipping youth, women, and local community leaders with practical knowledge and skills to understand, exercise, and defend their constitutional rights.',
     },
     {
         title: 'Policy & Legislative Advocacy',
         slug: 'policy-advocacy',
-        short_description: 'Influencing laws, national budgets, and parliamentary oversight through evidence-based policy memos.',
-        icon: FileText,
-        tags: ['Law Reform', 'Policy Analysis', 'Parliament'],
+        short_description: 'Drafting policy briefs, conducting rigorous legal analyses, and engaging Parliament and executive bodies to ensure statutory compliance with human rights.',
     },
     {
         title: 'Protection of Vulnerable Groups',
         slug: 'vulnerable-groups',
-        short_description: 'Defending women, youth, persons with disabilities, and marginalized minorities against systemic injustice.',
-        icon: HeartHandshake,
-        tags: ['Gender Justice', 'Child Rights', 'Inclusion'],
+        short_description: 'Promoting substantive equality and dismantling discriminatory practices affecting women, children, persons with disabilities, and marginalized groups.',
     },
     {
-        title: 'Social Accountability & Monitoring',
+        title: 'Accountability & Rights Monitoring',
         slug: 'accountability',
-        short_description: 'Tracking public service delivery, healthcare, education funds, and local council expenditures.',
-        icon: Eye,
-        tags: ['Expenditure Tracking', 'Open Governance', 'Community Audits'],
+        short_description: 'Empirically monitoring law enforcement conduct, detention centers, and public bodies to document violations and demand transparent remedial action.',
     },
     {
-        title: 'Research & Knowledge Generation',
+        title: 'Research & Legal Knowledge',
         slug: 'research',
-        short_description: 'Publishing data-driven research papers, human rights barometers, and shadow reports for global forums.',
-        icon: Search,
-        tags: ['Human Rights Reports', 'Barometer', 'Data Analytics'],
+        short_description: 'Publishing baseline studies, court monitoring digests, and evidence-based reports to foster informed judicial debate and public awareness.',
     },
 ];
 
 export default function WhatWeDo({ thematicAreas = [] }: WhatWeDoProps) {
-    const [search, setSearch] = useState('');
+    const displayAreas = thematicAreas.length > 0 ? thematicAreas : defaultThematicAreas;
 
-    const areasToDisplay = defaultThematicAreas.filter(a =>
-        a.title.toLowerCase().includes(search.toLowerCase()) ||
-        a.short_description.toLowerCase().includes(search.toLowerCase()) ||
-        a.tags.some(t => t.toLowerCase().includes(search.toLowerCase()))
-    );
+    const icons = [Scale, Shield, Globe, BookOpen, FileText, Heart, Search, Users];
 
     return (
         <PublicLayout>
-            <Head title="What We Do - Thematic Pillars | Chapter Four" />
+            <Head>
+                <title>What We Do — Chapter Four Malawi</title>
+                <meta
+                    name="description"
+                    content="Discover our key thematic focus areas: Human Rights, Access to Justice, Constitutionalism, Civic Education, and Public Interest Advocacy."
+                />
+            </Head>
 
-            {/* Header Hero */}
-            <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(245,158,11,0.12),transparent)]" />
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="max-w-3xl mx-auto"
-                    >
-                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-6">
-                            <Sparkles className="w-3.5 h-3.5" /> Our Strategic Pillars
-                        </span>
-                        <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal text-white tracking-tight leading-tight">
-                            Defending Justice Across <span className="italic text-gradient-gold">Eight Frontlines</span>
-                        </h1>
-                        <p className="mt-6 text-lg sm:text-xl text-navy-200 leading-relaxed font-light">
-                            From the courtroom to rural village assemblies, Chapter Four champions holistic,
-                            human rights-based approaches to systemic change in Malawi.
-                        </p>
+            {/* ═══════════════════════════════════════════════════════════════════ */}
+            {/* HERO BANNER (Stitch Replica)                                        */}
+            {/* ═══════════════════════════════════════════════════════════════════ */}
+            <section className="hero-pattern text-white py-16 sm:py-20 px-4 sm:px-8 border-b border-white/10" data-purpose="hero-banner">
+                <div className="max-w-7xl mx-auto">
+                    {/* Breadcrumb */}
+                    <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-300 mb-4 font-semibold">
+                        <Link href="/" className="hover:text-brand-amber transition">Home</Link>
+                        <span className="text-slate-500">›</span>
+                        <span className="text-brand-amber">What We Do</span>
+                    </div>
 
-                        {/* Search Filter */}
-                        <div className="mt-8 max-w-md mx-auto">
-                            <div className="relative">
-                                <Search className="w-4 h-4 text-navy-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                                <input
-                                    type="text"
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    placeholder="Filter by keyword (e.g. Legal Aid, Elections, Policy)..."
-                                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-navy-900/90 border border-navy-700 text-white placeholder-navy-400 text-sm focus:outline-none focus:border-amber-500 transition-colors"
-                                />
-                            </div>
-                        </div>
-                    </motion.div>
+                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-5 text-white">
+                        What We Do
+                    </h1>
+                    <p className="max-w-3xl text-slate-200 text-sm sm:text-base leading-relaxed">
+                        Chapter Four is more than a legal organization — we are a civic watchdog, an educator, and a frontline legal defender. Our work spans the full spectrum of constitutional rights enshrined in Chapter IV of the Malawi Constitution.
+                    </p>
                 </div>
             </section>
 
-            {/* Thematic Cards Grid */}
-            <section className="py-20 bg-navy-950 border-t border-navy-800/60">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {areasToDisplay.map((area, i) => {
-                            const IconComponent = area.icon;
-                            return (
-                                <motion.div
-                                    key={area.slug}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.4, delay: i * 0.05 }}
-                                    className="p-8 rounded-2xl bg-navy-900/50 border border-navy-800 hover:border-amber-500/40 hover:bg-navy-900/80 transition-all flex flex-col justify-between group"
-                                >
-                                    <div>
-                                        <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-6 group-hover:scale-110 transition-transform">
-                                            <IconComponent className="w-6 h-6" />
-                                        </div>
-                                        <h3 className="font-serif text-2xl text-white font-normal mb-3 group-hover:text-amber-300 transition-colors">
-                                            {area.title}
-                                        </h3>
-                                        <p className="text-navy-300 text-sm font-light leading-relaxed mb-6">
-                                            {area.short_description}
-                                        </p>
-                                    </div>
-
-                                    <div>
-                                        <div className="flex flex-wrap gap-1.5 mb-6">
-                                            {area.tags.map(t => (
-                                                <span key={t} className="text-[11px] px-2.5 py-0.5 rounded-full bg-navy-800/80 text-navy-300 border border-navy-700/60">
-                                                    {t}
-                                                </span>
-                                            ))}
-                                        </div>
-                                        <Link
-                                            href={`/what-we-do/${area.slug}`}
-                                            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-400 hover:text-amber-300 transition-colors"
-                                        >
-                                            View Pillar Details <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                                        </Link>
-                                    </div>
-                                </motion.div>
-                            );
-                        })}
-                    </div>
-
-                    {areasToDisplay.length === 0 && (
-                        <div className="text-center py-16 text-navy-400">
-                            No thematic pillars found matching "{search}".
-                        </div>
-                    )}
+            {/* ═══════════════════════════════════════════════════════════════════ */}
+            {/* 2X2 OR 3-COLUMN SERVICE GRID (Stitch Replica)                      */}
+            {/* ═══════════════════════════════════════════════════════════════════ */}
+            <main className="max-w-7xl mx-auto px-4 sm:px-8 py-16 w-full">
+                <div className="mb-10">
+                    <span className="text-xs font-bold uppercase tracking-wider text-brand-rust block mb-1">Our Mandate</span>
+                    <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
+                        Strategic Thematic Focus Areas
+                    </h2>
+                    <p className="text-slate-600 text-sm sm:text-base mt-1">
+                        Explore our specific interventions, grassroots legal clinics, and public interest litigation programs.
+                    </p>
                 </div>
-            </section>
 
-            {/* Approach Framework */}
-            <section className="py-20 bg-navy-900/40 border-t border-navy-800/60">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center max-w-3xl mx-auto mb-16">
-                        <span className="text-amber-400 font-semibold tracking-wider text-xs uppercase">Methodology</span>
-                        <h2 className="font-serif text-3xl sm:text-4xl text-white font-normal mt-2">
-                            The Human Rights-Based Approach (HRBA)
-                        </h2>
-                        <p className="mt-3 text-navy-200 text-sm font-light">
-                            Every program we design operates on international standards of accountability, participation, and equality.
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        {[
-                            { title: 'Participation', desc: 'Ensuring youth and affected rights-holders actively shape every stage of intervention.' },
-                            { title: 'Accountability', desc: 'Holding duty-bearers and state authorities accountable to constitutional pledges.' },
-                            { title: 'Non-Discrimination', desc: 'Focusing resources on historically excluded, rural, and vulnerable citizens.' },
-                            { title: 'Rule of Law', desc: 'Grounding all claims firmly within domestic constitutional and treaty standards.' },
-                        ].map((item, idx) => (
-                            <div key={idx} className="p-6 rounded-xl bg-navy-950 border border-navy-800">
-                                <div className="text-amber-400 font-serif text-lg font-normal mb-2 flex items-center gap-2">
-                                    <CheckCircle className="w-4 h-4 text-amber-400" />
-                                    {item.title}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {displayAreas.map((area, idx) => {
+                        const IconComp = icons[idx % icons.length];
+                        return (
+                            <div
+                                key={area.slug || idx}
+                                className="bg-white rounded-lg p-6 sm:p-7 flex items-start gap-5 shadow-xs border border-slate-200 hover:shadow-md hover:border-brand-rust/30 transition group"
+                            >
+                                <div className="shrink-0 w-14 h-14 rounded-lg bg-brand-dark text-brand-amber flex items-center justify-center group-hover:bg-brand-rust group-hover:text-white transition">
+                                    <IconComp className="w-6 h-6" />
                                 </div>
-                                <p className="text-navy-300 text-xs font-light leading-relaxed">{item.desc}</p>
+                                <div className="flex-1">
+                                    <h3 className="font-bold text-slate-900 text-base sm:text-lg mb-2 group-hover:text-brand-rust transition">
+                                        {area.title}
+                                    </h3>
+                                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed mb-4">
+                                        {area.short_description || area.description}
+                                    </p>
+                                    <Link
+                                        href={`/what-we-do/${area.slug}`}
+                                        className="inline-flex items-center gap-1.5 text-xs font-bold text-brand-rust hover:text-brand-brick transition"
+                                    >
+                                        <span>View Interventions</span>
+                                        <ChevronRight className="w-3.5 h-3.5" />
+                                    </Link>
+                                </div>
                             </div>
-                        ))}
+                        );
+                    })}
+                </div>
+
+                {/* View Our Reports Button */}
+                <div className="mt-10">
+                    <Link
+                        href="/resources?type=reports"
+                        className="btn-amber"
+                    >
+                        <span>View Our Evidence & Reports</span>
+                        <ArrowRight className="w-4 h-4" />
+                    </Link>
+                </div>
+
+                {/* ─── Stitch Replica Orange Guide Banner ─────────────────────── */}
+                <div className="mt-16 rounded-xl relative overflow-hidden rust-pattern p-8 sm:p-12 shadow-lg text-white">
+                    <div className="max-w-2xl relative z-10">
+                        <span className="text-xs font-semibold tracking-wider uppercase text-amber-100 block mb-2">
+                            Constitutional Accountability in Practice
+                        </span>
+                        <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black leading-tight mb-4">
+                            Practical, field-tested public interest legal methods that protect ordinary citizens.
+                        </h3>
+                        <p className="text-sm text-slate-100 mb-6 leading-relaxed">
+                            Learn how Chapter Four partners with community paralegals, traditional leaders, and magistrates courts to secure immediate legal remedies for vulnerable individuals.
+                        </p>
+                        <Link
+                            href="/about"
+                            className="inline-flex items-center gap-2 bg-white text-brand-dark hover:bg-amber-50 text-xs sm:text-sm font-bold px-6 py-3 rounded shadow transition"
+                        >
+                            <span>Learn About Our Methodology</span>
+                            <ArrowRight className="w-4 h-4" />
+                        </Link>
                     </div>
                 </div>
-            </section>
+            </main>
         </PublicLayout>
     );
 }

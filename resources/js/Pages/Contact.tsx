@@ -1,11 +1,9 @@
 import PublicLayout from '@/Layouts/PublicLayout';
-import { Head, useForm } from '@inertiajs/react';
-import { motion } from 'framer-motion';
+import { Head, Link, useForm } from '@inertiajs/react';
 import {
     Mail, Phone, MapPin, Send, MessageSquare, Clock,
-    CheckCircle2, Sparkles, Shield, Loader2
+    CheckCircle2, Shield, Loader2, AlertCircle
 } from 'lucide-react';
-import { useState } from 'react';
 
 export default function Contact() {
     const { data, setData, post, processing, errors, reset, recentlySuccessful } = useForm({
@@ -27,226 +25,240 @@ export default function Contact() {
 
     return (
         <PublicLayout>
-            <Head title="Contact Us - Chapter Four" />
+            <Head>
+                <title>Contact Us — Chapter Four Malawi</title>
+                <meta
+                    name="description"
+                    content="Get in touch with Chapter Four Malawi. Submit a confidential human rights inquiry, request legal guidance, or explore partnership opportunities."
+                />
+            </Head>
 
-            {/* Header Hero */}
-            <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(245,158,11,0.12),transparent)]" />
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="max-w-3xl mx-auto"
-                    >
-                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-6">
-                            <MessageSquare className="w-3.5 h-3.5" /> Reach Out
-                        </span>
-                        <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal text-white tracking-tight leading-tight">
-                            Get in Touch with <span className="italic text-gradient-gold">Our Advocates</span>
-                        </h1>
-                        <p className="mt-6 text-lg sm:text-xl text-navy-200 leading-relaxed font-light">
-                            Whether you need human rights legal guidance, want to collaborate on research, or submit a media inquiry, we are here.
-                        </p>
-                    </motion.div>
+            {/* ─── HERO BANNER ─────────────────────────────────────────────── */}
+            <section className="hero-pattern text-white py-16 px-4 sm:px-8 border-b border-white/10" data-purpose="hero-banner">
+                <div className="max-w-7xl mx-auto">
+                    {/* Breadcrumbs */}
+                    <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-300 mb-4 font-semibold">
+                        <Link href="/" className="hover:text-brand-amber transition">Home</Link>
+                        <span className="text-slate-500">›</span>
+                        <span className="text-brand-amber">Contact Us</span>
+                    </div>
+
+                    <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-4">
+                        Contact Chapter Four
+                    </h1>
+                    <p className="text-base sm:text-lg text-slate-200 max-w-2xl font-normal leading-relaxed">
+                        Whether you need legal aid guidance, want to report a human rights violation, or discuss a civic partnership, our team is ready to assist.
+                    </p>
                 </div>
             </section>
 
-            {/* Contact Section */}
-            <section className="py-20 bg-navy-950 border-t border-navy-800/60">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* ─── MAIN CONTACT SECTION ────────────────────────────────────── */}
+            <main className="py-16 bg-[#fafafa]">
+                <div className="max-w-7xl mx-auto px-4 sm:px-8">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
-                        {/* Information Cards */}
+                        {/* Information Cards (Left) */}
                         <div className="lg:col-span-5 space-y-6">
-                            <div className="p-8 rounded-2xl bg-navy-900/50 border border-navy-800">
-                                <h3 className="font-serif text-2xl text-white font-normal mb-6">Contact Information</h3>
-
-                                <div className="space-y-6 text-navy-200">
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-10 h-10 rounded-lg bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 shrink-0">
-                                            <MapPin className="w-5 h-5" />
-                                        </div>
-                                        <div>
-                                            <div className="text-white font-medium text-sm">Headquarters</div>
-                                            <div className="text-xs text-navy-300 font-light mt-1">
-                                                Lilongwe, Malawi<br />
-                                                Area 10 / City Centre
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-10 h-10 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 shrink-0">
-                                            <Mail className="w-5 h-5" />
-                                        </div>
-                                        <div>
-                                            <div className="text-white font-medium text-sm">Direct Inquiries</div>
-                                            <div className="text-xs text-navy-300 font-light mt-1">
-                                                info@chapterfour.mw<br />
-                                                advocacy@chapterfour.mw
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-start gap-4">
-                                        <div className="w-10 h-10 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 shrink-0">
-                                            <Phone className="w-5 h-5" />
-                                        </div>
-                                        <div>
-                                            <div className="text-white font-medium text-sm">Helpline & Office</div>
-                                            <div className="text-xs text-navy-300 font-light mt-1">
-                                                +265 (0) 1 770 000<br />
-                                                Monday – Friday: 08:00 – 17:00 CAT
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <div>
+                                <span className="text-xs font-bold uppercase tracking-wider text-brand-rust block mb-1">
+                                    Direct Contact
+                                </span>
+                                <h2 className="text-2xl font-black text-slate-900">
+                                    Our Office & Operations
+                                </h2>
+                                <p className="text-sm text-slate-600 mt-1 leading-relaxed">
+                                    We operate in Lilongwe with continuous monitoring and mobile legal outreach across all 28 districts of Malawi.
+                                </p>
                             </div>
 
-                            <div className="p-6 rounded-2xl bg-gradient-to-br from-amber-500/10 to-navy-900/60 border border-amber-500/20">
-                                <div className="flex items-center gap-3 text-amber-400 mb-2">
-                                    <Shield className="w-5 h-5" />
-                                    <h4 className="text-sm font-semibold text-white">Emergency Rights Alert</h4>
+                            <div className="space-y-4">
+                                <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex items-start gap-4">
+                                    <div className="w-10 h-10 rounded-lg bg-brand-rust-light text-brand-rust flex items-center justify-center shrink-0">
+                                        <MapPin className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Head Office</h3>
+                                        <p className="text-sm font-semibold text-slate-900 mt-0.5">P.O. Box 30384, Capital City</p>
+                                        <p className="text-xs text-slate-600">Lilongwe, Malawi</p>
+                                    </div>
                                 </div>
-                                <p className="text-xs text-navy-300 font-light leading-relaxed">
-                                    If you or a young person you know faces unlawful police detention or urgent human rights violation, please flag "Urgent Legal Assistance" in the form.
-                                </p>
+
+                                <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex items-start gap-4">
+                                    <div className="w-10 h-10 rounded-lg bg-brand-amber-light text-brand-amber-dark flex items-center justify-center shrink-0">
+                                        <Phone className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Telephone Hotline</h3>
+                                        <p className="text-sm font-semibold text-slate-900 mt-0.5">
+                                            <a href="tel:+265888596275" className="hover:text-brand-rust transition">+265 888 596 275</a>
+                                        </p>
+                                        <p className="text-xs text-slate-500">Available Monday – Friday, 8:00 AM – 5:00 PM CAT</p>
+                                    </div>
+                                </div>
+
+                                <div className="bg-white rounded-xl p-5 border border-slate-200 shadow-xs flex items-start gap-4">
+                                    <div className="w-10 h-10 rounded-lg bg-brand-olive-light text-brand-olive-dark flex items-center justify-center shrink-0">
+                                        <Mail className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Email Address</h3>
+                                        <p className="text-sm font-semibold text-slate-900 mt-0.5">
+                                            <a href="mailto:communication@chapterfourmalawi.org" className="hover:text-brand-rust transition">
+                                                communication@chapterfourmalawi.org
+                                            </a>
+                                        </p>
+                                        <p className="text-xs text-slate-500">Inquiries typically answered within 24 hours</p>
+                                    </div>
+                                </div>
+
+                                <div className="bg-brand-dark rounded-xl p-5 text-white shadow-sm flex items-start gap-4">
+                                    <div className="w-10 h-10 rounded-lg bg-white/10 text-brand-amber flex items-center justify-center shrink-0">
+                                        <Shield className="w-5 h-5" />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xs font-bold uppercase tracking-wider text-brand-amber">Confidentiality Guarantee</h3>
+                                        <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                                            All rights abuse reports and legal aid inquiries are held under strict client-advocate confidentiality.
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        {/* Interactive Form */}
+                        {/* Contact Form (Right) */}
                         <div className="lg:col-span-7">
-                            <div className="p-8 sm:p-10 rounded-2xl bg-navy-900/50 border border-navy-800">
-                                {recentlySuccessful ? (
-                                    <div className="text-center py-12 space-y-4">
-                                        <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 mx-auto">
-                                            <CheckCircle2 className="w-8 h-8" />
-                                        </div>
-                                        <h3 className="font-serif text-2xl text-white">Message Received</h3>
-                                        <p className="text-navy-300 text-sm font-light max-w-md mx-auto">
-                                            Thank you for reaching out to Chapter Four. Your inquiry has been logged in our system and our legal and advocacy team will review it promptly.
-                                        </p>
+                            <div className="bg-white rounded-2xl p-8 sm:p-10 border border-slate-200 shadow-sm">
+                                <h3 className="text-xl font-bold text-slate-900 mb-2">Send Us a Message</h3>
+                                <p className="text-xs text-slate-500 mb-6">
+                                    Please fill out the form below and our legal and communications team will follow up promptly.
+                                </p>
+
+                                {recentlySuccessful && (
+                                    <div className="mb-6 p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm flex items-center gap-3">
+                                        <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                                        <span>Thank you! Your inquiry has been safely received. Our legal team will review it.</span>
                                     </div>
-                                ) : (
-                                    <form onSubmit={handleSubmit} className="space-y-6">
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                            <div>
-                                                <label className="block text-xs font-semibold uppercase tracking-wider text-navy-300 mb-2">
-                                                    Your Full Name *
-                                                </label>
-                                                <input
-                                                    type="text"
-                                                    required
-                                                    value={data.name}
-                                                    onChange={e => setData('name', e.target.value)}
-                                                    placeholder="e.g. Chimwemwe Banda"
-                                                    className="w-full px-4 py-3 rounded-xl bg-navy-950/80 border border-navy-700 text-white placeholder-navy-500 text-sm focus:outline-none focus:border-amber-500 transition-colors"
-                                                />
-                                                {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
-                                            </div>
+                                )}
 
-                                            <div>
-                                                <label className="block text-xs font-semibold uppercase tracking-wider text-navy-300 mb-2">
-                                                    Email Address *
-                                                </label>
-                                                <input
-                                                    type="email"
-                                                    required
-                                                    value={data.email}
-                                                    onChange={e => setData('email', e.target.value)}
-                                                    placeholder="name@example.com"
-                                                    className="w-full px-4 py-3 rounded-xl bg-navy-950/80 border border-navy-700 text-white placeholder-navy-500 text-sm focus:outline-none focus:border-amber-500 transition-colors"
-                                                />
-                                                {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
-                                            </div>
-                                        </div>
-
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                            <div>
-                                                <label className="block text-xs font-semibold uppercase tracking-wider text-navy-300 mb-2">
-                                                    Phone / WhatsApp
-                                                </label>
-                                                <input
-                                                    type="tel"
-                                                    value={data.phone}
-                                                    onChange={e => setData('phone', e.target.value)}
-                                                    placeholder="+265 999 000 000"
-                                                    className="w-full px-4 py-3 rounded-xl bg-navy-950/80 border border-navy-700 text-white placeholder-navy-500 text-sm focus:outline-none focus:border-amber-500 transition-colors"
-                                                />
-                                                {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone}</p>}
-                                            </div>
-
-                                            <div>
-                                                <label className="block text-xs font-semibold uppercase tracking-wider text-navy-300 mb-2">
-                                                    Inquiry Type
-                                                </label>
-                                                <select
-                                                    value={data.inquiry_type}
-                                                    onChange={e => setData('inquiry_type', e.target.value)}
-                                                    className="w-full px-4 py-3 rounded-xl bg-navy-950/80 border border-navy-700 text-white text-sm focus:outline-none focus:border-amber-500 transition-colors"
-                                                >
-                                                    <option>General Inquiry</option>
-                                                    <option>Legal Aid & Rights Defense</option>
-                                                    <option>Partnership & Funding</option>
-                                                    <option>Media & Press Interview</option>
-                                                    <option>Youth Volunteering</option>
-                                                </select>
-                                                {errors.inquiry_type && <p className="text-red-400 text-xs mt-1">{errors.inquiry_type}</p>}
-                                            </div>
-                                        </div>
-
+                                <form onSubmit={handleSubmit} className="space-y-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-xs font-semibold uppercase tracking-wider text-navy-300 mb-2">
-                                                Subject *
+                                            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                                                Full Name *
                                             </label>
                                             <input
                                                 type="text"
                                                 required
-                                                value={data.subject}
-                                                onChange={e => setData('subject', e.target.value)}
-                                                placeholder="Brief summary of your inquiry"
-                                                className="w-full px-4 py-3 rounded-xl bg-navy-950/80 border border-navy-700 text-white placeholder-navy-500 text-sm focus:outline-none focus:border-amber-500 transition-colors"
+                                                value={data.name}
+                                                onChange={(e) => setData('name', e.target.value)}
+                                                placeholder="e.g. Kondwani Phiri"
+                                                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-md border border-slate-300 focus:border-brand-rust focus:ring-1 focus:ring-brand-rust outline-none"
                                             />
-                                            {errors.subject && <p className="text-red-400 text-xs mt-1">{errors.subject}</p>}
+                                            {errors.name && <p className="text-xs text-red-600 mt-1">{errors.name}</p>}
                                         </div>
 
                                         <div>
-                                            <label className="block text-xs font-semibold uppercase tracking-wider text-navy-300 mb-2">
-                                                Message Details *
+                                            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                                                Email Address *
                                             </label>
-                                            <textarea
+                                            <input
+                                                type="email"
                                                 required
-                                                rows={5}
-                                                value={data.message}
-                                                onChange={e => setData('message', e.target.value)}
-                                                placeholder="Provide relevant context or details..."
-                                                className="w-full px-4 py-3 rounded-xl bg-navy-950/80 border border-navy-700 text-white placeholder-navy-500 text-sm focus:outline-none focus:border-amber-500 transition-colors resize-none"
+                                                value={data.email}
+                                                onChange={(e) => setData('email', e.target.value)}
+                                                placeholder="e.g. kondwani@example.com"
+                                                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-md border border-slate-300 focus:border-brand-rust focus:ring-1 focus:ring-brand-rust outline-none"
                                             />
-                                            {errors.message && <p className="text-red-400 text-xs mt-1">{errors.message}</p>}
+                                            {errors.email && <p className="text-xs text-red-600 mt-1">{errors.email}</p>}
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                        <div>
+                                            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                                                Phone Number
+                                            </label>
+                                            <input
+                                                type="tel"
+                                                value={data.phone}
+                                                onChange={(e) => setData('phone', e.target.value)}
+                                                placeholder="e.g. +265 888 123 456"
+                                                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-md border border-slate-300 focus:border-brand-rust focus:ring-1 focus:ring-brand-rust outline-none"
+                                            />
+                                            {errors.phone && <p className="text-xs text-red-600 mt-1">{errors.phone}</p>}
                                         </div>
 
-                                        <button
-                                            type="submit"
-                                            disabled={processing}
-                                            className="w-full inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-navy-950 font-semibold text-sm transition-all shadow-lg shadow-amber-500/20 disabled:opacity-50"
-                                        >
-                                            {processing ? (
-                                                <>
-                                                    <Loader2 className="w-4 h-4 animate-spin" /> Submitting...
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <Send className="w-4 h-4" /> Submit Inquiry
-                                                </>
-                                            )}
-                                        </button>
-                                    </form>
-                                )}
+                                        <div>
+                                            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                                                Inquiry Type *
+                                            </label>
+                                            <select
+                                                value={data.inquiry_type}
+                                                onChange={(e) => setData('inquiry_type', e.target.value)}
+                                                className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-md border border-slate-300 focus:border-brand-rust focus:ring-1 focus:ring-brand-rust outline-none bg-white"
+                                            >
+                                                <option value="General Inquiry">General Inquiry</option>
+                                                <option value="Legal Aid & Defense">Legal Aid & Defense</option>
+                                                <option value="Rights Violation Report">Report Rights Violation</option>
+                                                <option value="Media & Press">Media & Press</option>
+                                                <option value="Partnership & Funding">Partnership & Funding</option>
+                                                <option value="Research Collaboration">Research Collaboration</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                                            Subject *
+                                        </label>
+                                        <input
+                                            type="text"
+                                            required
+                                            value={data.subject}
+                                            onChange={(e) => setData('subject', e.target.value)}
+                                            placeholder="Brief description of the matter"
+                                            className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-md border border-slate-300 focus:border-brand-rust focus:ring-1 focus:ring-brand-rust outline-none"
+                                        />
+                                        {errors.subject && <p className="text-xs text-red-600 mt-1">{errors.subject}</p>}
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                                            Your Message *
+                                        </label>
+                                        <textarea
+                                            rows={5}
+                                            required
+                                            value={data.message}
+                                            onChange={(e) => setData('message', e.target.value)}
+                                            placeholder="Please provide details about the legal matter, rights issue, or collaboration proposal..."
+                                            className="w-full text-xs sm:text-sm px-3.5 py-2.5 rounded-md border border-slate-300 focus:border-brand-rust focus:ring-1 focus:ring-brand-rust outline-none resize-none"
+                                        />
+                                        {errors.message && <p className="text-xs text-red-600 mt-1">{errors.message}</p>}
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        disabled={processing}
+                                        className="btn-primary w-full py-3 mt-2"
+                                    >
+                                        {processing ? (
+                                            <span className="flex items-center gap-2">
+                                                <Loader2 className="w-4 h-4 animate-spin" />
+                                                <span>Sending Secure Message...</span>
+                                            </span>
+                                        ) : (
+                                            <span className="flex items-center gap-2">
+                                                <Send className="w-4 h-4" />
+                                                <span>Submit Inquiry</span>
+                                            </span>
+                                        )}
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </main>
         </PublicLayout>
     );
 }

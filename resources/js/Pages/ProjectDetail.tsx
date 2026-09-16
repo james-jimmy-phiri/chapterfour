@@ -2,7 +2,7 @@ import PublicLayout from '@/Layouts/PublicLayout';
 import { Head, Link } from '@inertiajs/react';
 import {
     ArrowLeft, MapPin, Users, Calendar, CheckCircle2,
-    Briefcase, Sparkles, ArrowRight
+    Briefcase, ArrowRight, Shield
 } from 'lucide-react';
 
 interface ProjectItem {
@@ -25,98 +25,150 @@ interface ProjectDetailProps {
 export default function ProjectDetail({ project }: ProjectDetailProps) {
     return (
         <PublicLayout>
-            <Head title={`${project.title} - Chapter Four Projects`} />
+            <Head>
+                <title>{`${project.title} — Chapter Four Projects`}</title>
+                <meta name="description" content={project.summary || project.title} />
+            </Head>
 
-            {/* Top Bar */}
-            <div className="pt-28 pb-4 bg-navy-950 border-b border-navy-800/60">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <Link
-                        href="/projects"
-                        className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-400 hover:text-amber-300 transition-colors"
-                    >
-                        <ArrowLeft className="w-4 h-4" /> Back to all projects
-                    </Link>
-                </div>
-            </div>
+            {/* ─── HERO BANNER ─────────────────────────────────────────────── */}
+            <section className="hero-pattern text-white py-14 px-4 sm:px-8 border-b border-white/10">
+                <div className="max-w-5xl mx-auto">
+                    {/* Breadcrumbs */}
+                    <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-300 mb-4 font-semibold">
+                        <Link href="/" className="hover:text-brand-amber transition">Home</Link>
+                        <span className="text-slate-500">›</span>
+                        <Link href="/projects" className="hover:text-brand-amber transition">Projects</Link>
+                        <span className="text-slate-500">›</span>
+                        <span className="text-brand-amber truncate max-w-xs">{project.title}</span>
+                    </div>
 
-            {/* Hero */}
-            <section className="py-16 md:py-24 bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="space-y-6">
-                        <span className="px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <div className="space-y-4">
+                        <span className="inline-block bg-brand-rust text-white text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded">
                             {project.status || 'Active Initiative'}
                         </span>
-                        <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl text-white font-normal leading-tight">
+
+                        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight">
                             {project.title}
                         </h1>
-                        <p className="text-lg text-navy-200 font-light leading-relaxed max-w-3xl">
-                            {project.summary}
-                        </p>
+
+                        {project.summary && (
+                            <p className="text-base text-slate-200 max-w-3xl leading-relaxed">
+                                {project.summary}
+                            </p>
+                        )}
                     </div>
                 </div>
             </section>
 
-            {/* Details Section */}
-            <section className="py-16 bg-navy-950 border-t border-navy-800/60">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            {/* ─── MAIN CONTENT ────────────────────────────────────────────── */}
+            <main className="py-14 bg-[#fafafa]">
+                <div className="max-w-5xl mx-auto px-4 sm:px-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                        {/* Main Description */}
                         <div className="lg:col-span-8 space-y-8">
-                            <div>
-                                <h2 className="font-serif text-2xl text-white font-normal mb-4">Project Overview</h2>
-                                <p className="text-navy-200 text-base font-light leading-relaxed">
-                                    {project.description || project.summary}
-                                </p>
+                            <div className="bg-white rounded-xl p-8 border border-slate-200 shadow-xs">
+                                <h2 className="text-xl font-bold text-slate-900 mb-4">Project Overview & Objectives</h2>
+                                <div className="prose prose-slate max-w-none text-slate-700 leading-relaxed space-y-4 text-sm sm:text-base">
+                                    {project.description ? (
+                                        <p>{project.description}</p>
+                                    ) : (
+                                        <>
+                                            <p>
+                                                This intervention directly addresses structural human rights vulnerabilities through grassroots engagement, mobile court monitoring, and capacity strengthening for local paralegals and rights defenders.
+                                            </p>
+                                            <p>
+                                                By bringing legal literacy and procedural safeguards directly to local communities, Chapter Four eliminates geographical and economic barriers that prevent citizens from securing lawful bail, fair hearing, and prompt remedy.
+                                            </p>
+                                        </>
+                                    )}
+                                </div>
                             </div>
 
-                            <div className="p-6 rounded-2xl bg-navy-900/60 border border-navy-800">
-                                <h3 className="font-serif text-xl text-white font-normal mb-4">Key Objectives</h3>
+                            <div className="bg-white rounded-xl p-8 border border-slate-200 shadow-xs">
+                                <h2 className="text-xl font-bold text-slate-900 mb-4">Key Outcomes & Deliverables</h2>
                                 <div className="space-y-3">
                                     {[
-                                        'Expand legal consultation access for youth facing custody or bail barriers.',
-                                        'Train community duty-bearers and village authorities on Chapter IV rights.',
-                                        'Establish sustainable monitoring links between civil society and local magistrates.',
-                                    ].map((obj, i) => (
-                                        <div key={i} className="flex items-start gap-3 text-sm text-navy-200 font-light">
-                                            <CheckCircle2 className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
-                                            <span>{obj}</span>
+                                        'Direct pro-bono defense and bail assistance in magistrate courts.',
+                                        'Continuous monitoring of police custody facilities and compliance with the 48-hour rule.',
+                                        'Training community paralegals and youth rights champions on fundamental Chapter IV rights.',
+                                        'Compilation of empirical detention and human rights abuse case records for institutional advocacy.',
+                                    ].map((res, i) => (
+                                        <div key={i} className="flex items-start gap-3 text-sm text-slate-700">
+                                            <CheckCircle2 className="w-5 h-5 text-brand-rust shrink-0 mt-0.5" />
+                                            <span>{res}</span>
                                         </div>
                                     ))}
                                 </div>
                             </div>
                         </div>
 
-                        {/* Metadata sidebar */}
-                        <div className="lg:col-span-4 space-y-6">
-                            <div className="p-6 rounded-2xl bg-navy-900/60 border border-navy-800 space-y-4">
-                                <h4 className="font-serif text-lg text-white font-normal border-b border-navy-800 pb-3">Project Metadata</h4>
+                        {/* Metadata Sidebar */}
+                        <aside className="lg:col-span-4 space-y-6">
+                            {/* Project Details Box */}
+                            <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-xs space-y-5">
+                                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 border-b border-slate-100 pb-2">
+                                    Project Parameters
+                                </h3>
 
-                                {project.locations && (
+                                {project.locations && project.locations.length > 0 && (
                                     <div>
-                                        <div className="text-xs text-navy-400 uppercase font-semibold mb-1">Target Districts</div>
-                                        <div className="text-sm text-navy-200 font-light">{project.locations.join(', ')}</div>
+                                        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Target Locations</span>
+                                        <div className="flex flex-wrap gap-1.5">
+                                            {(Array.isArray(project.locations) ? project.locations : [project.locations]).map((loc, i) => (
+                                                <span key={i} className="bg-slate-100 text-slate-800 text-xs px-2.5 py-1 rounded-md font-medium">
+                                                    {loc}
+                                                </span>
+                                            ))}
+                                        </div>
                                     </div>
                                 )}
 
-                                {project.beneficiaries && (
+                                {project.beneficiaries && project.beneficiaries.length > 0 && (
                                     <div>
-                                        <div className="text-xs text-navy-400 uppercase font-semibold mb-1">Beneficiary Groups</div>
-                                        <div className="text-sm text-navy-200 font-light">{project.beneficiaries.join(', ')}</div>
+                                        <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Target Groups</span>
+                                        <div className="flex flex-wrap gap-1.5">
+                                            {(Array.isArray(project.beneficiaries) ? project.beneficiaries : [project.beneficiaries]).map((ben, i) => (
+                                                <span key={i} className="bg-brand-rust-light text-brand-rust text-xs px-2.5 py-1 rounded-md font-medium">
+                                                    {ben}
+                                                </span>
+                                            ))}
+                                        </div>
                                     </div>
                                 )}
 
-                                <div className="pt-4 border-t border-navy-800">
-                                    <Link
-                                        href="/contact?type=partner"
-                                        className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-navy-950 font-semibold text-xs transition-colors"
-                                    >
-                                        Partner on this Project <ArrowRight className="w-3.5 h-3.5" />
-                                    </Link>
+                                <div>
+                                    <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Project Lead</span>
+                                    <span className="text-xs font-bold text-slate-800">Chapter Four Field Operations Unit</span>
                                 </div>
                             </div>
-                        </div>
+
+                            {/* Contact Box */}
+                            <div className="bg-brand-dark rounded-xl p-6 text-white shadow-md">
+                                <h3 className="text-base font-bold text-brand-amber mb-2">Support This Intervention</h3>
+                                <p className="text-xs text-slate-300 leading-relaxed mb-4">
+                                    Partner with us or support our community paralegals and mobile legal defense clinics.
+                                </p>
+                                <Link
+                                    href="/contact"
+                                    className="w-full btn-primary text-xs py-2.5 block text-center"
+                                >
+                                    Partner With Chapter Four
+                                </Link>
+                            </div>
+                        </aside>
+                    </div>
+
+                    <div className="mt-12 pt-8 border-t border-slate-200">
+                        <Link
+                            href="/projects"
+                            className="inline-flex items-center gap-2 text-xs font-bold text-brand-rust hover:text-brand-brick uppercase tracking-wider"
+                        >
+                            <ArrowLeft className="w-4 h-4" />
+                            <span>Back to All Projects</span>
+                        </Link>
                     </div>
                 </div>
-            </section>
+            </main>
         </PublicLayout>
     );
 }

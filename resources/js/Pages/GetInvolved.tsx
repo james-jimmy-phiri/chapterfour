@@ -1,135 +1,136 @@
 import PublicLayout from '@/Layouts/PublicLayout';
 import { Head, Link } from '@inertiajs/react';
-import { motion } from 'framer-motion';
 import {
     Heart, Users, Shield, ArrowRight, CheckCircle2,
-    Sparkles, HandHeart, Scale, Building2
+    Scale, Building2, ChevronRight, AlertCircle, Sparkles
 } from 'lucide-react';
 
 export default function GetInvolved() {
     return (
         <PublicLayout>
-            <Head title="Get Involved - Chapter Four" />
+            <Head>
+                <title>Get Involved — Chapter Four Malawi</title>
+                <meta
+                    name="description"
+                    content="Stand with Chapter Four Malawi in defending human rights. Volunteer as a community paralegal, partner with our legal clinic, or support public interest litigation."
+                />
+            </Head>
 
-            {/* Header Hero */}
-            <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-gradient-to-b from-navy-950 via-navy-900 to-navy-950">
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(245,158,11,0.12),transparent)]" />
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="max-w-3xl mx-auto"
-                    >
-                        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/20 mb-6">
-                            <Users className="w-3.5 h-3.5" /> Collective Action
-                        </span>
-                        <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl font-normal text-white tracking-tight leading-tight">
-                            Stand with Us in the <span className="italic text-gradient-gold">Arena of Justice</span>
-                        </h1>
-                        <p className="mt-6 text-lg sm:text-xl text-navy-200 leading-relaxed font-light">
-                            Constitutional rights thrive when citizens actively organize, monitor, and defend them. Discover how you can participate.
-                        </p>
-                    </motion.div>
+            {/* ─── HERO BANNER ─────────────────────────────────────────────── */}
+            <section className="hero-pattern text-white py-16 px-4 sm:px-8 border-b border-white/10" data-purpose="hero-banner">
+                <div className="max-w-7xl mx-auto">
+                    {/* Breadcrumbs */}
+                    <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-300 mb-4 font-semibold">
+                        <Link href="/" className="hover:text-brand-amber transition">Home</Link>
+                        <span className="text-slate-500">›</span>
+                        <span className="text-brand-amber">Get Involved</span>
+                    </div>
+
+                    <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-4">
+                        Stand with Us for Constitutional Justice
+                    </h1>
+                    <p className="text-base sm:text-lg text-slate-200 max-w-2xl font-normal leading-relaxed">
+                        Human rights and democratic freedoms thrive when citizens, lawyers, and communities actively organize, observe, and defend them.
+                    </p>
                 </div>
             </section>
 
-            {/* Ways to Get Involved */}
-            <section className="py-20 bg-navy-950 border-t border-navy-800/60">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {/* ─── 3 PILLARS OF ENGAGEMENT ──────────────────────────────────── */}
+            <main className="py-16 bg-[#fafafa]">
+                <div className="max-w-7xl mx-auto px-4 sm:px-8">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {/* 1. Volunteer */}
-                        <div id="volunteer" className="p-8 rounded-2xl bg-navy-900/50 border border-navy-800 hover:border-amber-500/30 transition-all flex flex-col justify-between">
+                        {/* 1. Volunteer & Paralegals */}
+                        <div id="volunteer" className="p-8 rounded-2xl bg-white border border-slate-200 shadow-xs hover:shadow-md hover:border-brand-rust/30 transition flex flex-col justify-between">
                             <div>
-                                <div className="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400 mb-6">
+                                <div className="w-12 h-12 rounded-xl bg-brand-rust-light text-brand-rust flex items-center justify-center mb-6">
                                     <Scale className="w-6 h-6" />
                                 </div>
-                                <h3 className="font-serif text-2xl text-white font-normal mb-3">Volunteer / Paralegal</h3>
-                                <p className="text-navy-300 text-sm font-light leading-relaxed mb-6">
-                                    Are you a law student, young lawyer, or community organizer? Join our mobile legal clinics to provide legal aid to vulnerable youth.
+                                <h2 className="text-xl font-bold text-slate-900 mb-3">Volunteer / Paralegal</h2>
+                                <p className="text-slate-600 text-sm leading-relaxed mb-6">
+                                    Are you a law student, legal practitioner, or community activist? Join our mobile legal clinics to provide immediate legal triage and pro-bono defense in subordinate courts.
                                 </p>
-                                <ul className="space-y-2 text-xs text-navy-200 mb-6">
+                                <ul className="space-y-2 text-xs text-slate-600 mb-6">
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-amber-400" /> Police custody monitoring
+                                        <CheckCircle2 className="w-4 h-4 text-brand-rust" /> Mobile legal clinic assistance
                                     </li>
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-amber-400" /> Community civic education
+                                        <CheckCircle2 className="w-4 h-4 text-brand-rust" /> Court monitoring & bail advocacy
                                     </li>
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-amber-400" /> Human rights reporting
+                                        <CheckCircle2 className="w-4 h-4 text-brand-rust" /> Community human rights education
                                     </li>
                                 </ul>
                             </div>
                             <Link
-                                href="/contact?type=volunteering"
-                                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-navy-800 hover:bg-navy-700 text-amber-400 font-semibold text-xs border border-navy-700 transition-colors"
+                                href="/contact?type=Volunteer"
+                                className="btn-primary w-full text-center text-xs py-2.5"
                             >
-                                Apply as Volunteer <ArrowRight className="w-3.5 h-3.5" />
+                                Join Volunteer Network
                             </Link>
                         </div>
 
-                        {/* 2. Partner */}
-                        <div id="partner" className="p-8 rounded-2xl bg-navy-900/50 border border-navy-800 hover:border-red-500/30 transition-all flex flex-col justify-between">
+                        {/* 2. Partner / Institutional Alliance */}
+                        <div id="partner" className="p-8 rounded-2xl bg-white border border-slate-200 shadow-xs hover:shadow-md hover:border-brand-amber/40 transition flex flex-col justify-between">
                             <div>
-                                <div className="w-12 h-12 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400 mb-6">
+                                <div className="w-12 h-12 rounded-xl bg-brand-amber-light text-brand-amber-dark flex items-center justify-center mb-6">
                                     <Building2 className="w-6 h-6" />
                                 </div>
-                                <h3 className="font-serif text-2xl text-white font-normal mb-3">Institutional Partners</h3>
-                                <p className="text-navy-300 text-sm font-light leading-relaxed mb-6">
-                                    We collaborate with donor agencies, development partners, academic institutions, and regional human rights coalitions.
+                                <h2 className="text-xl font-bold text-slate-900 mb-3">Institutional Partnerships</h2>
+                                <p className="text-slate-600 text-sm leading-relaxed mb-6">
+                                    We collaborate with civil society organizations, donor agencies, universities, and international human rights bodies to scale systemic advocacy and judicial monitoring.
                                 </p>
-                                <ul className="space-y-2 text-xs text-navy-200 mb-6">
+                                <ul className="space-y-2 text-xs text-slate-600 mb-6">
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-red-400" /> Joint advocacy research
+                                        <CheckCircle2 className="w-4 h-4 text-brand-amber" /> Joint empirical research & surveys
                                     </li>
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-red-400" /> Programmatic co-funding
+                                        <CheckCircle2 className="w-4 h-4 text-brand-amber" /> Strategic public interest litigation
                                     </li>
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-red-400" /> Regional solidarity campaigns
+                                        <CheckCircle2 className="w-4 h-4 text-brand-amber" /> Capacity building for duty-bearers
                                     </li>
                                 </ul>
                             </div>
                             <Link
-                                href="/contact?type=partner"
-                                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-navy-800 hover:bg-navy-700 text-red-400 font-semibold text-xs border border-navy-700 transition-colors"
+                                href="/contact?type=Partnership"
+                                className="btn-secondary w-full text-center text-xs py-2.5"
                             >
-                                Partner With Us <ArrowRight className="w-3.5 h-3.5" />
+                                Explore Partnership
                             </Link>
                         </div>
 
-                        {/* 3. Support & Solidarity */}
-                        <div id="support" className="p-8 rounded-2xl bg-navy-900/50 border border-navy-800 hover:border-emerald-500/30 transition-all flex flex-col justify-between">
+                        {/* 3. Report Violation / Confidential Hotline */}
+                        <div id="report" className="p-8 rounded-2xl bg-brand-dark text-white shadow-md flex flex-col justify-between border border-white/10">
                             <div>
-                                <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-6">
-                                    <HandHeart className="w-6 h-6" />
+                                <div className="w-12 h-12 rounded-xl bg-brand-rust text-white flex items-center justify-center mb-6 shadow-sm">
+                                    <Shield className="w-6 h-6" />
                                 </div>
-                                <h3 className="font-serif text-2xl text-white font-normal mb-3">Support Our Work</h3>
-                                <p className="text-navy-300 text-sm font-light leading-relaxed mb-6">
-                                    Support our pro-bono bail emergency fund, mobile clinic transport, and publications distribution across rural districts.
+                                <h2 className="text-xl font-bold text-white mb-3">Report Rights Violation</h2>
+                                <p className="text-slate-300 text-sm leading-relaxed mb-6">
+                                    Have you or your community witnessed an arbitrary arrest, civic space restriction, or administrative rights abuse? File a report securely with our advocacy unit.
                                 </p>
-                                <ul className="space-y-2 text-xs text-navy-200 mb-6">
+                                <ul className="space-y-2 text-xs text-slate-300 mb-6">
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Legal defense fund
+                                        <CheckCircle2 className="w-4 h-4 text-brand-amber" /> 100% Confidential & Secure
                                     </li>
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-400" /> District civic handbooks
+                                        <CheckCircle2 className="w-4 h-4 text-brand-amber" /> Direct review by legal counsel
                                     </li>
                                     <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Youth assembly training
+                                        <CheckCircle2 className="w-4 h-4 text-brand-amber" /> Rapid legal aid referral
                                     </li>
                                 </ul>
                             </div>
                             <Link
-                                href="/contact?type=support"
-                                className="w-full inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-navy-950 font-semibold text-xs transition-all shadow-md"
+                                href="/contact?type=Violation"
+                                className="bg-brand-amber hover:bg-brand-amber-dark text-brand-dark font-bold text-xs py-2.5 rounded text-center block transition"
                             >
-                                Support Our Mission <ArrowRight className="w-3.5 h-3.5" />
+                                Submit Violation Report
                             </Link>
                         </div>
                     </div>
                 </div>
-            </section>
+            </main>
         </PublicLayout>
     );
 }

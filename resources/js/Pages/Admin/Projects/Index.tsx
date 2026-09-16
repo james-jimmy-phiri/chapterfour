@@ -45,8 +45,8 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
             slug: '',
             summary: '',
             description: '',
-            locations: 'Lilongwe, Dowa, Dedza',
-            beneficiaries: 'Accused Youth, Rural Families',
+            locations: '',
+            beneficiaries: '',
             status: 'published',
         });
         setModalOpen(true);
@@ -92,8 +92,8 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
         }
     };
 
-    const handleDelete = (id: number, title: string) => {
-        if (confirm(`Delete project '${title}'?`)) {
+    const handleDelete = (id: number) => {
+        if (confirm('Are you sure you want to delete this field project?')) {
             router.delete(`/admin/projects/${id}`);
         }
     };
@@ -119,13 +119,13 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
                         placeholder="Search field projects..."
-                        className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white placeholder-slate-500 text-xs focus:ring-2 focus:ring-amber-500/50"
+                        className="w-full pl-10 pr-4 py-2 rounded-lg bg-white dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 text-xs focus:ring-1 focus:ring-brand-rust"
                     />
                 </div>
 
                 <button
                     onClick={openCreate}
-                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-navy-950 transition-all shadow-md"
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg text-xs font-bold bg-brand-rust hover:bg-brand-rust-dark text-white transition shadow-sm"
                 >
                     <Plus className="w-4 h-4" /> New Field Project
                 </button>
@@ -136,34 +136,36 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
                 {filtered.map((item) => (
                     <div
                         key={item.id}
-                        className="p-6 rounded-2xl bg-[#0a0e1a]/90 border border-white/[0.06] hover:border-amber-500/30 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-6 group"
+                        className="p-6 rounded-xl bg-white dark:bg-[#0a0e1a] border border-slate-200 dark:border-white/[0.06] hover:border-brand-rust/40 transition flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-xs group"
                     >
                         <div className="max-w-3xl space-y-2">
                             <div className="flex items-center gap-2.5">
-                                <h3 className="font-serif text-lg text-white font-normal group-hover:text-amber-300 transition-colors">
+                                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-brand-rust transition-colors">
                                     {item.title}
                                 </h3>
                                 <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
-                                    item.status === 'published' ? 'bg-emerald-500/20 text-emerald-300' : 'bg-slate-500/20 text-slate-400'
+                                    item.status === 'published'
+                                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                                        : 'bg-slate-100 text-slate-600'
                                 }`}>
                                     {item.status}
                                 </span>
                             </div>
 
-                            <p className="text-xs text-slate-400 font-light leading-relaxed">
+                            <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
                                 {item.summary}
                             </p>
 
-                            <div className="flex flex-wrap items-center gap-3 pt-1 text-[11px] text-slate-400">
+                            <div className="flex flex-wrap items-center gap-3 pt-1 text-[11px] text-slate-500">
                                 {item.locations && item.locations.length > 0 && (
                                     <div className="flex items-center gap-1">
-                                        <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                                        <MapPin className="w-3.5 h-3.5 text-brand-rust shrink-0" />
                                         <span>{item.locations.join(', ')}</span>
                                     </div>
                                 )}
                                 {item.beneficiaries && item.beneficiaries.length > 0 && (
                                     <div className="flex items-center gap-1">
-                                        <Users className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                                        <Users className="w-3.5 h-3.5 text-blue-600 shrink-0" />
                                         <span>{item.beneficiaries.join(', ')}</span>
                                     </div>
                                 )}
@@ -175,41 +177,47 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
                                 href={`/projects/${item.slug}`}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="p-2 rounded-xl bg-white/5 hover:bg-amber-500/20 text-slate-300 hover:text-amber-400 transition-colors text-xs"
+                                className="p-2 rounded-lg border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-brand-rust transition text-xs"
                                 title="Preview on portal"
                             >
                                 <ExternalLink className="w-4 h-4" />
                             </a>
                             <button
                                 onClick={() => openEdit(item)}
-                                className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors text-xs"
-                                title="Edit project"
+                                className="p-2 rounded-lg border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-brand-rust transition text-xs"
+                                title="Edit Project"
                             >
                                 <Edit3 className="w-4 h-4" />
                             </button>
                             <button
-                                onClick={() => handleDelete(item.id, item.title)}
-                                className="p-2 rounded-xl bg-white/5 hover:bg-red-500/20 text-slate-400 hover:text-red-400 transition-colors text-xs"
-                                title="Delete project"
+                                onClick={() => handleDelete(item.id)}
+                                className="p-2 rounded-lg border border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:text-red-600 transition text-xs"
+                                title="Delete Project"
                             >
                                 <Trash2 className="w-4 h-4" />
                             </button>
                         </div>
                     </div>
                 ))}
+
+                {filtered.length === 0 && (
+                    <div className="p-12 text-center text-xs text-slate-500 bg-white dark:bg-[#0a0e1a] rounded-xl border border-slate-200 dark:border-white/10">
+                        No projects found matching your search.
+                    </div>
+                )}
             </div>
 
             {/* Modal for Create/Edit */}
             {modalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-                    <div className="w-full max-w-2xl p-6 sm:p-8 rounded-3xl bg-[#0c111e] border border-white/10 shadow-2xl relative max-h-[90vh] overflow-y-auto">
-                        <div className="flex items-center justify-between pb-4 border-b border-white/10 mb-6">
-                            <h2 className="font-serif text-xl text-white font-normal">
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+                    <div className="w-full max-w-2xl p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#0c111e] border border-slate-200 dark:border-white/10 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+                        <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-white/10 mb-6">
+                            <h2 className="text-lg font-bold text-slate-900 dark:text-white">
                                 {editingItem ? 'Edit Field Project' : 'Register New Project'}
                             </h2>
                             <button
                                 onClick={() => setModalOpen(false)}
-                                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/5"
+                                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white"
                             >
                                 <X className="w-5 h-5" />
                             </button>
@@ -217,7 +225,7 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
 
                         <form onSubmit={handleSubmit} className="space-y-4">
                             <div>
-                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                                     Project Title
                                 </label>
                                 <input
@@ -225,12 +233,12 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
                                     value={data.title}
                                     onChange={(e) => setData('title', e.target.value)}
                                     required
-                                    className="w-full px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white text-xs focus:ring-2 focus:ring-amber-500/50"
+                                    className="w-full px-4 py-2 rounded-lg bg-white dark:bg-white/[0.04] border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white text-xs focus:ring-1 focus:ring-brand-rust"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                                     Executive Summary
                                 </label>
                                 <textarea
@@ -238,13 +246,13 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
                                     value={data.summary}
                                     onChange={(e) => setData('summary', e.target.value)}
                                     required
-                                    className="w-full px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white text-xs leading-relaxed"
+                                    className="w-full px-4 py-2 rounded-lg bg-white dark:bg-white/[0.04] border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white text-xs leading-relaxed"
                                 />
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                                         Districts / Locations (Comma separated)
                                     </label>
                                     <input
@@ -252,11 +260,11 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
                                         value={data.locations}
                                         onChange={(e) => setData('locations', e.target.value)}
                                         placeholder="Lilongwe, Blantyre, Zomba"
-                                        className="w-full px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white text-xs"
+                                        className="w-full px-4 py-2 rounded-lg bg-white dark:bg-white/[0.04] border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white text-xs"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                                         Beneficiaries (Comma separated)
                                     </label>
                                     <input
@@ -264,37 +272,37 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
                                         value={data.beneficiaries}
                                         onChange={(e) => setData('beneficiaries', e.target.value)}
                                         placeholder="Youth, Detained Persons, Women"
-                                        className="w-full px-4 py-2.5 rounded-xl bg-white/[0.04] border border-white/10 text-white text-xs"
+                                        className="w-full px-4 py-2 rounded-lg bg-white dark:bg-white/[0.04] border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white text-xs"
                                     />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                                     Status
                                 </label>
                                 <select
                                     value={data.status}
                                     onChange={(e) => setData('status', e.target.value)}
-                                    className="w-full px-4 py-2.5 rounded-xl bg-[#090d16] border border-white/10 text-white text-xs"
+                                    className="w-full px-4 py-2 rounded-lg bg-white dark:bg-[#090d16] border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white text-xs"
                                 >
                                     <option value="published">Published</option>
                                     <option value="draft">Draft</option>
                                 </select>
                             </div>
 
-                            <div className="flex items-center justify-end gap-3 pt-4 border-t border-white/10">
+                            <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-white/10">
                                 <button
                                     type="button"
                                     onClick={() => setModalOpen(false)}
-                                    className="px-4 py-2 rounded-xl text-xs text-slate-400 hover:text-white bg-white/5"
+                                    className="px-4 py-2 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/5"
                                 >
                                     Cancel
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={processing}
-                                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-navy-950 transition-all shadow-md"
+                                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-xs font-bold bg-brand-rust hover:bg-brand-rust-dark text-white transition shadow-sm"
                                 >
                                     <Save className="w-3.5 h-3.5" />
                                     {editingItem ? 'Update Project' : 'Save Project'}

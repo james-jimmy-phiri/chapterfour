@@ -128,7 +128,6 @@ export default function UserModal({
         e.preventDefault();
 
         if (isEdit && user) {
-            // Use POST with _method=PUT to support multipart/form-data for file uploads in Laravel
             post(`/admin/users/${user.id}`, {
                 preserveScroll: true,
                 onSuccess: () => {
@@ -146,40 +145,40 @@ export default function UserModal({
     };
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-md">
-            <div className="relative w-full max-w-2xl rounded-2xl bg-[#0b0f19] border border-white/[0.08] shadow-2xl shadow-black/80 overflow-hidden text-slate-100 flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto bg-black/60 dark:bg-black/80 backdrop-blur-md">
+            <div className="relative w-full max-w-2xl rounded-2xl bg-white dark:bg-[#0c111e] border border-slate-200 dark:border-white/[0.08] shadow-2xl overflow-hidden text-slate-800 dark:text-slate-100 flex flex-col max-h-[90vh]">
                 {/* Modal Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06] bg-white/[0.02]">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-white/[0.06] bg-slate-50 dark:bg-white/[0.02]">
                     <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                        <div className="w-9 h-9 rounded-xl bg-brand-rust/10 border border-brand-rust/20 flex items-center justify-center text-brand-rust dark:text-brand-amber">
                             {isEdit ? <UserIcon className="w-5 h-5" /> : <Shield className="w-5 h-5" />}
                         </div>
                         <div>
-                            <h2 className="text-base font-semibold text-white tracking-tight">
+                            <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
                                 {isEdit ? `Edit User: ${user.full_name || user.name}` : 'Add New Staff User'}
                             </h2>
-                            <p className="text-xs text-slate-400">
+                            <p className="text-xs text-slate-500 dark:text-slate-400">
                                 {isEdit ? 'Update identity, department placement, and role credentials' : 'Register a new institutional staff or team account'}
                             </p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
-                        className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/[0.06] transition-colors"
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.06] transition-colors"
                     >
                         <X className="w-5 h-5" />
                     </button>
                 </div>
 
                 {/* Section Navigation Tabs */}
-                <div className="flex items-center gap-2 px-6 pt-3 border-b border-white/[0.06] bg-white/[0.01]">
+                <div className="flex items-center gap-2 px-6 pt-3 border-b border-slate-200 dark:border-white/[0.06] bg-slate-50/50 dark:bg-white/[0.01]">
                     <button
                         type="button"
                         onClick={() => setActiveTab('identity')}
                         className={`pb-3 px-3 text-xs font-medium border-b-2 flex items-center gap-1.5 transition-all ${
                             activeTab === 'identity'
-                                ? 'border-amber-500 text-amber-400'
-                                : 'border-transparent text-slate-400 hover:text-slate-200'
+                                ? 'border-brand-rust text-brand-rust dark:border-brand-amber dark:text-brand-amber font-semibold'
+                                : 'border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
                         }`}
                     >
                         <UserIcon className="w-3.5 h-3.5" /> Identity & Contact
@@ -189,8 +188,8 @@ export default function UserModal({
                         onClick={() => setActiveTab('organization')}
                         className={`pb-3 px-3 text-xs font-medium border-b-2 flex items-center gap-1.5 transition-all ${
                             activeTab === 'organization'
-                                ? 'border-amber-500 text-amber-400'
-                                : 'border-transparent text-slate-400 hover:text-slate-200'
+                                ? 'border-brand-rust text-brand-rust dark:border-brand-amber dark:text-brand-amber font-semibold'
+                                : 'border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
                         }`}
                     >
                         <Building2 className="w-3.5 h-3.5" /> Department & Placement
@@ -200,8 +199,8 @@ export default function UserModal({
                         onClick={() => setActiveTab('access')}
                         className={`pb-3 px-3 text-xs font-medium border-b-2 flex items-center gap-1.5 transition-all ${
                             activeTab === 'access'
-                                ? 'border-amber-500 text-amber-400'
-                                : 'border-transparent text-slate-400 hover:text-slate-200'
+                                ? 'border-brand-rust text-brand-rust dark:border-brand-amber dark:text-brand-amber font-semibold'
+                                : 'border-transparent text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
                         }`}
                     >
                         <Lock className="w-3.5 h-3.5" /> Access & Roles
@@ -214,26 +213,26 @@ export default function UserModal({
                     {activeTab === 'identity' && (
                         <div className="space-y-4">
                             {/* Avatar Upload */}
-                            <div className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/[0.06]">
-                                <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-amber-500/30 bg-navy-950 flex items-center justify-center shrink-0">
+                            <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.06]">
+                                <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-brand-rust/30 bg-slate-100 dark:bg-navy-950 flex items-center justify-center shrink-0">
                                     {avatarPreview ? (
                                         <img src={avatarPreview} alt="Avatar Preview" className="w-full h-full object-cover" />
                                     ) : (
-                                        <UserIcon className="w-8 h-8 text-slate-500" />
+                                        <UserIcon className="w-8 h-8 text-slate-400" />
                                     )}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <h4 className="text-xs font-semibold text-white">Profile Photo</h4>
-                                    <p className="text-[11px] text-slate-400 mt-0.5">
+                                    <h4 className="text-xs font-bold text-slate-900 dark:text-white">Profile Photo</h4>
+                                    <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                                         Upload a clear headshot or institutional photo (JPG, PNG, WebP up to 2MB).
                                     </p>
                                     <div className="flex items-center gap-2 mt-2">
                                         <button
                                             type="button"
                                             onClick={() => fileInputRef.current?.click()}
-                                            className="px-2.5 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] text-[11px] font-medium text-slate-200 flex items-center gap-1.5 transition-colors"
+                                            className="px-2.5 py-1.5 rounded-lg bg-white dark:bg-white/[0.06] hover:bg-slate-100 dark:hover:bg-white/[0.1] border border-slate-200 dark:border-white/[0.08] text-[11px] font-medium text-slate-700 dark:text-slate-200 flex items-center gap-1.5 transition-colors shadow-sm"
                                         >
-                                            <Upload className="w-3 h-3 text-amber-400" /> Choose Image
+                                            <Upload className="w-3 h-3 text-brand-rust dark:text-brand-amber" /> Choose Image
                                         </button>
                                         {avatarPreview && (
                                             <button
@@ -242,7 +241,7 @@ export default function UserModal({
                                                     setAvatarPreview(null);
                                                     setData('avatar', null);
                                                 }}
-                                                className="px-2 py-1.5 text-[11px] text-slate-400 hover:text-rose-400 transition-colors"
+                                                className="px-2 py-1.5 text-[11px] text-slate-400 hover:text-rose-500 transition-colors"
                                             >
                                                 Clear
                                             </button>
@@ -256,7 +255,7 @@ export default function UserModal({
                                         />
                                     </div>
                                     {errors.avatar && (
-                                        <p className="text-[11px] text-rose-400 mt-1">{errors.avatar}</p>
+                                        <p className="text-[11px] text-rose-500 mt-1">{errors.avatar}</p>
                                     )}
                                 </div>
                             </div>
@@ -264,8 +263,8 @@ export default function UserModal({
                             {/* Names */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-xs font-medium text-slate-300 mb-1">
-                                        First Name <span className="text-amber-400">*</span>
+                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                        First Name <span className="text-brand-rust">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -273,15 +272,15 @@ export default function UserModal({
                                         value={data.first_name}
                                         onChange={e => setData('first_name', e.target.value)}
                                         placeholder="e.g. Grace"
-                                        className="w-full px-3.5 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] text-white text-xs placeholder-slate-500 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50"
+                                        className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.08] text-slate-900 dark:text-white text-xs placeholder-slate-400 focus:outline-none focus:border-brand-rust focus:ring-1 focus:ring-brand-rust"
                                     />
                                     {errors.first_name && (
-                                        <p className="text-[11px] text-rose-400 mt-1">{errors.first_name}</p>
+                                        <p className="text-[11px] text-rose-500 mt-1">{errors.first_name}</p>
                                     )}
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-medium text-slate-300 mb-1">
-                                        Last Name <span className="text-amber-400">*</span>
+                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                        Last Name <span className="text-brand-rust">*</span>
                                     </label>
                                     <input
                                         type="text"
@@ -289,10 +288,10 @@ export default function UserModal({
                                         value={data.last_name}
                                         onChange={e => setData('last_name', e.target.value)}
                                         placeholder="e.g. Chinkono"
-                                        className="w-full px-3.5 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] text-white text-xs placeholder-slate-500 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50"
+                                        className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.08] text-slate-900 dark:text-white text-xs placeholder-slate-400 focus:outline-none focus:border-brand-rust focus:ring-1 focus:ring-brand-rust"
                                     />
                                     {errors.last_name && (
-                                        <p className="text-[11px] text-rose-400 mt-1">{errors.last_name}</p>
+                                        <p className="text-[11px] text-rose-500 mt-1">{errors.last_name}</p>
                                     )}
                                 </div>
                             </div>
@@ -300,8 +299,8 @@ export default function UserModal({
                             {/* Email & Phone */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-xs font-medium text-slate-300 mb-1">
-                                        Work Email <span className="text-amber-400">*</span>
+                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                        Work Email <span className="text-brand-rust">*</span>
                                     </label>
                                     <input
                                         type="email"
@@ -309,14 +308,14 @@ export default function UserModal({
                                         value={data.email}
                                         onChange={e => setData('email', e.target.value)}
                                         placeholder="name@chapterfour.mw"
-                                        className="w-full px-3.5 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] text-white text-xs placeholder-slate-500 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50"
+                                        className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.08] text-slate-900 dark:text-white text-xs placeholder-slate-400 focus:outline-none focus:border-brand-rust focus:ring-1 focus:ring-brand-rust"
                                     />
                                     {errors.email && (
-                                        <p className="text-[11px] text-rose-400 mt-1">{errors.email}</p>
+                                        <p className="text-[11px] text-rose-500 mt-1">{errors.email}</p>
                                     )}
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-medium text-slate-300 mb-1">
+                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                                         Phone Number
                                     </label>
                                     <input
@@ -324,10 +323,10 @@ export default function UserModal({
                                         value={data.phone}
                                         onChange={e => setData('phone', e.target.value)}
                                         placeholder="+265 999 000 000"
-                                        className="w-full px-3.5 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] text-white text-xs placeholder-slate-500 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50"
+                                        className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.08] text-slate-900 dark:text-white text-xs placeholder-slate-400 focus:outline-none focus:border-brand-rust focus:ring-1 focus:ring-brand-rust"
                                     />
                                     {errors.phone && (
-                                        <p className="text-[11px] text-rose-400 mt-1">{errors.phone}</p>
+                                        <p className="text-[11px] text-rose-500 mt-1">{errors.phone}</p>
                                     )}
                                 </div>
                             </div>
@@ -339,27 +338,27 @@ export default function UserModal({
                         <div className="space-y-4">
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-xs font-medium text-slate-300 mb-1">
+                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                                         Department
                                     </label>
                                     <select
                                         value={data.department}
                                         onChange={e => setData('department', e.target.value)}
-                                        className="w-full px-3.5 py-2 rounded-xl bg-[#090d16] border border-white/[0.08] text-white text-xs focus:outline-none focus:border-amber-500/50"
+                                        className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-[#090d16] border border-slate-200 dark:border-white/[0.08] text-slate-900 dark:text-white text-xs focus:outline-none focus:border-brand-rust"
                                     >
                                         {departments.map(dept => (
-                                            <option key={dept} value={dept}>
+                                            <option key={dept} value={dept} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
                                                 {dept}
                                             </option>
                                         ))}
                                     </select>
                                     {errors.department && (
-                                        <p className="text-[11px] text-rose-400 mt-1">{errors.department}</p>
+                                        <p className="text-[11px] text-rose-500 mt-1">{errors.department}</p>
                                     )}
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-medium text-slate-300 mb-1">
+                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                                         Job Title
                                     </label>
                                     <input
@@ -367,16 +366,16 @@ export default function UserModal({
                                         value={data.job_title}
                                         onChange={e => setData('job_title', e.target.value)}
                                         placeholder="e.g. Legal Researcher / Officer"
-                                        className="w-full px-3.5 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] text-white text-xs placeholder-slate-500 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50"
+                                        className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.08] text-slate-900 dark:text-white text-xs placeholder-slate-400 focus:outline-none focus:border-brand-rust focus:ring-1 focus:ring-brand-rust"
                                     />
                                     {errors.job_title && (
-                                        <p className="text-[11px] text-rose-400 mt-1">{errors.job_title}</p>
+                                        <p className="text-[11px] text-rose-500 mt-1">{errors.job_title}</p>
                                     )}
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-xs font-medium text-slate-300 mb-1">
+                                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                                     Employee / Staff ID
                                 </label>
                                 <input
@@ -384,14 +383,14 @@ export default function UserModal({
                                     value={data.employee_id}
                                     onChange={e => setData('employee_id', e.target.value)}
                                     placeholder="e.g. C4-STAFF-012"
-                                    className="w-full px-3.5 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] text-white text-xs placeholder-slate-500 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50"
+                                    className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.08] text-slate-900 dark:text-white text-xs placeholder-slate-400 focus:outline-none focus:border-brand-rust focus:ring-1 focus:ring-brand-rust"
                                 />
                                 {errors.employee_id && (
-                                    <p className="text-[11px] text-rose-400 mt-1">{errors.employee_id}</p>
+                                    <p className="text-[11px] text-rose-500 mt-1">{errors.employee_id}</p>
                                 )}
                             </div>
 
-                            <div className="p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] text-[11px] text-slate-400 leading-relaxed">
+                            <div className="p-3 rounded-xl bg-slate-50 dark:bg-white/[0.02] border border-slate-200 dark:border-white/[0.05] text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
                                 Institutional placement specifies internal jurisdiction and assists in accountability audits and thematic allocation.
                             </div>
                         </div>
@@ -403,26 +402,26 @@ export default function UserModal({
                             {/* Status and Password */}
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
-                                    <label className="block text-xs font-medium text-slate-300 mb-1">
-                                        Account Status <span className="text-amber-400">*</span>
+                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                                        Account Status <span className="text-brand-rust">*</span>
                                     </label>
                                     <select
                                         value={data.status}
                                         onChange={e => setData('status', e.target.value as any)}
-                                        className="w-full px-3.5 py-2 rounded-xl bg-[#090d16] border border-white/[0.08] text-white text-xs focus:outline-none focus:border-amber-500/50"
+                                        className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-[#090d16] border border-slate-200 dark:border-white/[0.08] text-slate-900 dark:text-white text-xs focus:outline-none focus:border-brand-rust"
                                     >
-                                        <option value="active">Active (Full access)</option>
-                                        <option value="pending">Pending (Awaiting setup)</option>
-                                        <option value="suspended">Suspended (Access blocked)</option>
-                                        <option value="inactive">Inactive (Deactivated)</option>
+                                        <option value="active" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Active (Full access)</option>
+                                        <option value="pending" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Pending (Awaiting setup)</option>
+                                        <option value="suspended" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Suspended (Access blocked)</option>
+                                        <option value="inactive" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Inactive (Deactivated)</option>
                                     </select>
                                     {errors.status && (
-                                        <p className="text-[11px] text-rose-400 mt-1">{errors.status}</p>
+                                        <p className="text-[11px] text-rose-500 mt-1">{errors.status}</p>
                                     )}
                                 </div>
 
                                 <div>
-                                    <label className="block text-xs font-medium text-slate-300 mb-1">
+                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                                         {isEdit ? 'New Password (leave blank to keep current)' : 'Account Password'}
                                     </label>
                                     <div className="relative">
@@ -431,26 +430,26 @@ export default function UserModal({
                                             value={data.password}
                                             onChange={e => setData('password', e.target.value)}
                                             placeholder={isEdit ? '••••••••••••' : 'Min 8 characters'}
-                                            className="w-full px-3.5 py-2 pr-10 rounded-xl bg-white/[0.03] border border-white/[0.08] text-white text-xs placeholder-slate-500 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/50"
+                                            className="w-full px-3.5 py-2 pr-10 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/[0.08] text-slate-900 dark:text-white text-xs placeholder-slate-400 focus:outline-none focus:border-brand-rust focus:ring-1 focus:ring-brand-rust"
                                         />
                                         <button
                                             type="button"
                                             onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
                                         >
                                             {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                                         </button>
                                     </div>
                                     {errors.password && (
-                                        <p className="text-[11px] text-rose-400 mt-1">{errors.password}</p>
+                                        <p className="text-[11px] text-rose-500 mt-1">{errors.password}</p>
                                     )}
                                 </div>
                             </div>
 
                             {/* Assigned Roles */}
                             <div>
-                                <label className="block text-xs font-medium text-slate-300 mb-2">
-                                    Assigned Security Roles <span className="text-amber-400">*</span>
+                                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                                    Assigned Security Roles <span className="text-brand-rust">*</span>
                                 </label>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                                     {roles.map(role => {
@@ -461,28 +460,28 @@ export default function UserModal({
                                                 onClick={() => handleRoleToggle(role.name)}
                                                 className={`p-3 rounded-xl border cursor-pointer transition-all flex items-start gap-2.5 ${
                                                     isChecked
-                                                        ? 'bg-amber-500/10 border-amber-500/30'
-                                                        : 'bg-white/[0.02] border-white/[0.06] hover:bg-white/[0.04]'
+                                                        ? 'bg-brand-rust/10 border-brand-rust/30 dark:bg-brand-rust/20'
+                                                        : 'bg-slate-50 dark:bg-white/[0.02] border-slate-200 dark:border-white/[0.06] hover:bg-slate-100 dark:hover:bg-white/[0.04]'
                                                 }`}
                                             >
                                                 <input
                                                     type="checkbox"
                                                     checked={isChecked}
-                                                    onChange={() => {}} // Handled by parent container click
-                                                    className="mt-0.5 rounded bg-navy-950 border-white/20 text-amber-500 focus:ring-0 cursor-pointer"
+                                                    onChange={() => {}}
+                                                    className="mt-0.5 rounded border-slate-300 dark:border-white/20 text-brand-rust focus:ring-0 cursor-pointer"
                                                 />
                                                 <div className="min-w-0 flex-1">
                                                     <div className="flex items-center gap-1.5">
-                                                        <span className="text-xs font-semibold text-white">
+                                                        <span className="text-xs font-bold text-slate-900 dark:text-white">
                                                             {role.display_name || role.name}
                                                         </span>
                                                         {role.access_level && (
-                                                            <span className="text-[9px] px-1.5 py-0.2 rounded border bg-white/[0.04] text-slate-400">
+                                                            <span className="text-[9px] px-1.5 py-0.2 rounded border bg-slate-100 dark:bg-white/[0.04] text-slate-600 dark:text-slate-400 border-slate-200 dark:border-white/10">
                                                                 {role.access_level}
                                                             </span>
                                                         )}
                                                     </div>
-                                                    <p className="text-[11px] text-slate-400 line-clamp-2 mt-0.5">
+                                                    <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-2 mt-0.5">
                                                         {role.purpose || 'Custom institutional security role'}
                                                     </p>
                                                 </div>
@@ -491,14 +490,14 @@ export default function UserModal({
                                     })}
                                 </div>
                                 {errors.roles && (
-                                    <p className="text-[11px] text-rose-400 mt-1.5">{errors.roles}</p>
+                                    <p className="text-[11px] text-rose-500 mt-1.5">{errors.roles}</p>
                                 )}
                             </div>
                         </div>
                     )}
 
                     {/* Modal Footer Buttons */}
-                    <div className="pt-4 border-t border-white/[0.06] flex items-center justify-between">
+                    <div className="pt-4 border-t border-slate-200 dark:border-white/[0.06] flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             {activeTab !== 'identity' && (
                                 <button
@@ -507,7 +506,7 @@ export default function UserModal({
                                         if (activeTab === 'access') setActiveTab('organization');
                                         else if (activeTab === 'organization') setActiveTab('identity');
                                     }}
-                                    className="px-3 py-1.5 rounded-xl border border-white/[0.08] text-xs text-slate-400 hover:text-white hover:bg-white/[0.04] transition-colors"
+                                    className="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-white/[0.08] text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.04] transition-colors"
                                 >
                                     Previous Step
                                 </button>
@@ -519,7 +518,7 @@ export default function UserModal({
                                         if (activeTab === 'identity') setActiveTab('organization');
                                         else if (activeTab === 'organization') setActiveTab('access');
                                     }}
-                                    className="px-3 py-1.5 rounded-xl bg-white/[0.06] hover:bg-white/[0.1] text-xs text-slate-200 transition-colors"
+                                    className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/[0.06] dark:hover:bg-white/[0.1] text-xs text-slate-700 dark:text-slate-200 transition-colors"
                                 >
                                     Next: {activeTab === 'identity' ? 'Organization' : 'Access & Roles'}
                                 </button>
@@ -530,14 +529,14 @@ export default function UserModal({
                             <button
                                 type="button"
                                 onClick={onClose}
-                                className="px-4 py-2 rounded-xl text-xs text-slate-400 hover:text-white hover:bg-white/[0.04] transition-colors"
+                                className="px-4 py-2 rounded-xl text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.04] transition-colors"
                             >
                                 Cancel
                             </button>
                             <button
                                 type="submit"
                                 disabled={processing}
-                                className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-navy-950 font-semibold text-xs shadow-lg shadow-amber-500/20 disabled:opacity-50 transition-all flex items-center gap-1.5"
+                                className="px-5 py-2 rounded-xl bg-brand-rust hover:bg-brand-crimson text-white font-semibold text-xs shadow-lg shadow-brand-rust/20 disabled:opacity-50 transition-all flex items-center gap-1.5"
                             >
                                 {processing ? (
                                     <span>Saving...</span>

@@ -92,41 +92,41 @@ export default function Index({ inquiries, filters, statuses }: IndexProps) {
                 { label: 'Inquiries' },
             ]}
         >
-            <Head title="Inquiries Inbox - Chapter Four CMS" />
+            <Head title="Inquiries Inbox — Chapter Four Admin" />
 
             <div className="space-y-6">
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                     <div>
-                        <h1 className="text-2xl font-serif font-normal text-white">Public Inquiries & Case Intake</h1>
-                        <p className="text-xs text-navy-400 mt-1">
-                            {inquiries.total} total inquiries logged across all channels.
+                        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">Public Inquiries & Case Intake</h1>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                            {inquiries.total} total citizen reports and inquiries logged across all channels.
                         </p>
                     </div>
                 </div>
 
                 {/* Filters */}
-                <div className="p-4 rounded-xl bg-navy-900/60 border border-navy-800 flex flex-col sm:flex-row gap-4 items-center justify-between">
+                <div className="p-4 rounded-xl bg-white dark:bg-[#0a0e1a] border border-slate-200 dark:border-white/10 shadow-xs flex flex-col sm:flex-row gap-4 items-center justify-between">
                     <form onSubmit={handleSearch} className="relative w-full sm:w-80">
-                        <Search className="w-4 h-4 text-navy-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                        <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                         <input
                             type="text"
                             value={search}
                             onChange={e => setSearch(e.target.value)}
                             placeholder="Search by name, email, or subject..."
-                            className="w-full pl-9 pr-4 py-2 rounded-lg bg-navy-950 border border-navy-700 text-white placeholder-navy-500 text-xs focus:outline-none focus:border-amber-500"
+                            className="w-full pl-9 pr-4 py-2 rounded-lg bg-white dark:bg-white/[0.04] border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 text-xs focus:ring-1 focus:ring-brand-rust"
                         />
                     </form>
 
-                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                    <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
                         {['all', 'new', 'in_progress', 'resolved'].map(st => (
                             <button
                                 key={st}
                                 onClick={() => handleStatusFilter(st)}
-                                className={`px-3 py-1.5 rounded-lg text-xs capitalize transition-colors ${
+                                className={`px-3 py-1.5 rounded-lg text-xs capitalize transition font-medium ${
                                     filters.status === st
-                                        ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30 font-medium'
-                                        : 'bg-navy-800 text-navy-300 hover:text-white border border-navy-700/60'
+                                        ? 'bg-brand-rust text-white shadow-xs'
+                                        : 'bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
                                 }`}
                             >
                                 {st.replace('_', ' ')}
@@ -136,10 +136,10 @@ export default function Index({ inquiries, filters, statuses }: IndexProps) {
                 </div>
 
                 {/* Table */}
-                <div className="rounded-xl border border-navy-800 bg-navy-900/40 overflow-hidden">
+                <div className="rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#0a0e1a] shadow-xs overflow-hidden">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left text-xs">
-                            <thead className="bg-navy-900/80 text-navy-400 border-b border-navy-800 uppercase tracking-wider font-semibold">
+                            <thead className="bg-slate-50 dark:bg-white/[0.02] text-slate-500 dark:text-slate-400 border-b border-slate-200 dark:border-white/10 uppercase tracking-wider font-semibold">
                                 <tr>
                                     <th className="py-3 px-4">Sender</th>
                                     <th className="py-3 px-4">Type</th>
@@ -148,32 +148,32 @@ export default function Index({ inquiries, filters, statuses }: IndexProps) {
                                     <th className="py-3 px-4 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-navy-800/60 text-navy-200">
+                            <tbody className="divide-y divide-slate-100 dark:divide-white/5 text-slate-700 dark:text-slate-300">
                                 {inquiries.data.map(item => (
                                     <tr
                                         key={item.id}
                                         onClick={() => openInquiryModal(item)}
-                                        className="hover:bg-navy-800/30 transition-colors cursor-pointer"
+                                        className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition cursor-pointer"
                                     >
-                                        <td className="py-3.5 px-4 font-medium text-white">
+                                        <td className="py-3.5 px-4 font-bold text-slate-900 dark:text-white">
                                             <div>{item.name}</div>
-                                            <div className="text-[11px] text-navy-400 font-normal">{item.email}</div>
+                                            <div className="text-[11px] text-slate-500 font-normal">{item.email}</div>
                                         </td>
                                         <td className="py-3.5 px-4">
-                                            <span className="px-2 py-0.5 rounded text-[10px] uppercase font-semibold bg-navy-800 text-amber-400 border border-navy-700">
+                                            <span className="px-2 py-0.5 rounded text-[10px] uppercase font-bold bg-brand-rust-light text-brand-rust border border-brand-rust/20">
                                                 {item.type}
                                             </span>
                                         </td>
-                                        <td className="py-3.5 px-4 max-w-xs truncate text-navy-100">
+                                        <td className="py-3.5 px-4 max-w-xs truncate text-slate-800 dark:text-slate-200 font-medium">
                                             {item.subject}
                                         </td>
                                         <td className="py-3.5 px-4">
-                                            <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-medium capitalize ${
+                                            <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold capitalize ${
                                                 item.status === 'new'
-                                                    ? 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+                                                    ? 'bg-blue-100 text-blue-800'
                                                     : item.status === 'in_progress'
-                                                    ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20'
-                                                    : 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                                                    ? 'bg-amber-100 text-amber-800'
+                                                    : 'bg-emerald-100 text-emerald-800'
                                             }`}>
                                                 {item.status.replace('_', ' ')}
                                             </span>
@@ -183,16 +183,16 @@ export default function Index({ inquiries, filters, statuses }: IndexProps) {
                                                 <button
                                                     onClick={() => openInquiryModal(item)}
                                                     title="View Details"
-                                                    className="p-1 rounded hover:bg-navy-800 text-navy-400 hover:text-white transition-colors"
+                                                    className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-white/5 text-slate-500 hover:text-brand-rust transition"
                                                 >
-                                                    <Eye className="w-3.5 h-3.5" />
+                                                    <Eye className="w-4 h-4" />
                                                 </button>
                                                 <button
                                                     onClick={() => handleDelete(item.id)}
                                                     title="Delete"
-                                                    className="p-1 rounded hover:bg-navy-800 text-navy-400 hover:text-red-400 transition-colors"
+                                                    className="p-1.5 rounded hover:bg-slate-100 dark:hover:bg-white/5 text-slate-500 hover:text-red-600 transition"
                                                 >
-                                                    <Trash2 className="w-3.5 h-3.5" />
+                                                    <Trash2 className="w-4 h-4" />
                                                 </button>
                                             </div>
                                         </td>
@@ -203,7 +203,7 @@ export default function Index({ inquiries, filters, statuses }: IndexProps) {
                     </div>
 
                     {inquiries.data.length === 0 && (
-                        <div className="text-center py-16 text-navy-400">
+                        <div className="text-center py-16 text-slate-400">
                             No inquiries found matching this criteria.
                         </div>
                     )}
@@ -212,48 +212,48 @@ export default function Index({ inquiries, filters, statuses }: IndexProps) {
 
             {/* Modal Detail View */}
             {activeInquiry && (
-                <div className="fixed inset-0 z-50 bg-navy-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-                    <div className="bg-navy-900 border border-navy-700 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-6 shadow-2xl">
+                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+                    <div className="bg-white dark:bg-[#0c111e] border border-slate-200 dark:border-white/10 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-6 shadow-2xl">
                         {/* Modal Header */}
-                        <div className="flex items-start justify-between border-b border-navy-800 pb-4">
+                        <div className="flex items-start justify-between border-b border-slate-100 dark:border-white/10 pb-4">
                             <div>
-                                <span className="text-[10px] uppercase font-semibold text-amber-400 tracking-wider">
+                                <span className="text-[10px] uppercase font-bold text-brand-rust tracking-wider">
                                     {activeInquiry.type}
                                 </span>
-                                <h3 className="font-serif text-xl text-white font-normal mt-1">{activeInquiry.subject}</h3>
+                                <h3 className="text-lg font-bold text-slate-900 dark:text-white mt-1">{activeInquiry.subject}</h3>
                             </div>
                             <button
                                 onClick={() => setActiveInquiry(null)}
-                                className="p-1 rounded-lg hover:bg-navy-800 text-navy-400 hover:text-white"
+                                className="p-1 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-white"
                             >
                                 <X className="w-5 h-5" />
                             </button>
                         </div>
 
                         {/* Sender Info */}
-                        <div className="p-4 rounded-xl bg-navy-950 border border-navy-800 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                        <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
                             <div>
-                                <span className="text-navy-400 block mb-0.5">Sender Name</span>
-                                <span className="text-white font-medium">{activeInquiry.name}</span>
+                                <span className="text-slate-400 block mb-0.5">Sender Name</span>
+                                <span className="text-slate-900 dark:text-white font-bold">{activeInquiry.name}</span>
                             </div>
                             <div>
-                                <span className="text-navy-400 block mb-0.5">Email Address</span>
-                                <a href={`mailto:${activeInquiry.email}`} className="text-amber-400 hover:underline">
+                                <span className="text-slate-400 block mb-0.5">Email Address</span>
+                                <a href={`mailto:${activeInquiry.email}`} className="text-brand-rust font-semibold hover:underline">
                                     {activeInquiry.email}
                                 </a>
                             </div>
                             {activeInquiry.phone && (
                                 <div>
-                                    <span className="text-navy-400 block mb-0.5">Phone / WhatsApp</span>
-                                    <span className="text-white font-medium">{activeInquiry.phone}</span>
+                                    <span className="text-slate-400 block mb-0.5">Phone</span>
+                                    <span className="text-slate-900 dark:text-white font-medium">{activeInquiry.phone}</span>
                                 </div>
                             )}
                             <div>
-                                <span className="text-navy-400 block mb-0.5">Workflow Status</span>
+                                <span className="text-slate-400 block mb-0.5">Workflow Status</span>
                                 <select
                                     value={activeInquiry.status}
                                     onChange={e => handleUpdateStatus(activeInquiry.id, e.target.value)}
-                                    className="px-2.5 py-1 rounded bg-navy-900 border border-navy-700 text-white text-xs focus:outline-none focus:border-amber-500 capitalize"
+                                    className="px-2.5 py-1 rounded bg-white dark:bg-[#0c111e] border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white text-xs capitalize"
                                 >
                                     {statuses.map(s => (
                                         <option key={s.value} value={s.value}>{s.label}</option>
@@ -264,36 +264,36 @@ export default function Index({ inquiries, filters, statuses }: IndexProps) {
 
                         {/* Message Body */}
                         <div>
-                            <h4 className="text-xs uppercase font-semibold tracking-wider text-navy-400 mb-2">Message Content</h4>
-                            <div className="p-4 rounded-xl bg-navy-950 border border-navy-800 text-navy-200 text-sm font-light leading-relaxed whitespace-pre-line">
+                            <h4 className="text-xs uppercase font-bold tracking-wider text-slate-500 mb-2">Message Content</h4>
+                            <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/[0.03] border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-200 text-sm leading-relaxed whitespace-pre-line">
                                 {activeInquiry.message}
                             </div>
                         </div>
 
                         {/* Internal Notes */}
-                        <form onSubmit={handleSaveNotes} className="space-y-3 pt-2 border-t border-navy-800">
-                            <label className="block text-xs uppercase font-semibold tracking-wider text-navy-400">
-                                Staff Internal Notes / Legal Actions Taken
+                        <form onSubmit={handleSaveNotes} className="space-y-3 pt-2 border-t border-slate-100 dark:border-white/10">
+                            <label className="block text-xs uppercase font-bold tracking-wider text-slate-500">
+                                Staff Internal Notes / Actions Taken
                             </label>
                             <textarea
                                 rows={3}
                                 value={notes}
                                 onChange={e => setNotes(e.target.value)}
                                 placeholder="Add private notes on follow-up calls, assigned lawyer, or case resolution..."
-                                className="w-full px-4 py-2.5 rounded-xl bg-navy-950 border border-navy-700 text-white placeholder-navy-500 text-xs focus:outline-none focus:border-amber-500 resize-none"
+                                className="w-full px-4 py-2.5 rounded-xl bg-white dark:bg-white/[0.04] border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 text-xs resize-none"
                             />
                             <div className="flex items-center justify-between">
                                 <a
                                     href={`mailto:${activeInquiry.email}?subject=Re: ${encodeURIComponent(activeInquiry.subject)}`}
-                                    className="inline-flex items-center gap-1.5 text-xs text-amber-400 hover:underline"
+                                    className="inline-flex items-center gap-1.5 text-xs text-brand-rust font-bold hover:underline"
                                 >
                                     <Send className="w-3.5 h-3.5" /> Reply via Email Client
                                 </a>
                                 <button
                                     type="submit"
-                                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-navy-950 font-semibold text-xs transition-colors"
+                                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-brand-rust hover:bg-brand-rust-dark text-white font-semibold text-xs shadow-sm"
                                 >
-                                    <Save className="w-3.5 h-3.5" /> Save Internal Notes
+                                    <Save className="w-3.5 h-3.5" /> Save Notes
                                 </button>
                             </div>
                         </form>

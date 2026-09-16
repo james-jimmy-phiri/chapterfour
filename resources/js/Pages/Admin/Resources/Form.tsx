@@ -59,7 +59,7 @@ export default function Form({ resource, resourceTypes, contentStatuses }: FormP
                 <div className="flex items-center justify-between">
                     <Link
                         href="/admin/resources"
-                        className="inline-flex items-center gap-1.5 text-xs text-navy-400 hover:text-white transition-colors"
+                        className="inline-flex items-center gap-1.5 text-xs text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white transition-colors"
                     >
                         <ArrowLeft className="w-4 h-4" /> Back to Resources list
                     </Link>
@@ -67,9 +67,9 @@ export default function Form({ resource, resourceTypes, contentStatuses }: FormP
 
                 <form onSubmit={handleSubmit} className="space-y-6">
                     {/* Main Card */}
-                    <div className="p-8 rounded-2xl bg-navy-900/60 border border-navy-800 space-y-6">
+                    <div className="p-8 rounded-2xl bg-white dark:bg-[#0a0e1a] border border-slate-200 dark:border-white/10 shadow-sm space-y-6">
                         <div>
-                            <label className="block text-xs font-semibold uppercase tracking-wider text-navy-300 mb-2">
+                            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                                 Resource Title *
                             </label>
                             <input
@@ -78,14 +78,14 @@ export default function Form({ resource, resourceTypes, contentStatuses }: FormP
                                 value={data.title}
                                 onChange={e => setData('title', e.target.value)}
                                 placeholder="e.g. State of Constitutional Rights 2024"
-                                className="w-full px-4 py-3 rounded-xl bg-navy-950 border border-navy-700 text-white placeholder-navy-500 text-sm focus:outline-none focus:border-amber-500"
+                                className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:border-brand-rust focus:ring-1 focus:ring-brand-rust"
                             />
-                            {errors.title && <p className="text-red-400 text-xs mt-1">{errors.title}</p>}
+                            {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-xs font-semibold uppercase tracking-wider text-navy-300 mb-2">
+                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                                     Slug (URL identifier)
                                 </label>
                                 <input
@@ -93,29 +93,31 @@ export default function Form({ resource, resourceTypes, contentStatuses }: FormP
                                     value={data.slug}
                                     onChange={e => setData('slug', e.target.value)}
                                     placeholder="auto-generated from title if blank"
-                                    className="w-full px-4 py-3 rounded-xl bg-navy-950 border border-navy-700 text-white placeholder-navy-500 text-sm focus:outline-none focus:border-amber-500"
+                                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:border-brand-rust focus:ring-1 focus:ring-brand-rust"
                                 />
-                                {errors.slug && <p className="text-red-400 text-xs mt-1">{errors.slug}</p>}
+                                {errors.slug && <p className="text-red-500 text-xs mt-1">{errors.slug}</p>}
                             </div>
 
                             <div>
-                                <label className="block text-xs font-semibold uppercase tracking-wider text-navy-300 mb-2">
+                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                                     Content Type *
                                 </label>
                                 <select
                                     value={data.type}
                                     onChange={e => setData('type', e.target.value)}
-                                    className="w-full px-4 py-3 rounded-xl bg-navy-950 border border-navy-700 text-white text-sm focus:outline-none focus:border-amber-500 capitalize"
+                                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-brand-rust focus:ring-1 focus:ring-brand-rust capitalize"
                                 >
                                     {resourceTypes.map(t => (
-                                        <option key={t.value} value={t.value}>{t.label}</option>
+                                        <option key={t.value} value={t.value} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
+                                            {t.label}
+                                        </option>
                                     ))}
                                 </select>
                             </div>
                         </div>
 
                         <div>
-                            <label className="block text-xs font-semibold uppercase tracking-wider text-navy-300 mb-2">
+                            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                                 Summary / Excerpt
                             </label>
                             <textarea
@@ -123,13 +125,13 @@ export default function Form({ resource, resourceTypes, contentStatuses }: FormP
                                 value={data.excerpt}
                                 onChange={e => setData('excerpt', e.target.value)}
                                 placeholder="A concise 2-3 sentence overview..."
-                                className="w-full px-4 py-3 rounded-xl bg-navy-950 border border-navy-700 text-white placeholder-navy-500 text-sm focus:outline-none focus:border-amber-500 resize-none"
+                                className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:border-brand-rust focus:ring-1 focus:ring-brand-rust resize-none"
                             />
-                            {errors.excerpt && <p className="text-red-400 text-xs mt-1">{errors.excerpt}</p>}
+                            {errors.excerpt && <p className="text-red-500 text-xs mt-1">{errors.excerpt}</p>}
                         </div>
 
                         <div>
-                            <label className="block text-xs font-semibold uppercase tracking-wider text-navy-300 mb-2">
+                            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                                 Full Body Content
                             </label>
                             <textarea
@@ -137,29 +139,31 @@ export default function Form({ resource, resourceTypes, contentStatuses }: FormP
                                 value={data.body}
                                 onChange={e => setData('body', e.target.value)}
                                 placeholder="Detailed analysis, recommendations, or press statement text (HTML or formatted text supported)..."
-                                className="w-full px-4 py-3 rounded-xl bg-navy-950 border border-navy-700 text-white placeholder-navy-500 text-sm focus:outline-none focus:border-amber-500"
+                                className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:border-brand-rust focus:ring-1 focus:ring-brand-rust"
                             />
-                            {errors.body && <p className="text-red-400 text-xs mt-1">{errors.body}</p>}
+                            {errors.body && <p className="text-red-500 text-xs mt-1">{errors.body}</p>}
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-navy-800">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-slate-200 dark:border-white/10">
                             <div>
-                                <label className="block text-xs font-semibold uppercase tracking-wider text-navy-300 mb-2">
+                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                                     Publication Status
                                 </label>
                                 <select
                                     value={data.status}
                                     onChange={e => setData('status', e.target.value)}
-                                    className="w-full px-4 py-3 rounded-xl bg-navy-950 border border-navy-700 text-white text-sm focus:outline-none focus:border-amber-500 capitalize"
+                                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-brand-rust focus:ring-1 focus:ring-brand-rust capitalize"
                                 >
                                     {contentStatuses.map(s => (
-                                        <option key={s.value} value={s.value}>{s.label}</option>
+                                        <option key={s.value} value={s.value} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
+                                            {s.label}
+                                        </option>
                                     ))}
                                 </select>
                             </div>
 
                             <div>
-                                <label className="block text-xs font-semibold uppercase tracking-wider text-navy-300 mb-2">
+                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                                     PDF Document Path / Download URL
                                 </label>
                                 <input
@@ -167,7 +171,7 @@ export default function Form({ resource, resourceTypes, contentStatuses }: FormP
                                     value={data.pdf_path || ''}
                                     onChange={e => setData('pdf_path', e.target.value)}
                                     placeholder="/documents/sample-report.pdf"
-                                    className="w-full px-4 py-3 rounded-xl bg-navy-950 border border-navy-700 text-white placeholder-navy-500 text-sm focus:outline-none focus:border-amber-500"
+                                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:border-brand-rust focus:ring-1 focus:ring-brand-rust"
                                 />
                             </div>
                         </div>
@@ -178,9 +182,9 @@ export default function Form({ resource, resourceTypes, contentStatuses }: FormP
                                     type="checkbox"
                                     checked={data.is_featured}
                                     onChange={e => setData('is_featured', e.target.checked)}
-                                    className="w-4 h-4 rounded bg-navy-950 border-navy-700 text-amber-500 focus:ring-amber-500 focus:ring-offset-navy-900"
+                                    className="w-4 h-4 rounded border-slate-300 dark:border-white/10 text-brand-rust focus:ring-brand-rust"
                                 />
-                                <span className="text-xs text-navy-200">
+                                <span className="text-xs text-slate-700 dark:text-slate-300">
                                     Feature this publication on the homepage hero section
                                 </span>
                             </label>
@@ -191,14 +195,14 @@ export default function Form({ resource, resourceTypes, contentStatuses }: FormP
                     <div className="flex items-center justify-end gap-3">
                         <Link
                             href="/admin/resources"
-                            className="px-5 py-2.5 rounded-xl bg-navy-800 hover:bg-navy-700 text-navy-300 text-xs font-medium transition-colors"
+                            className="px-5 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/15 text-slate-700 dark:text-slate-300 text-xs font-medium transition-colors"
                         >
                             Cancel
                         </Link>
                         <button
                             type="submit"
                             disabled={processing}
-                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-navy-950 font-semibold text-xs shadow-md shadow-amber-500/20 transition-all disabled:opacity-50"
+                            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-brand-rust hover:bg-brand-crimson text-white font-semibold text-xs shadow-md shadow-brand-rust/20 transition-all disabled:opacity-50"
                         >
                             {processing ? (
                                 <>
