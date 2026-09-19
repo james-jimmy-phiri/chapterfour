@@ -8,6 +8,8 @@ import {
 } from 'lucide-react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import BoxImgAnimate from '@/Components/BoxImgAnimate';
+import { LogosSlider } from '@/Components/LogosSlider';
+import Blogs from '@/Components/ui/blogs';
 
 interface StatItem {
     label: string;
@@ -244,6 +246,15 @@ export default function Welcome({
 
     const displayResources = latestResources.length > 0 ? latestResources : defaultResources;
 
+    const articlesData = displayResources.map((item) => ({
+        category: item.type || 'Resource',
+        description: item.excerpt || '',
+        image: (item as any).featured_image || "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?q=80&w=800&auto=format&fit=crop",
+        publishDate: item.published_at || 'Recent',
+        readMoreLink: `/resources/${item.slug}`,
+        title: item.title,
+    }));
+
     return (
         <PublicLayout>
             <Head>
@@ -277,7 +288,7 @@ export default function Welcome({
                     </AnimatePresence>
 
                     {/* Pure Black Overlay with enhanced visibility for background photo */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/55 to-black/35 sm:from-black/80 sm:via-black/50 sm:to-black/30 z-1" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/40 sm:from-black/85 sm:via-black/55 sm:to-black/40 z-1" />
 
                     {/* Subtle ambient glow accents */}
                     <div className="absolute top-1/4 -left-20 w-96 h-96 bg-brand-amber/10 rounded-full blur-3xl pointer-events-none z-1" />
@@ -312,7 +323,7 @@ export default function Welcome({
                                 href="/what-we-do"
                                 className="inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-brand-rust hover:bg-brand-rust-dark text-white font-bold text-sm sm:text-base rounded-md transition duration-200 shadow-lg shadow-brand-rust/30 hover:scale-[1.02] active:scale-[0.98]"
                             >
-                                <span>Explore Our Causes</span>
+                                <span>Explore Our Work</span>
                                 <ArrowRight className="w-4 h-4" />
                             </Link>
 
@@ -320,7 +331,7 @@ export default function Welcome({
                                 href="/about"
                                 className="inline-flex items-center justify-center gap-2.5 px-8 py-4 border-2 border-white/70 hover:border-white hover:bg-white/10 text-white font-bold text-sm sm:text-base rounded-md transition duration-200 backdrop-blur-sm hover:scale-[1.02] active:scale-[0.98]"
                             >
-                                <span>About Chapter IV</span>
+                                <span>About Chapter Four</span>
                                 <ChevronRight className="w-4 h-4 text-brand-amber" />
                             </Link>
                         </div>
@@ -413,7 +424,7 @@ export default function Welcome({
             {/* ═══════════════════════════════════════════════════════════════════ */}
             {/* 3. THE CHALLENGE (Problem Statement)                               */}
             {/* ═══════════════════════════════════════════════════════════════════ */}
-            <section className="py-24 sm:py-32 bg-slate-50 relative overflow-hidden border-b border-slate-200" data-purpose="the-challenge">
+            <section className="py-4 sm:py-6 bg-slate-50 relative overflow-hidden border-b border-slate-200" data-purpose="the-challenge">
                 <div className="max-w-7xl mx-auto px-4 sm:px-8">
                     <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
                         {/* Animated Images Component (Left Column - Faithful replica of 51679 site component) */}
@@ -463,15 +474,15 @@ export default function Welcome({
                 </div>
             </section>
 
-            {/* ═══════════════════════════════════════════════════════════════════ */}
+
             {/* 4. WHO WE ARE (Parallax Fixed Background)                          */}
-            {/* ═══════════════════════════════════════════════════════════════════ */}
+
             <section
-                className="relative bg-fixed bg-cover bg-center py-32"
+                className="relative bg-fixed bg-cover bg-center py-24"
                 style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&q=80&w=2000")' }}
             >
                 {/* Gradient overlay for better text readability */}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/80 to-slate-900/95"></div>
+                <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/80 to-slate-900/70"></div>
 
                 <div className="relative z-10 px-4 sm:px-8 max-w-7xl mx-auto text-white">
                     {/* Top Title & Opening Statement */}
@@ -482,13 +493,14 @@ export default function Welcome({
                         transition={{ duration: 0.8 }}
                         className="text-center max-w-4xl mx-auto mb-20"
                     >
-                        <span className="text-brand-amber text-sm font-bold uppercase tracking-widest mb-4 block">Who We Are</span>
-                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-8 leading-tight">
+
+                        <span className="text-brand-amber text-sm font-bold uppercase tracking-widest mb-4 block"> <span className="w-8 h-0.5 bg-brand-rust"></span> Who We Are</span>
+                        <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-4 leading-tight">
                             Defenders of Dignity, Equality & Freedom
                         </h2>
-                        <p className="text-xl md:text-2xl font-light italic text-slate-300 relative inline-block px-8">
+                        <p className="text-xl md:text-2xl font-light italic text-slate-300 relative inline-block px-4">
                             <span className="absolute top-0 left-0 text-5xl text-brand-amber/30">"</span>
-                            We are Chapter Four—an independent, youth-led human rights organization committed to the promotion and protection of universally recognized human rights.
+                            We are Chapter Four, an independent, youth-led human rights organization committed to the promotion and protection of universally recognized human rights.
                             <span className="absolute -bottom-4 right-0 text-5xl text-brand-amber/30">"</span>
                         </p>
                     </motion.div>
@@ -524,23 +536,21 @@ export default function Welcome({
                             className="lg:w-1/2 space-y-8"
                         >
                             <div>
-                                <h3 className="text-3xl font-black text-brand-amber mb-4">Our Origin & Mission</h3>
+                                <h3 className="text-3xl font-black text-brand-amber mb-4">Our Core Objectives</h3>
                                 <div className="w-16 h-1 bg-brand-rust mb-6"></div>
                             </div>
 
                             <p className="text-slate-300 leading-relaxed text-lg">
-                                Established in 2016 as a human rights movement of students in Malawi, we derive our name from Chapter IV of the Constitution, which domesticates fundamental rights and freedoms.
+                                To promote a just, inclusive and democratic Malawi in which constitutional rights and freedoms are respected and protected, citizens are empowered to claim their rights, access to justice is strengthened, and public institutions are accountable, transparent and responsive.
                             </p>
-                            <p className="text-slate-300 leading-relaxed text-lg">
-                                We believe that human dignity, equality, freedom, justice, and accountability are essential. Our mission is to promote and protect constitutional rights, strengthen access to justice, and empower citizens towards accountable and democratic governance.
-                            </p>
+
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8">
                                 {[
-                                    'Non-partisan & independent',
-                                    'Human Rights-Based Approach',
-                                    'Dedicated to the vulnerable',
-                                    'Youth-led & progressive'
+                                    'Promote and protect constitutional rights and access to justice',
+                                    'Strengthen accountable, transparent and democratic governance',
+                                    'Strengthen community-based human rights protection, peacebuilding and collaboration',
+
                                 ].map((item, idx) => (
                                     <div key={idx} className="flex items-center gap-3 bg-white/5 p-4 rounded-xl border border-white/10">
                                         <CheckCircle2 className="w-5 h-5 text-brand-amber shrink-0" />
@@ -556,107 +566,19 @@ export default function Welcome({
             {/* ═══════════════════════════════════════════════════════════════════ */}
             {/* 5. NEWS AND RESOURCES (Dynamic Grid)                                */}
             {/* ═══════════════════════════════════════════════════════════════════ */}
-            <section className="py-24 bg-slate-50 relative overflow-hidden" data-purpose="news-and-resources">
-                {/* Background Pattern */}
-                <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '32px 32px' }}></div>
-
-                <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
-                    <div className="text-center mb-16 max-w-3xl mx-auto">
-                        <span className="text-sm font-bold uppercase tracking-widest text-brand-rust mb-3 block">Latest Updates</span>
-                        <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mb-4">News & Resources</h2>
-                        <p className="text-lg text-slate-600">
-                            Explore our latest reports, constitutional awareness materials, and community initiatives.
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {displayResources.map((item, idx) => (
-                            <motion.article
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true, margin: "-50px" }}
-                                transition={{ duration: 0.6, delay: idx * 0.1 }}
-                                key={item.slug || idx}
-                                className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 overflow-hidden flex flex-col justify-between hover:-translate-y-2 transition-transform duration-300 group border border-slate-100"
-                            >
-                                <div>
-                                    <div className="relative h-48 overflow-hidden">
-                                        <div className="absolute inset-0 bg-gradient-to-br from-brand-rust via-brand-mahogany to-slate-900 group-hover:scale-110 transition-transform duration-700"></div>
-                                        <div className="absolute inset-0 flex items-center justify-center">
-                                            <FileText className="w-16 h-16 text-white/20" />
-                                        </div>
-
-                                        <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm text-brand-rust text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-sm">
-                                            {item.type || 'Resource'}
-                                        </div>
-                                    </div>
-                                    <div className="p-6">
-                                        <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 mb-3">
-                                            <Calendar className="w-4 h-4 text-brand-rust" />
-                                            <span>{item.published_at || 'Recent'}</span>
-                                        </div>
-                                        <h3 className="font-bold text-xl text-slate-900 leading-snug mb-3 group-hover:text-brand-rust transition-colors">
-                                            {item.title}
-                                        </h3>
-                                        {item.excerpt && (
-                                            <p className="text-sm text-slate-600 line-clamp-3 leading-relaxed">
-                                                {item.excerpt}
-                                            </p>
-                                        )}
-                                    </div>
-                                </div>
-
-                                <div className="p-6 pt-0 mt-4">
-                                    <Link
-                                        href={`/resources/${item.slug}`}
-                                        className="inline-flex items-center gap-2 text-sm font-bold text-brand-rust hover:text-brand-brick group-hover:gap-3 transition-all"
-                                    >
-                                        <span>Read More</span>
-                                        <ArrowRight className="w-4 h-4" />
-                                    </Link>
-                                </div>
-                            </motion.article>
-                        ))}
-                    </div>
-
-                    <div className="mt-16 text-center">
-                        <Link
-                            href="/resources"
-                            className="inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-white border-2 border-slate-200 hover:border-brand-rust text-slate-900 hover:text-brand-rust font-bold rounded-lg transition-colors shadow-sm"
-                        >
-                            <span>View All Resources</span>
-                            <ChevronRight className="w-4 h-4" />
-                        </Link>
-                    </div>
-                </div>
-            </section>
+            <Blogs articlesData={articlesData} />
 
             {/* ═══════════════════════════════════════════════════════════════════ */}
             {/* 8. STRATEGIC PARTNERS & ALLIES SECTION                              */}
             {/* ═══════════════════════════════════════════════════════════════════ */}
-            {partners && partners.length > 0 && (
-                <section className="py-14 bg-slate-50 border-t border-slate-200/60" aria-label="Partners">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-8 text-center">
-                        <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-6">
-                            Allies, Donors & Institutional Partners
-                        </span>
-                        <div className="flex flex-wrap justify-center items-center gap-8 md:gap-12">
-                            {partners.map((p, idx) => (
-                                <div key={p.name + idx} className="grayscale hover:grayscale-0 transition opacity-75 hover:opacity-100">
-                                    {p.website ? (
-                                        <a href={p.website} target="_blank" rel="noreferrer" className="flex items-center gap-2 font-bold text-slate-700 text-sm">
-                                            <span>{p.name}</span>
-                                            <ExternalLink className="w-3 h-3 text-slate-400" />
-                                        </a>
-                                    ) : (
-                                        <span className="font-bold text-slate-700 text-sm">{p.name}</span>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-            )}
+            <section className="py-14 bg-slate-50 border-t border-slate-200/60" aria-label="Partners">
+                <div className="max-w-7xl mx-auto px-4 sm:px-8 text-center">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-6">
+                        Allies, Donors & Institutional Partners
+                    </span>
+                    <LogosSlider />
+                </div>
+            </section>
         </PublicLayout>
     );
 }

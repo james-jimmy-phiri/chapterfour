@@ -1,9 +1,11 @@
 import PublicLayout from '@/Layouts/PublicLayout';
 import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
     FileText, Calendar, Search, Filter, ArrowRight,
-    Download, ChevronRight, BookOpen, AlertCircle, X
+    Download, ChevronRight, BookOpen, AlertCircle, X,
+    ArrowUpRight
 } from 'lucide-react';
 
 interface ResourceItem {
@@ -14,6 +16,7 @@ interface ResourceItem {
     excerpt?: string;
     published_at?: string;
     pdf_path?: string;
+    featured_image?: string;
 }
 
 interface PaginationLink {
@@ -96,6 +99,30 @@ const resourceTypes = [
     { label: 'Empirical Research', value: 'research' },
 ];
 
+const images = [
+    "https://images.unsplash.com/photo-1450101499163-c8848c66cb85?auto=format&fit=crop&q=80&w=800",
+    "https://images.unsplash.com/photo-1575505586569-646b2ca898fc?auto=format&fit=crop&q=80&w=800",
+    "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=800",
+    "https://images.unsplash.com/photo-1541872526845-866d9ab184ee?auto=format&fit=crop&q=80&w=800",
+    "https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&q=80&w=800",
+    "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?auto=format&fit=crop&q=80&w=800",
+];
+
+const formatDate = (dateString?: string) => {
+    if (!dateString) return 'Recent';
+    try {
+        const d = new Date(dateString);
+        if (isNaN(d.getTime())) return dateString; 
+        return d.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    } catch {
+        return dateString;
+    }
+};
+
 export default function Resources({ resources, filters = {} }: ResourcesProps) {
     const isPaginator = resources && !Array.isArray(resources) && 'data' in resources;
     const items: ResourceItem[] = isPaginator
@@ -149,170 +176,217 @@ export default function Resources({ resources, filters = {} }: ResourcesProps) {
                 />
             </Head>
 
-            {/* ─── HERO BANNER (Stitch Replica) ─────────────────────────────── */}
-            <section className="hero-pattern text-white pt-12 pb-16 px-4 sm:px-8 border-b border-white/10" data-purpose="hero-banner">
-                <div className="max-w-7xl mx-auto">
-                    {/* Breadcrumb */}
-                    <nav aria-label="Breadcrumb" className="text-xs text-slate-300 font-semibold mb-3 flex items-center space-x-2 uppercase tracking-wider">
-                        <Link className="hover:text-brand-amber transition" href="/">Home</Link>
+            {/* Hero Section */}
+            <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
+                <div className="absolute inset-0 z-0">
+                    <img
+                        src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=2000"
+                        alt="Background"
+                        className="w-full h-full object-cover opacity-30"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
+                </div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
+                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-300 mb-6 font-semibold uppercase tracking-wider">
+                        <Link href="/" className="hover:text-brand-amber transition">Home</Link>
                         <span className="text-slate-500">›</span>
                         <span className="text-brand-amber">Resources</span>
                     </nav>
 
-                    <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-white">
-                        Resources & Publications
-                    </h1>
-                    <p className="text-sm sm:text-base text-slate-200 max-w-2xl font-normal leading-relaxed">
-                        Chapter Four advances credible, evidence-based human rights protections and constitutional compliance in Malawi through independent monitoring, legal research, and public reports.
-                    </p>
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8 }}
+                        className="max-w-3xl"
+                    >
+                        <span className="text-brand-amber font-bold tracking-widest uppercase mb-4 block flex items-center gap-2">
+                            <span className="w-8 h-0.5 bg-brand-amber"></span> Publications
+                        </span>
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 leading-tight">
+                            Resources & Reports
+                        </h1>
+                        <p className="text-lg sm:text-xl text-slate-300 leading-relaxed">
+                            Chapter Four advances credible, evidence-based human rights protections through independent monitoring, legal research, and public reports.
+                        </p>
+                    </motion.div>
                 </div>
             </section>
 
-            {/* ─── MAIN CATALOGUE WITH SIDEBAR FILTERS (Stitch Replica) ─────── */}
-            <main className="flex-grow bg-[#fafafa] py-12 px-4 sm:px-8" data-purpose="resources-catalogue">
-                <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8">
-                    {/* ─── Sidebar Filters ─────────────────────────────────────── */}
-                    <aside className="w-full lg:w-64 shrink-0" data-purpose="search-and-filters">
-                        <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-xs space-y-6">
-                            {/* Search Filter */}
-                            <div>
-                                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2.5">Search</h3>
-                                <form onSubmit={handleSearch} className="relative">
-                                    <input
-                                        type="text"
-                                        placeholder="Keywords..."
-                                        value={searchInput}
-                                        onChange={(e) => setSearchInput(e.target.value)}
-                                        className="w-full pl-9 pr-3 py-2 text-xs rounded border border-slate-300 focus:border-brand-rust focus:ring-1 focus:ring-brand-rust outline-none"
-                                    />
-                                    <Search className="w-4 h-4 text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2" />
-                                </form>
-                            </div>
-
-                            {/* Resource Type Category Pills */}
-                            <div>
-                                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2.5">Resource Type</h3>
-                                <div className="space-y-1">
-                                    {resourceTypes.map((type) => {
-                                        const isSelected = activeType.toLowerCase() === type.value.toLowerCase();
-                                        return (
-                                            <button
-                                                key={type.value}
-                                                type="button"
-                                                onClick={() => handleTypeSelect(type.value)}
-                                                className={`w-full text-left px-3 py-2 rounded text-xs font-medium transition flex items-center justify-between ${
-                                                    isSelected
-                                                        ? 'bg-brand-rust text-white font-semibold shadow-xs'
-                                                        : 'text-slate-700 hover:bg-slate-100 hover:text-brand-rust'
-                                                }`}
-                                            >
-                                                <span>{type.label}</span>
-                                                {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-brand-amber" />}
-                                            </button>
-                                        );
-                                    })}
+            {/* Main Catalogue */}
+            <main className="py-20 bg-slate-50 relative">
+                <div className="max-w-7xl mx-auto px-4 sm:px-8">
+                    <div className="flex flex-col lg:flex-row gap-12">
+                        {/* Sidebar Filters */}
+                        <aside className="w-full lg:w-80 shrink-0">
+                            <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100 sticky top-32">
+                                {/* Search Filter */}
+                                <div className="mb-10">
+                                    <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                        <Search className="w-4 h-4 text-brand-rust" /> Search
+                                    </h3>
+                                    <form onSubmit={handleSearch} className="relative group">
+                                        <input
+                                            type="text"
+                                            placeholder="Keywords..."
+                                            value={searchInput}
+                                            onChange={(e) => setSearchInput(e.target.value)}
+                                            className="w-full pl-4 pr-10 py-3.5 text-sm bg-slate-50 rounded-xl border border-transparent focus:border-brand-rust focus:bg-white focus:ring-4 focus:ring-brand-rust/10 outline-none transition-all duration-300"
+                                        />
+                                        <button type="submit" className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-brand-rust transition-colors p-1">
+                                            <Search className="w-4 h-4" />
+                                        </button>
+                                    </form>
                                 </div>
-                            </div>
 
-                            {/* Reset Button */}
-                            {(searchInput || activeType !== 'All') && (
-                                <button
-                                    type="button"
-                                    onClick={clearFilters}
-                                    className="w-full text-center py-2 text-xs font-semibold text-slate-500 hover:text-brand-rust border border-dashed border-slate-300 rounded flex items-center justify-center gap-1.5"
-                                >
-                                    <X className="w-3.5 h-3.5" />
-                                    <span>Reset Filters</span>
-                                </button>
-                            )}
-                        </div>
-                    </aside>
-
-                    {/* ─── Catalogue Grid & Results ────────────────────────────── */}
-                    <div className="flex-1 min-w-0">
-                        {/* Status bar */}
-                        <div className="flex items-center justify-between mb-6 text-xs text-slate-500">
-                            <span>Showing <strong className="text-slate-800">{totalCount}</strong> resources</span>
-                            {activeType !== 'All' && (
-                                <span className="bg-brand-rust-light text-brand-rust px-2.5 py-0.5 rounded-full font-semibold uppercase text-[10px]">
-                                    Filter: {activeType}
-                                </span>
-                            )}
-                        </div>
-
-                        {/* Cards Grid */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {displayItems.map((item, idx) => (
-                                <article
-                                    key={item.slug || idx}
-                                    className="bg-white border border-slate-200 rounded-lg overflow-hidden flex flex-col justify-between hover:shadow-md hover:border-brand-rust/30 transition group"
-                                >
-                                    <div className="p-6">
-                                        <div className="flex items-center justify-between text-xs text-slate-400 mb-3">
-                                            <span className="bg-slate-100 text-slate-700 font-bold px-2 py-0.5 rounded text-[10px] uppercase tracking-wider">
-                                                {item.type || 'Publication'}
-                                            </span>
-                                            <div className="flex items-center gap-1">
-                                                <Calendar className="w-3.5 h-3.5 text-brand-rust" />
-                                                <span>{item.published_at || 'Recent'}</span>
-                                            </div>
-                                        </div>
-
-                                        <h2 className="text-base sm:text-lg font-bold text-slate-900 leading-snug group-hover:text-brand-rust transition">
-                                            <Link href={`/resources/${item.slug}`}>
-                                                {item.title}
-                                            </Link>
-                                        </h2>
-
-                                        {item.excerpt && (
-                                            <p className="text-xs text-slate-600 mt-2.5 leading-relaxed line-clamp-3">
-                                                {item.excerpt}
-                                            </p>
-                                        )}
+                                {/* Resource Type Category Pills */}
+                                <div>
+                                    <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                        <Filter className="w-4 h-4 text-brand-rust" /> Categories
+                                    </h3>
+                                    <div className="space-y-2">
+                                        {resourceTypes.map((type) => {
+                                            const isSelected = activeType.toLowerCase() === type.value.toLowerCase();
+                                            return (
+                                                <button
+                                                    key={type.value}
+                                                    type="button"
+                                                    onClick={() => handleTypeSelect(type.value)}
+                                                    className={`w-full text-left px-5 py-3.5 rounded-xl text-sm font-semibold transition-all duration-300 flex items-center justify-between ${
+                                                        isSelected
+                                                            ? 'bg-brand-rust text-white shadow-md shadow-brand-rust/20 translate-x-1'
+                                                            : 'bg-transparent text-slate-600 hover:bg-slate-50 hover:text-brand-rust hover:translate-x-1'
+                                                    }`}
+                                                >
+                                                    <span>{type.label}</span>
+                                                    {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-brand-amber" />}
+                                                </button>
+                                            );
+                                        })}
                                     </div>
+                                </div>
 
-                                    <div className="px-6 pb-5 pt-0 border-t border-slate-100 mt-auto flex items-center justify-between pt-4">
-                                        <Link
-                                            href={`/resources/${item.slug}`}
-                                            className="text-xs font-bold text-brand-rust hover:text-brand-brick inline-flex items-center gap-1"
+                                {/* Reset Button */}
+                                <AnimatePresence>
+                                    {(searchInput || activeType !== 'All') && (
+                                        <motion.button
+                                            initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                                            animate={{ opacity: 1, height: 'auto', marginTop: 32 }}
+                                            exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                                            type="button"
+                                            onClick={clearFilters}
+                                            className="w-full text-center py-3 text-sm font-bold text-slate-500 hover:text-slate-900 bg-slate-100 hover:bg-slate-200 rounded-xl flex items-center justify-center gap-2 transition-colors overflow-hidden"
                                         >
-                                            <span>Read Document</span>
-                                            <ChevronRight className="w-3.5 h-3.5" />
-                                        </Link>
-                                        {item.pdf_path && (
-                                            <a
-                                                href={item.pdf_path}
-                                                download
-                                                className="text-slate-400 hover:text-brand-rust transition p-1"
-                                                title="Download PDF"
-                                            >
-                                                <Download className="w-4 h-4" />
-                                            </a>
-                                        )}
-                                    </div>
-                                </article>
-                            ))}
-                        </div>
-
-                        {/* Pagination */}
-                        {paginationLinks.length > 3 && (
-                            <div className="mt-10 flex flex-wrap items-center justify-center gap-2">
-                                {paginationLinks.map((link: any, i: number) => (
-                                    <Link
-                                        key={i}
-                                        href={link.url || '#'}
-                                        dangerouslySetInnerHTML={{ __html: link.label }}
-                                        className={`px-3 py-1.5 text-xs rounded border transition ${
-                                            link.active
-                                                ? 'bg-brand-rust text-white border-brand-rust font-bold'
-                                                : link.url
-                                                ? 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
-                                                : 'text-slate-400 border-transparent cursor-not-allowed'
-                                        }`}
-                                    />
-                                ))}
+                                            <X className="w-4 h-4" />
+                                            <span>Clear Filters</span>
+                                        </motion.button>
+                                    )}
+                                </AnimatePresence>
                             </div>
-                        )}
+                        </aside>
+
+                        {/* Catalogue Grid */}
+                        <div className="flex-1 min-w-0">
+                            {/* Status bar */}
+                            <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200">
+                                <span className="text-slate-500 font-medium text-sm">Showing <strong className="text-slate-900 font-black">{totalCount}</strong> resources</span>
+                                {activeType !== 'All' && (
+                                    <span className="bg-brand-rust/10 text-brand-rust px-4 py-1.5 rounded-full font-bold uppercase tracking-wider text-[10px]">
+                                        {activeType}
+                                    </span>
+                                )}
+                            </div>
+
+                            {/* Cards Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                {displayItems.map((item, idx) => {
+                                    const imageSrc = item.featured_image || images[idx % images.length];
+                                    return (
+                                        <motion.article
+                                            key={item.slug || idx}
+                                            initial={{ opacity: 0, y: 30 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.5, delay: idx * 0.1 }}
+                                            className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-slate-100 flex flex-col h-full"
+                                        >
+                                            <Link href={`/resources/${item.slug}`} className="relative h-56 block overflow-hidden shrink-0">
+                                                <img
+                                                    src={imageSrc}
+                                                    alt={item.title}
+                                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                                                <div className="absolute top-4 left-4">
+                                                    <span className="inline-block bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-full text-[10px] font-bold text-slate-900 uppercase tracking-wider shadow-sm">
+                                                        {item.type || 'Publication'}
+                                                    </span>
+                                                </div>
+                                            </Link>
+
+                                            <div className="p-6 sm:p-8 flex flex-col flex-grow relative">
+                                                <div className="flex items-center gap-2 text-xs font-semibold text-brand-rust mb-4 uppercase tracking-wider">
+                                                    <Calendar className="w-3.5 h-3.5" />
+                                                    <span>{formatDate(item.published_at)}</span>
+                                                </div>
+
+                                                <h2 className="text-xl sm:text-2xl font-bold text-slate-900 mb-4 group-hover:text-brand-rust transition-colors leading-snug">
+                                                    <Link href={`/resources/${item.slug}`}>
+                                                        {item.title}
+                                                    </Link>
+                                                </h2>
+
+                                                {item.excerpt && (
+                                                    <p className="text-slate-600 text-sm leading-relaxed mb-8 flex-grow line-clamp-3">
+                                                        {item.excerpt}
+                                                    </p>
+                                                )}
+
+                                                <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between">
+                                                    <Link
+                                                        href={`/resources/${item.slug}`}
+                                                        className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-slate-50 hover:bg-brand-rust text-slate-700 hover:text-white text-xs font-bold uppercase tracking-wider rounded-full transition-all duration-300 group/btn"
+                                                    >
+                                                        <span>Read More</span>
+                                                        <ArrowUpRight className="w-3.5 h-3.5 transform group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
+                                                    </Link>
+                                                    {item.pdf_path && (
+                                                        <a
+                                                            href={item.pdf_path}
+                                                            download
+                                                            className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 hover:bg-brand-rust hover:text-white transition-colors"
+                                                            title="Download PDF"
+                                                        >
+                                                            <Download className="w-4 h-4" />
+                                                        </a>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </motion.article>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Pagination */}
+                            {paginationLinks.length > 3 && (
+                                <div className="mt-16 flex flex-wrap items-center justify-center gap-2">
+                                    {paginationLinks.map((link: any, i: number) => (
+                                        <Link
+                                            key={i}
+                                            href={link.url || '#'}
+                                            dangerouslySetInnerHTML={{ __html: link.label }}
+                                            className={`w-10 h-10 flex items-center justify-center rounded-xl font-bold text-sm transition-all duration-300 ${
+                                                link.active
+                                                    ? 'bg-brand-rust text-white shadow-lg shadow-brand-rust/20 scale-110'
+                                                    : link.url
+                                                    ? 'bg-white text-slate-600 border border-slate-100 hover:border-brand-rust hover:text-brand-rust hover:-translate-y-1'
+                                                    : 'bg-transparent text-slate-400 cursor-not-allowed'
+                                            }`}
+                                        />
+                                    ))}
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </main>

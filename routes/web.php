@@ -38,6 +38,21 @@ Route::get('/privacy', fn () => Inertia::render('Privacy'))->name('privacy');
 Route::get('/terms', fn () => Inertia::render('Terms'))->name('terms');
 Route::get('/safeguarding', fn () => Inertia::render('Safeguarding'))->name('safeguarding');
 
+// About Subpages
+Route::get('/about/who-we-are', fn () => Inertia::render('About/WhoWeAre'))->name('about.who-we-are');
+Route::get('/about/our-team', fn () => Inertia::render('About/OurTeam'))->name('about.our-team');
+Route::get('/about/board-of-trustees', fn () => Inertia::render('About/BoardOfTrustees'))->name('about.board-of-trustees');
+Route::get('/about/beneficiaries', fn () => Inertia::render('About/Beneficiaries'))->name('about.beneficiaries');
+Route::get('/about/institutional-partnerships', fn () => Inertia::render('About/InstitutionalPartnerships'))->name('about.institutional-partnerships');
+Route::get('/about/core-activities', fn () => Inertia::render('About/CoreActivities'))->name('about.core-activities');
+Route::get('/about/cross-cutting-activities', fn () => Inertia::render('About/CrossCuttingActivities'))->name('about.cross-cutting-activities');
+
+// What We Do Subpages
+Route::get('/what-we-do/thematic-areas', fn () => Inertia::render('WhatWeDo/ThematicAreas'))->name('what-we-do.thematic-areas');
+Route::get('/what-we-do/approach-to-programming', fn () => Inertia::render('WhatWeDo/ApproachToProgramming'))->name('what-we-do.approach-to-programming');
+Route::get('/what-we-do/key-interventions', fn () => Inertia::render('WhatWeDo/KeyInterventions'))->name('what-we-do.key-interventions');
+Route::get('/what-we-do/our-reports', fn () => Inertia::render('WhatWeDo/OurReports'))->name('what-we-do.our-reports');
+
 // ─── ADMIN / CMS ROUTES ───────────────────────────────────────────────────────
 
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(function () {

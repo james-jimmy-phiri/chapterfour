@@ -24,19 +24,27 @@ interface NavLinkItem {
 
 const navLinks: NavLinkItem[] = [
     { label: 'Home', href: '/' },
-    { label: 'About', href: '/about' },
+    {
+        label: 'About',
+        href: '/about',
+        children: [
+            { label: 'Who We Are', href: '/about/who-we-are', desc: 'Organization overview, Vision, Mission and objectives', icon: Globe },
+            { label: 'Our Team', href: '/about/our-team', desc: 'Meet the people behind Chapter Four', icon: Users },
+            { label: 'Board of Trustees', href: '/about/board-of-trustees', desc: 'Our governing body and leadership', icon: Shield },
+            { label: 'Beneficiaries', href: '/about/beneficiaries', desc: 'Target groups and communities we serve', icon: Heart },
+            { label: 'Institutional Partnerships', href: '/about/institutional-partnerships', desc: 'Governance, management and partners', icon: Scale },
+            { label: 'Core Activities', href: '/about/core-activities', desc: 'Profile of activities and expected outputs', icon: BookOpen },
+            { label: 'Cross Cutting Activities', href: '/about/cross-cutting-activities', desc: 'Research, advocacy, and capacity building', icon: FileText },
+        ],
+    },
     {
         label: 'What We Do',
         href: '/what-we-do',
         children: [
-            { label: 'Human Rights & Constitutionalism', href: '/what-we-do/human-rights', desc: 'Safeguarding fundamental civil liberties under Chapter IV.', icon: Shield },
-            { label: 'Access to Justice & Legal Aid', href: '/what-we-do/access-to-justice', desc: 'Pro-bono representation and grassroots paralegal clinics.', icon: Scale },
-            { label: 'Democracy & Good Governance', href: '/what-we-do/democracy-governance', desc: 'Fostering participatory democracy and institutional integrity.', icon: Globe },
-            { label: 'Civic & Rights Education', href: '/what-we-do/civic-education', desc: 'Empowering communities to claim rights and hold leaders accountable.', icon: BookOpen },
-            { label: 'Policy & Legislative Advocacy', href: '/what-we-do/policy-advocacy', desc: 'Strategic public interest litigation and statutory reform.', icon: FileText },
-            { label: 'Protection of Vulnerable Groups', href: '/what-we-do/vulnerable-groups', desc: 'Defending women, children, persons with disabilities, and minorities.', icon: Heart },
-            { label: 'Accountability & Monitoring', href: '/what-we-do/accountability', desc: 'Tracking human rights violations and state compliance.', icon: Search },
-            { label: 'Research & Legal Knowledge', href: '/what-we-do/research', desc: 'Authoritative evidence, empirical reports, and legal publications.', icon: Users },
+            { label: 'Thematic Areas of Work', href: '/what-we-do/thematic-areas', desc: 'Promoting human rights, justice, and good governance.', icon: Shield },
+            { label: 'Approach to Programming', href: '/what-we-do/approach-to-programming', desc: 'Our Human Rights-Based Approach (HRBA).', icon: Scale },
+            { label: 'Key Programmatic Interventions', href: '/what-we-do/key-interventions', desc: 'Education, research, advocacy, and accountability.', icon: Globe },
+            { label: 'Our Reports', href: '/what-we-do/our-reports', desc: 'Publications and research insights.', icon: FileText },
         ],
     },
     { label: 'Projects', href: '/projects' },
@@ -329,12 +337,53 @@ export default function PublicLayout({ children }: PropsWithChildren) {
             </header>
 
             {/* ─── PAGE CONTENT (Hero starts right after contacts bar on homepage) ── */}
-            <main className={`flex-grow ${url === '/' ? '-mt-[100px] lg:-mt-[112px]' : ''}`}>
+            <main className="flex-grow -mt-[100px] lg:-mt-[112px]">
                 {children}
             </main>
 
+            {/* ─── FLOATING CTA BANNER ────────────────────────────────────────── */}
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-20 -mb-28 mt-12">
+                <div className="bg-[#d95b38] rounded-3xl overflow-hidden shadow-2xl relative grid grid-cols-1 md:grid-cols-12 items-center bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.1)_1px,_transparent_1px)]" style={{ backgroundSize: '16px 16px' }}>
+                    {/* Left Side: Text and Subscribe Form */}
+                    <div className="md:col-span-7 p-8 sm:p-12 space-y-6 text-white z-10">
+                        <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight">
+                            Your Donation Empowers<br />Those In Need
+                        </h2>
+                        <form
+                            className="flex items-center bg-white/20 backdrop-blur-md rounded-full p-1.5 max-w-md border border-white/20"
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                // You can attach newsletter subscription logic here
+                            }}
+                        >
+                            <input
+                                className="bg-transparent border-0 px-4 py-2 text-sm text-white placeholder-white/80 focus:ring-0 flex-1 focus:outline-none"
+                                placeholder="Enter your email"
+                                type="email"
+                                required
+                            />
+                            <button
+                                className="bg-white text-stone-900 font-bold px-6 py-2.5 rounded-full text-xs hover:bg-stone-100 transition shadow-sm"
+                                type="submit"
+                            >
+                                Subscribe
+                            </button>
+                        </form>
+                    </div>
+
+                    {/* Right Side: Cutout Children with HOPE sign */}
+                    <div className="md:col-span-5 relative flex justify-center md:justify-end items-end h-64 md:h-full">
+                        <img
+                            alt="Children with Hope"
+                            className="h-64 sm:h-72 object-cover object-top md:rounded-tl-full border-t-4 border-l-4 border-white/20 shadow-2xl"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTPz4__yK2K004vz5_7oiD4-rz9_AgDHF_H8Fq3b1D-RlN8uPg39fGvpWnMLhhAhRPqkk9XrpA_xoHNN2ftgzwF5ZxWSruVAYqa3VvNtXmL-qcvo-sk3qpH1FBHoGyNuuyGT9kq9oyuDsQ4QcbRVo35YTtL5auKiO4s4Bw94Lws1Qw7gYmNLpCTier0Ect2ypwF9oI6M5rqGxL00DMf9yBzvsJrSVyYUcUeHJ-1Z1zdf_LGPd8YJ-R"
+                        />
+                    </div>
+                </div>
+            </div>
+
             {/* ─── MAIN NGO FOOTER (Google Stitch replica) ───────────────────── */}
-            <footer className="bg-brand-dark text-slate-300 pt-16 pb-8 border-t border-brand-mahogany/40" data-purpose="site-footer">
+            <footer className="bg-brand-dark text-slate-300 pt-36 pb-8 border-t border-brand-mahogany/40" data-purpose="site-footer">
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-white/10">
                     {/* Col 1: About Info & Address */}
                     <div className="lg:col-span-4">
