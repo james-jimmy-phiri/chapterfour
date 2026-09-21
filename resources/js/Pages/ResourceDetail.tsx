@@ -39,7 +39,7 @@ export default function ResourceDetail({ resource, relatedResources = [] }: Reso
         }
     };
 
-    const imageSrc = resource.featured_image || "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=2000";
+    const imageSrc = resource.featured_image || "/images/animate-img-2.jpg";
 
     return (
         <PublicLayout>

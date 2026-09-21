@@ -61,11 +61,11 @@ export default function CoreActivities() {
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=2000"
+                        src="/images/Parliament_Building_of_Malawioutside.jpg"
                         alt="Background"
-                        className="w-full h-full object-cover opacity-30"
+                        className="w-full h-full object-cover opacity-60"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent"></div>
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">

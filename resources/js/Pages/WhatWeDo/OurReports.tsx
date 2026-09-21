@@ -10,28 +10,28 @@ export default function OurReports() {
             title: "Annual Human Rights Monitor 2025",
             category: "Annual Report",
             date: "Jan 15, 2026",
-            image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=800",
+            image: "/images/paliament.jpg",
             description: "A comprehensive review of human rights compliance, constitutionalism, and governance trends in Malawi over the past year."
         },
         {
             title: "Access to Justice Baseline Survey",
             category: "Research Report",
             date: "Nov 02, 2025",
-            image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=800",
+            image: "/images/Chief_Justice.jpg",
             description: "Empirical assessment of judicial delays, bail accessibility, and legal representation deficits in lower courts."
         },
         {
             title: "Gender Justice in Rural Jurisdictions",
             category: "Policy Brief",
             date: "Aug 22, 2025",
-            image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=800",
+            image: "/images/chiefjusticeof malawi.jpg",
             description: "Evaluating the enforcement of statutory protections for women and girls in traditional leadership areas."
         },
         {
             title: "Constitutional Rights & Police Powers",
             category: "Citizens Legal Handbook",
             date: "Oct 14, 2025",
-            image: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=800",
+            image: "/images/constitutional_book.jpg",
             description: "A simplified legal guide outlining citizens' rights upon arrest, detention safeguards, and bail mechanisms."
         }
     ];
@@ -50,11 +50,11 @@ export default function OurReports() {
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=2000"
+                        src="/images/Parliament_Building_of_Malawioutside.jpg"
                         alt="Background"
-                        className="w-full h-full object-cover opacity-30"
+                        className="w-full h-full object-cover opacity-60"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent"></div>
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">

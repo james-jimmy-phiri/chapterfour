@@ -12,19 +12,19 @@ export default function BoardOfTrustees() {
         {
             name: "Placeholder Trustee 1",
             role: "Chairperson",
-            image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800",
+            image: "/images/animate-img-4.jpg",
             bio: "Experienced legal professional guiding the strategic direction of Chapter Four."
         },
         {
             name: "Placeholder Trustee 2",
             role: "Vice Chairperson",
-            image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&q=80&w=800",
+            image: "/images/animate-img-5.jpg",
             bio: "Advocate for human rights and constitutionalism with over 20 years of experience."
         },
         {
             name: "Placeholder Trustee 3",
             role: "Treasurer",
-            image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?auto=format&fit=crop&q=80&w=800",
+            image: "/images/animate-img-6.jpg",
             bio: "Ensuring financial accountability and transparency in all our operations."
         }
     ];
@@ -43,11 +43,11 @@ export default function BoardOfTrustees() {
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="https://images.unsplash.com/photo-1555421689-d68471e189f2?auto=format&fit=crop&q=80&w=2000"
+                        src="/images/president_muthalika.jpg"
                         alt="Background"
-                        className="w-full h-full object-cover opacity-30"
+                        className="w-full h-full object-cover opacity-60"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent"></div>
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">

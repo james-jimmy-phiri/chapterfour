@@ -12,21 +12,21 @@ export default function OurTeam() {
         {
             name: "Placeholder Name",
             role: "Executive Director",
-            image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=800",
+            image: "/images/animate-img-4.jpg",
             bio: "Leading Chapter Four's mission to protect constitutional rights.",
             location: "Lilongwe, Malawi"
         },
         {
             name: "Placeholder Name",
             role: "Head of Legal & Advocacy",
-            image: "https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=800",
+            image: "/images/animate-img-5.jpg",
             bio: "Championing public interest litigation and legal empowerment.",
             location: "Blantyre, Malawi"
         },
         {
             name: "Placeholder Name",
             role: "Programs Manager",
-            image: "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?auto=format&fit=crop&q=80&w=800",
+            image: "/images/animate-img-6.jpg",
             bio: "Overseeing community outreach and civic education initiatives.",
             location: "Mzuzu, Malawi"
         }
@@ -46,11 +46,11 @@ export default function OurTeam() {
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&q=80&w=2000"
+                        src="/images/president_muthalika.jpg"
                         alt="Background"
-                        className="w-full h-full object-cover opacity-30"
+                        className="w-full h-full object-cover opacity-60"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent"></div>
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">

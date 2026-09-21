@@ -34,11 +34,11 @@ export default function KeyInterventions() {
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="https://images.unsplash.com/photo-1542601906990-b4d3fb778b09?auto=format&fit=crop&q=80&w=2000"
+                        src="/images/chiefjusticeof malawi.jpg"
                         alt="Background"
-                        className="w-full h-full object-cover opacity-30"
+                        className="w-full h-full object-cover opacity-60"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent"></div>
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
@@ -84,8 +84,8 @@ export default function KeyInterventions() {
                             transition={{ duration: 0.8 }}
                             className="grid grid-cols-2 gap-4"
                         >
-                            <img src="https://images.unsplash.com/photo-1593113565637-25e22709212c?auto=format&fit=crop&q=80&w=600" alt="Action 1" className="rounded-2xl w-full h-48 object-cover shadow-lg" />
-                            <img src="https://images.unsplash.com/photo-1542810634-71277d95dcbb?auto=format&fit=crop&q=80&w=600" alt="Action 2" className="rounded-2xl w-full h-48 object-cover shadow-lg mt-8" />
+                            <img src="/images/constitutional_book.jpg" alt="Action 1" className="rounded-2xl w-full h-48 object-cover shadow-lg" />
+                            <img src="/images/Parliament_Building_of_Malawioutside.jpg" alt="Action 2" className="rounded-2xl w-full h-48 object-cover shadow-lg mt-8" />
                         </motion.div>
                     </div>
 

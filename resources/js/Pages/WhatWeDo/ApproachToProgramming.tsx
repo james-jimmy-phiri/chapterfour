@@ -32,11 +32,11 @@ export default function ApproachToProgramming() {
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?auto=format&fit=crop&q=80&w=2000"
+                        src="/images/paliament.jpg"
                         alt="Background"
-                        className="w-full h-full object-cover opacity-30"
+                        className="w-full h-full object-cover opacity-60"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent"></div>
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
@@ -87,7 +87,7 @@ export default function ApproachToProgramming() {
                         >
                             <div className="aspect-[4/3] rounded-2xl overflow-hidden shadow-2xl relative">
                                 <img
-                                    src="https://images.unsplash.com/photo-1573164574472-797cdf4a583a?auto=format&fit=crop&q=80&w=1000"
+                                    src="/images/Chief_Justice.jpg"
                                     alt="Community Engagement"
                                     className="w-full h-full object-cover"
                                 />

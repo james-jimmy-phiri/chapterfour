@@ -43,11 +43,11 @@ export default function InstitutionalPartnerships() {
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=2000"
+                        src="/images/animate-img-2.jpg"
                         alt="Background"
-                        className="w-full h-full object-cover opacity-30"
+                        className="w-full h-full object-cover opacity-60"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent"></div>
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
@@ -104,7 +104,7 @@ export default function InstitutionalPartnerships() {
                             className="grid grid-cols-2 gap-4"
                         >
                             <div className="space-y-4 mt-8">
-                                <img src="https://images.unsplash.com/photo-1557804506-669a67965ba0?auto=format&fit=crop&q=80&w=800" alt="Partnership" className="rounded-2xl shadow-lg w-full object-cover aspect-[4/5]" />
+                                <img src="/images/animate-img-3.jpg" alt="Partnership" className="rounded-2xl shadow-lg w-full object-cover aspect-[4/5]" />
                                 <div className="bg-brand-rust text-white p-6 rounded-2xl shadow-lg flex flex-col justify-center items-center text-center aspect-square">
                                     <Network className="w-10 h-10 mb-3 text-brand-amber" />
                                     <span className="font-bold">Building Strong Networks</span>
@@ -115,7 +115,7 @@ export default function InstitutionalPartnerships() {
                                     <Scale className="w-10 h-10 mb-3 text-brand-amber" />
                                     <span className="font-bold">Collaborative Justice</span>
                                 </div>
-                                <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf?auto=format&fit=crop&q=80&w=800" alt="Meetings" className="rounded-2xl shadow-lg w-full object-cover aspect-[4/5]" />
+                                <img src="/images/hero-bg.jpg" alt="Meetings" className="rounded-2xl shadow-lg w-full object-cover aspect-[4/5]" />
                             </div>
                         </motion.div>
                     </div>

@@ -249,7 +249,7 @@ export default function Welcome({
     const articlesData = displayResources.map((item) => ({
         category: item.type || 'Resource',
         description: item.excerpt || '',
-        image: (item as any).featured_image || "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?q=80&w=800&auto=format&fit=crop",
+        image: (item as any).featured_image || "/images/child-hero.png",
         publishDate: item.published_at || 'Recent',
         readMoreLink: `/resources/${item.slug}`,
         title: item.title,
@@ -479,7 +479,7 @@ export default function Welcome({
 
             <section
                 className="relative bg-fixed bg-cover bg-center py-24"
-                style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1529070538774-1843cb3265df?auto=format&fit=crop&q=80&w=2000")' }}
+                style={{ backgroundImage: 'url("/images/animate-img-1.jpg")' }}
             >
                 {/* Gradient overlay for better text readability */}
                 <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/80 to-slate-900/70"></div>
@@ -516,10 +516,10 @@ export default function Welcome({
                             className="lg:w-1/2 relative h-[350px] sm:h-[450px] w-full"
                         >
                             <div className="absolute top-0 left-0 w-3/4 h-56 sm:h-72 border-[6px] border-black/40 rounded-2xl overflow-hidden shadow-2xl z-10 transform -rotate-2">
-                                <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=800" alt="Youth" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
+                                <img src="/images/animate-img-2.jpg" alt="Youth" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
                             </div>
                             <div className="absolute bottom-0 right-0 w-3/4 h-56 sm:h-72 border-[6px] border-brand-rust rounded-2xl overflow-hidden shadow-2xl z-20 transform rotate-2">
-                                <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=800" alt="Education" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
+                                <img src="/images/animate-img-3.jpg" alt="Education" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
                             </div>
 
                             {/* Accent graphics */}

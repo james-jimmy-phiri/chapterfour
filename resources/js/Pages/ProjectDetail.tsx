@@ -25,7 +25,7 @@ interface ProjectDetailProps {
 }
 
 export default function ProjectDetail({ project }: ProjectDetailProps) {
-    const imageSrc = project.featured_image || "https://images.unsplash.com/photo-1541872526845-866d9ab184ee?auto=format&fit=crop&q=80&w=2000";
+    const imageSrc = project.featured_image || "/images/animate-img-1.jpg";
 
     const isCompleted = project.status?.toLowerCase() === 'completed';
 

@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { CheckCircle2, Shield, Globe, Target } from 'lucide-react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { InteractiveBook } from '@/Components/ui/interactive-book';
+import ScrollMorphHero from '@/Components/ui/scroll-morph-hero';
 
 export default function WhoWeAre() {
     const frontCover = (
@@ -412,11 +413,11 @@ export default function WhoWeAre() {
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=2000"
+                        src="/images/child-hero.png"
                         alt="Background"
-                        className="w-full h-full object-cover opacity-30"
+                        className="w-full h-full object-cover opacity-60"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent"></div>
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
@@ -478,7 +479,7 @@ export default function WhoWeAre() {
                             </div>
                             <div className="sm:hidden aspect-square rounded-2xl overflow-hidden shadow-2xl">
                                 <img
-                                    src="https://images.unsplash.com/photo-1541872526845-866d9ab184ee?auto=format&fit=crop&q=80&w=1000"
+                                    src="/images/animate-img-1.jpg"
                                     alt="Community Engagement"
                                     className="w-full h-full object-cover"
                                 />
@@ -525,38 +526,8 @@ export default function WhoWeAre() {
                 </div>
             </section>
 
-            {/* Objectives */}
-            <section className="py-20 bg-white">
-                <div className="max-w-7xl mx-auto px-4 sm:px-8">
-                    <div className="text-center max-w-3xl mx-auto mb-16">
-                        <span className="text-brand-rust font-bold tracking-widest uppercase mb-4 block">Core Goals</span>
-                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6">Our Objectives</h2>
-                        <p className="text-slate-600 text-lg">
-                            To promote a just, inclusive and democratic Malawi in which constitutional rights and freedoms are respected and protected.
-                        </p>
-                    </div>
-
-                    <div className="space-y-6 max-w-4xl mx-auto">
-                        {[
-                            "To promote and protect human rights and access to justice by empowering citizens, particularly vulnerable and marginalized groups, to understand, claim and defend their rights, access effective remedies, and promote the rule of law and constitutionalism.",
-                            "To strengthen accountable, transparent and democratic governance through human rights monitoring, research, evidence-based advocacy, civic participation and engagement with public institutions to promote laws, policies and practices that uphold constitutional principles.",
-                            "To strengthen community-based human rights protection and collaboration by working with communities, government, civil society, development partners and other stakeholders to advance human rights, social inclusion, democratic participation and respect for human dignity."
-                        ].map((objective, idx) => (
-                            <motion.div
-                                key={idx}
-                                initial={{ opacity: 0, x: 20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                                className="flex gap-4 bg-slate-50 p-6 rounded-xl border border-slate-100 hover:shadow-md transition-shadow"
-                            >
-                                <CheckCircle2 className="w-6 h-6 text-brand-rust shrink-0 mt-1" />
-                                <p className="text-slate-700 leading-relaxed">{objective}</p>
-                            </motion.div>
-                        ))}
-                    </div>
-                </div>
-            </section>
+            {/* Animated Objectives Section */}
+            <ScrollMorphHero />
         </PublicLayout>
     );
 }

@@ -9,49 +9,49 @@ export default function ThematicAreas() {
             title: "Human Rights and Constitutionalism",
             description: "Promoting knowledge and protection of rights guaranteed under the Constitution and relevant international and regional human rights instruments.",
             icon: Shield,
-            image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=800"
+            image: "/images/paliament.jpg"
         },
         {
             title: "Access to Justice and Legal Empowerment",
             description: "Supporting communities and vulnerable groups to understand their legal rights, access appropriate remedies and engage with justice institutions.",
             icon: Scale,
-            image: "https://images.unsplash.com/photo-1505664194779-8beaceb93744?auto=format&fit=crop&q=80&w=800"
+            image: "/images/Chief_Justice.jpg"
         },
         {
             title: "Democracy and Good Governance",
             description: "Promoting accountable, transparent, participatory and responsive governance and strengthening citizens' participation in democratic processes.",
             icon: Globe,
-            image: "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?auto=format&fit=crop&q=80&w=800"
+            image: "/images/chiefjusticeof malawi.jpg"
         },
         {
             title: "Civic and Human Rights Education",
             description: "Providing communities, young people, duty bearers and other stakeholders with information and skills necessary to understand and exercise their rights and responsibilities.",
             icon: BookOpen,
-            image: "https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&q=80&w=800"
+            image: "/images/constitutional_book.jpg"
         },
         {
             title: "Policy and Legislative Advocacy",
             description: "Conducting policy and legal analysis and advocating for laws and policies that comply with constitutional and human rights standards.",
             icon: FileText,
-            image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=800"
+            image: "/images/Parliament_Building_of_Malawioutside.jpg"
         },
         {
             title: "Protection of Vulnerable and Marginalized Groups",
             description: "Promoting equality and non-discrimination and addressing rights violations affecting women, children, persons with disabilities, persons with albinism, refugees, displaced persons, minorities and other marginalized groups.",
             icon: Heart,
-            image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&q=80&w=800"
+            image: "/images/paliament.jpg"
         },
         {
             title: "Accountability and Human Rights Monitoring",
             description: "Monitoring government and institutional performance, documenting human rights concerns and promoting effective accountability mechanisms.",
             icon: Search,
-            image: "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&q=80&w=800"
+            image: "/images/Chief_Justice.jpg"
         },
         {
             title: "Research and Knowledge Generation",
             description: "Undertaking research, assessments, policy analysis and documentation to generate evidence for human rights programming, advocacy and policy reform.",
             icon: Users,
-            image: "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&q=80&w=800"
+            image: "/images/chiefjusticeof malawi.jpg"
         }
     ];
 
@@ -69,11 +69,11 @@ export default function ThematicAreas() {
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&q=80&w=2000"
+                        src="/images/constitutional_book.jpg"
                         alt="Background"
-                        className="w-full h-full object-cover opacity-30"
+                        className="w-full h-full object-cover opacity-60"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent"></div>
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">

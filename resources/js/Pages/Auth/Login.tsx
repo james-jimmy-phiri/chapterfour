@@ -255,7 +255,7 @@ export default function Login({
                 {/* Right Panel: Image */}
                 <div className="relative hidden w-1/2 md:block overflow-hidden">
                     <img
-                        src="https://images.unsplash.com/photo-1589829085413-56de8ae18c73?q=80&w=1200&auto=format&fit=crop"
+                        src="/images/animate-img-3.jpg"
                         alt="Justice and Law"
                         className="absolute inset-0 h-full w-full object-cover"
                     />

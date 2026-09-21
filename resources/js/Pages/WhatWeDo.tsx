@@ -83,14 +83,14 @@ export default function WhatWeDo({ thematicAreas = [] }: WhatWeDoProps) {
     const icons = [Scale, Shield, Globe, BookOpen, FileText, Heart, Search, Users];
 
     const images = [
-        "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=800",
-        "https://images.unsplash.com/photo-1575505586569-646b2ca898fc?auto=format&fit=crop&q=80&w=800",
-        "https://images.unsplash.com/photo-1573164713988-8665fc963095?auto=format&fit=crop&q=80&w=800",
-        "https://images.unsplash.com/photo-1541872526845-866d9ab184ee?auto=format&fit=crop&q=80&w=800",
-        "https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&q=80&w=800",
-        "https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?auto=format&fit=crop&q=80&w=800",
-        "https://images.unsplash.com/photo-1450101499163-c8848c66cb85?auto=format&fit=crop&q=80&w=800",
-        "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80&w=800"
+        "/images/Parliament_Building_of_Malawioutside.jpg",
+        "/images/paliament.jpg",
+        "/images/Chief_Justice.jpg",
+        "/images/chiefjusticeof malawi.jpg",
+        "/images/constitutional_book.jpg",
+        "/images/Parliament_Building_of_Malawioutside.jpg",
+        "/images/paliament.jpg",
+        "/images/Chief_Justice.jpg"
     ];
 
     return (
@@ -107,11 +107,11 @@ export default function WhatWeDo({ thematicAreas = [] }: WhatWeDoProps) {
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&q=80&w=2000"
+                        src="/images/chiefjusticeof malawi.jpg"
                         alt="Background"
-                        className="w-full h-full object-cover opacity-30"
+                        className="w-full h-full object-cover opacity-60"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/80 to-transparent"></div>
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent"></div>
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
@@ -242,7 +242,7 @@ export default function WhatWeDo({ thematicAreas = [] }: WhatWeDoProps) {
                         >
                             <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
                                 <img
-                                    src="https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?auto=format&fit=crop&q=80&w=1000"
+                                    src="/images/constitutional_book.jpg"
                                     alt="Community Engagement"
                                     className="w-full h-full object-cover"
                                 />
