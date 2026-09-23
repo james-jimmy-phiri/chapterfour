@@ -9,6 +9,7 @@ use App\Models\Resource;
 use App\Services\AuditLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -86,9 +87,11 @@ class ResourceController extends Controller
             'type' => 'required|string',
             'excerpt' => 'nullable|string|max:1000',
             'body' => 'nullable|string',
+            'featured_image' => 'nullable|image|max:4096',
             'status' => 'required|string',
             'is_featured' => 'boolean',
             'pdf_path' => 'nullable|string|max:255',
+            'pdf_file' => 'nullable|file|mimes:pdf,doc,docx|max:20480',
         ]);
 
         $slug = !empty($validated['slug'])
@@ -103,15 +106,28 @@ class ResourceController extends Controller
             $count++;
         }
 
+        $featuredImagePath = null;
+        if ($request->hasFile('featured_image')) {
+            $path = $request->file('featured_image')->store('resources', 'public');
+            $featuredImagePath = '/storage/' . $path;
+        }
+
+        $pdfPath = $validated['pdf_path'] ?? null;
+        if ($request->hasFile('pdf_file')) {
+            $path = $request->file('pdf_file')->store('documents', 'public');
+            $pdfPath = '/storage/' . $path;
+        }
+
         $resource = Resource::create([
             'title' => $validated['title'],
             'slug' => $slug,
             'type' => $validated['type'],
             'excerpt' => $validated['excerpt'] ?? null,
             'body' => $validated['body'] ?? null,
+            'featured_image' => $featuredImagePath,
             'status' => $validated['status'],
             'is_featured' => $request->boolean('is_featured'),
-            'pdf_path' => $validated['pdf_path'] ?? null,
+            'pdf_path' => $pdfPath,
             'author_id' => $request->user()->id,
             'published_at' => $validated['status'] === 'published' ? now() : null,
         ]);
@@ -158,16 +174,18 @@ class ResourceController extends Controller
             'type' => 'required|string',
             'excerpt' => 'nullable|string|max:1000',
             'body' => 'nullable|string',
+            'featured_image' => 'nullable|image|max:4096',
             'status' => 'required|string',
             'is_featured' => 'boolean',
             'pdf_path' => 'nullable|string|max:255',
+            'pdf_file' => 'nullable|file|mimes:pdf,doc,docx|max:20480',
         ]);
 
         $slug = !empty($validated['slug'])
             ? Str::slug($validated['slug'])
             : $resource->slug;
 
-        $resource->update([
+        $updateData = [
             'title' => $validated['title'],
             'slug' => $slug,
             'type' => $validated['type'],
@@ -175,9 +193,28 @@ class ResourceController extends Controller
             'body' => $validated['body'] ?? null,
             'status' => $validated['status'],
             'is_featured' => $request->boolean('is_featured'),
-            'pdf_path' => $validated['pdf_path'] ?? null,
             'published_at' => ($validated['status'] === 'published' && !$resource->published_at) ? now() : $resource->published_at,
-        ]);
+        ];
+
+        if ($request->hasFile('featured_image')) {
+            if ($resource->featured_image && str_starts_with($resource->featured_image, '/storage/')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $resource->featured_image));
+            }
+            $path = $request->file('featured_image')->store('resources', 'public');
+            $updateData['featured_image'] = '/storage/' . $path;
+        }
+
+        if ($request->hasFile('pdf_file')) {
+            if ($resource->pdf_path && str_starts_with($resource->pdf_path, '/storage/')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $resource->pdf_path));
+            }
+            $path = $request->file('pdf_file')->store('documents', 'public');
+            $updateData['pdf_path'] = '/storage/' . $path;
+        } elseif (isset($validated['pdf_path'])) {
+            $updateData['pdf_path'] = $validated['pdf_path'];
+        }
+
+        $resource->update($updateData);
 
         AuditLogger::log('updated', 'Resource', $resource->id, [
             'title' => $resource->title,
@@ -195,6 +232,14 @@ class ResourceController extends Controller
     {
         $resource = Resource::findOrFail($id);
         $title = $resource->title;
+
+        if ($resource->featured_image && str_starts_with($resource->featured_image, '/storage/')) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $resource->featured_image));
+        }
+        if ($resource->pdf_path && str_starts_with($resource->pdf_path, '/storage/')) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $resource->pdf_path));
+        }
+
         $resource->delete();
 
         AuditLogger::log('deleted', 'Resource', $id, [

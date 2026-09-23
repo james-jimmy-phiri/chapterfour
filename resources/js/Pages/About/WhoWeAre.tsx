@@ -1,11 +1,16 @@
-import { Head } from '@inertiajs/react';
+import { Head, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Shield, Globe, Target } from 'lucide-react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { InteractiveBook } from '@/Components/ui/interactive-book';
 import ScrollMorphHero from '@/Components/ui/scroll-morph-hero';
 
+import { PageProps } from '@/types';
+
 export default function WhoWeAre() {
+    const { site } = usePage<PageProps>().props;
+    const vision = site?.vision || 'A just, democratic and inclusive Malawi where the rights and freedoms guaranteed by the Constitution are respected, protected and enjoyed by all.';
+    const mission = site?.mission || 'To promote and protect constitutional rights, strengthen access to justice, empower citizens, and contribute to accountable, democratic and rights-respecting governance.';
     const frontCover = (
         <div className="w-full h-full relative flex flex-col justify-center items-center text-white p-8 text-center bg-slate-900 overflow-hidden">
             <img
@@ -47,14 +52,14 @@ export default function WhoWeAre() {
                     <h3 className="font-serif text-2xl text-brand-rust font-bold mb-2">Our Vision</h3>
                     <div className="w-8 h-px bg-brand-amber mx-auto mb-5"></div>
                     <p className="text-[13px] font-serif leading-relaxed text-slate-700 px-2">
-                        A just, democratic and inclusive Malawi where the rights and freedoms guaranteed by the Constitution are respected, protected and enjoyed by all.
+                        {vision}
                     </p>
                 </div>
                 <div className="text-center">
                     <h3 className="font-serif text-2xl text-brand-rust font-bold mb-2">Our Mission</h3>
                     <div className="w-8 h-px bg-brand-amber mx-auto mb-5"></div>
                     <p className="text-[13px] font-serif leading-relaxed text-slate-700 px-2">
-                        To promote and protect constitutional rights, strengthen access to justice, empower citizens, and contribute to accountable, democratic and rights-respecting governance.
+                        {mission}
                     </p>
                 </div>
             </div>
@@ -413,7 +418,7 @@ export default function WhoWeAre() {
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="/images/child-hero.png"
+                        src="/images/open_book_2.png"
                         alt="Background"
                         className="w-full h-full object-cover opacity-60"
                     />
@@ -461,6 +466,7 @@ export default function WhoWeAre() {
                                 It further recognizes the Bill of Rights as the foundation for a just, peaceful, democratic and rights-respecting society. Hence it works to ensure that constitutional rights and freedoms are not merely legal guarantees but are translated into practical realities for individuals and communities, particularly those who experience exclusion, discrimination, poverty, marginalization and barriers to accessing justice.
                             </p>
                         </motion.div>
+
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
                             whileInView={{ opacity: 1, scale: 1 }}
@@ -468,20 +474,14 @@ export default function WhoWeAre() {
                             transition={{ duration: 0.8 }}
                             className="relative flex justify-center items-center"
                         >
-                            <div className="w-full max-w-[400px] h-[520px] flex justify-center items-center relative z-10 hidden sm:flex">
+                            {/* Interactive 3D book — visible on all screens */}
+                            <div className="w-full max-w-md[400px] h-[520px] flex justify-center items-center relative z-10">
                                 <InteractiveBook
                                     width={320}
                                     height={480}
                                     frontCover={frontCover}
                                     backCover={backCover}
                                     innerPages={innerPages}
-                                />
-                            </div>
-                            <div className="sm:hidden aspect-square rounded-2xl overflow-hidden shadow-2xl">
-                                <img
-                                    src="/images/animate-img-1.jpg"
-                                    alt="Community Engagement"
-                                    className="w-full h-full object-cover"
                                 />
                             </div>
                         </motion.div>

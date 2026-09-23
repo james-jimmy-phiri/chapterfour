@@ -1,8 +1,8 @@
 import AdminLayout from '@/Layouts/AdminLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm, router } from '@inertiajs/react';
 import {
     ArrowLeft, Save, FileText, CheckCircle2, AlertCircle,
-    Download, Globe, Sparkles, Loader2
+    Download, Globe, Sparkles, Loader2, Image as ImageIcon
 } from 'lucide-react';
 
 interface FormProps {
@@ -13,6 +13,7 @@ interface FormProps {
         type: string;
         excerpt?: string;
         body?: string;
+        featured_image?: string | null;
         status: string;
         is_featured: boolean;
         pdf_path?: string | null;
@@ -24,21 +25,37 @@ interface FormProps {
 export default function Form({ resource, resourceTypes, contentStatuses }: FormProps) {
     const isEdit = !!resource?.id;
 
-    const { data, setData, post, put, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm<{
+        title: string;
+        slug: string;
+        type: string;
+        excerpt: string;
+        body: string;
+        featured_image: File | null;
+        status: string;
+        is_featured: boolean;
+        pdf_path: string;
+        pdf_file: File | null;
+    }>({
         title: resource?.title || '',
         slug: resource?.slug || '',
         type: resource?.type || (resourceTypes[0]?.value || 'publication'),
         excerpt: resource?.excerpt || '',
         body: resource?.body || '',
+        featured_image: null,
         status: resource?.status || 'published',
         is_featured: resource?.is_featured ?? false,
         pdf_path: resource?.pdf_path || '',
+        pdf_file: null,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (isEdit) {
-            put(`/admin/resources/${resource.id}`);
+            router.post(`/admin/resources/${resource.id}`, {
+                _method: 'put',
+                ...data,
+            } as any);
         } else {
             post('/admin/resources');
         }
@@ -118,6 +135,28 @@ export default function Form({ resource, resourceTypes, contentStatuses }: FormP
 
                         <div>
                             <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                                Featured / Cover Image
+                            </label>
+                            {resource?.featured_image && (
+                                <div className="mb-3 flex items-center gap-4 p-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+                                    <img src={resource.featured_image} alt="Current" className="w-20 h-14 object-cover rounded-lg" />
+                                    <div>
+                                        <p className="text-xs font-medium text-slate-800 dark:text-white">Current Featured Image</p>
+                                        <p className="text-[11px] text-slate-500">Upload a new image below to replace it.</p>
+                                    </div>
+                                </div>
+                            )}
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={e => setData('featured_image', e.target.files ? e.target.files[0] : null)}
+                                className="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-rust/10 file:text-brand-rust hover:file:bg-brand-rust/20 file:transition-colors cursor-pointer"
+                            />
+                            {errors.featured_image && <p className="text-red-500 text-xs mt-1">{errors.featured_image}</p>}
+                        </div>
+
+                        <div>
+                            <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
                                 Summary / Excerpt
                             </label>
                             <textarea
@@ -164,15 +203,28 @@ export default function Form({ resource, resourceTypes, contentStatuses }: FormP
 
                             <div>
                                 <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
-                                    PDF Document Path / Download URL
+                                    PDF Document Attachment
                                 </label>
+                                {resource?.pdf_path && (
+                                    <div className="mb-2 flex items-center gap-2 p-2 rounded-lg bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10">
+                                        <FileText className="w-4 h-4 text-brand-rust shrink-0" />
+                                        <span className="text-xs text-slate-600 dark:text-slate-300 truncate">{resource.pdf_path}</span>
+                                    </div>
+                                )}
+                                <input
+                                    type="file"
+                                    accept=".pdf,.doc,.docx"
+                                    onChange={e => setData('pdf_file', e.target.files ? e.target.files[0] : null)}
+                                    className="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-rust/10 file:text-brand-rust hover:file:bg-brand-rust/20 file:transition-colors cursor-pointer mb-2"
+                                />
                                 <input
                                     type="text"
                                     value={data.pdf_path || ''}
                                     onChange={e => setData('pdf_path', e.target.value)}
-                                    placeholder="/documents/sample-report.pdf"
-                                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-sm focus:outline-none focus:border-brand-rust focus:ring-1 focus:ring-brand-rust"
+                                    placeholder="Or paste external document URL..."
+                                    className="w-full px-4 py-2 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 text-xs focus:outline-none focus:border-brand-rust"
                                 />
+                                {errors.pdf_file && <p className="text-red-500 text-xs mt-1">{errors.pdf_file}</p>}
                             </div>
                         </div>
 

@@ -5,10 +5,14 @@ import { useState } from 'react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import TeamMemberModal, { TeamMember } from '@/Components/TeamMemberModal';
 
-export default function OurTeam() {
+interface OurTeamProps {
+    teamMembers?: any[];
+}
+
+export default function OurTeam({ teamMembers = [] }: OurTeamProps) {
     const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
 
-    const teamMembers: TeamMember[] = [
+    const defaultTeamMembers: TeamMember[] = [
         {
             name: "Placeholder Name",
             role: "Executive Director",
@@ -32,6 +36,27 @@ export default function OurTeam() {
         }
     ];
 
+    const fallbackPhotos = [
+        "/images/animate-img-4.jpg",
+        "/images/animate-img-5.jpg",
+        "/images/animate-img-6.jpg",
+        "/images/animate-img-1.jpg",
+        "/images/animate-img-2.jpg",
+    ];
+
+    const displayMembers: TeamMember[] = (teamMembers && teamMembers.length > 0)
+        ? teamMembers.map((m: any, idx: number) => ({
+            name: m.name,
+            role: m.role || "Team Member",
+            image: m.photo || m.image || fallbackPhotos[idx % fallbackPhotos.length],
+            bio: m.biography || m.bio || "Advancing human rights and constitutional freedoms at Chapter Four.",
+            location: m.department || m.location || "Lilongwe, Malawi",
+            linkedin: m.social_links?.linkedin || m.linkedin,
+            twitter: m.social_links?.twitter || m.twitter,
+            email: m.email,
+        }))
+        : defaultTeamMembers;
+
     return (
         <PublicLayout>
             <Head>
@@ -46,7 +71,7 @@ export default function OurTeam() {
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="/images/president_muthalika.jpg"
+                        src="/images/book/no_silent1.jpg"
                         alt="Background"
                         className="w-full h-full object-cover opacity-60"
                     />
@@ -73,59 +98,66 @@ export default function OurTeam() {
                 </div>
             </section>
 
-            {/* Team Grid */}
-            <section className="py-24 bg-slate-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        {teamMembers.map((member, idx) => (
-                            <motion.div
-                                key={idx}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.6, delay: idx * 0.1 }}
-                                className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-slate-100 cursor-pointer flex flex-col h-full"
-                                onClick={() => setSelectedMember(member)}
-                            >
-                                <div className="relative h-80 overflow-hidden shrink-0">
-                                    <img
-                                        src={member.image}
-                                        alt={member.name}
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                    />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                    <div className="absolute bottom-4 left-0 w-full flex justify-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0">
-                                        <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-900 hover:text-[#0A66C2] transition-colors shadow-md">
-                                            <Linkedin className="w-5 h-5" />
-                                        </div>
-                                        <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-900 hover:text-[#1DA1F2] transition-colors shadow-md">
-                                            <Twitter className="w-5 h-5" />
-                                        </div>
-                                        <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-900 hover:text-brand-rust transition-colors shadow-md">
-                                            <Mail className="w-5 h-5" />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="p-8 flex flex-col flex-grow relative bg-white">
-                                    {/* Accent Line */}
-                                    <div className="absolute top-0 left-8 right-8 h-[2px] bg-brand-amber transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-                                    
-                                    <h3 className="text-2xl font-bold text-slate-900 mb-1 group-hover:text-brand-rust transition-colors">{member.name}</h3>
-                                    <p className="text-brand-amber font-semibold text-sm tracking-wide uppercase mb-4">{member.role}</p>
-                                    <p className="text-slate-600 line-clamp-3 mb-6 flex-grow">{member.bio}</p>
-                                    
-                                    <div className="mt-auto pt-4 border-t border-slate-100 flex items-center text-sm font-bold text-slate-900 group-hover:text-brand-rust transition-colors uppercase tracking-wider">
-                                        <span>View Profile</span>
-                                        <ArrowRight className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" />
-                                    </div>
-                                </div>
-                            </motion.div>
-                        ))}
+{/* Team Grid */}
+<section className="py-24 bg-slate-50">
+    <div className="max-w-7xl mx-auto px-4 sm:px-8">
+        {/* Changed lg:grid-cols-3 to lg:grid-cols-4 */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8">
+            {displayMembers.map((member, idx) => (
+                <motion.div
+                    key={idx}
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: idx * 0.1 }}
+                    className="group relative bg-white overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-200 hover:border-slate-300 cursor-pointer flex flex-col h-full"
+                    onClick={() => setSelectedMember(member)}
+                >
+                    {/* Fixed Image Container using Aspect Ratio */}
+                    <div className="relative w-full aspect-square overflow-hidden shrink-0">
+                        <img
+                            src={member.image}
+                            alt={member.name}
+                            className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                        />
+                        
+                        {/* Dark overlay on hover */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        
+                        {/* Social Icons floating up on hover */}
+                        <div className="absolute bottom-6 left-0 w-full flex justify-center gap-4 opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-6 group-hover:translate-y-0">
+                            <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-700 hover:text-[#0A66C2] transition-colors shadow-lg">
+                                <Linkedin className="w-5 h-5" />
+                            </div>
+                            <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-700 hover:text-[#1DA1F2] transition-colors shadow-lg">
+                                <Twitter className="w-5 h-5" />
+                            </div>
+                            <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-slate-700 hover:text-brand-rust transition-colors shadow-lg">
+                                <Mail className="w-5 h-5" />
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </section>
 
-            <TeamMemberModal 
+                    {/* Orange separator bar */}
+                    <div className="h-1 w-full bg-gradient-to-r from-brand-rust via-brand-amber to-brand-rust shrink-0 opacity-0 group-hover:opacity-100 transition-all duration-500 scale-x-0 group-hover:scale-x-100" style={{ transformOrigin: 'center' }}></div>
+                    
+                    {/* Card Content — Added items-center and text-center */}
+                    <div className="p-6 flex flex-col items-center text-center flex-grow relative bg-white">
+                        <h3 className="text-xl font-bold text-slate-900 mb-1 group-hover:text-brand-rust transition-colors">{member.name}</h3>
+                        <p className="text-brand-amber font-semibold text-xs tracking-wider uppercase mb-4">{member.role}</p>
+
+                        {/* Added w-full and justify-center to center the View Profile button */}
+                        <div className="mt-auto pt-4 border-t border-slate-100 w-full flex justify-center items-center text-xs font-bold text-slate-500 group-hover:text-brand-rust transition-colors uppercase tracking-widest">
+                            <span>View Profile</span>
+                            <ArrowRight className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" />
+                        </div>
+                    </div>
+                </motion.div>
+            ))}
+        </div>
+    </div>
+</section>
+            <TeamMemberModal
                 isOpen={!!selectedMember}
                 onClose={() => setSelectedMember(null)}
                 member={selectedMember}

@@ -3,15 +3,27 @@ import { motion } from 'framer-motion';
 import { Users, HeartHandshake, Baby, Accessibility, Tent, TreePine } from 'lucide-react';
 import PublicLayout from '@/Layouts/PublicLayout';
 
-export default function Beneficiaries() {
-    const beneficiaryGroups = [
-        { title: "Women and Girls", icon: HeartHandshake, description: "Empowering women and girls to claim their rights and challenging discriminatory practices." },
-        { title: "Children and Young People", icon: Baby, description: "Protecting the rights of the next generation and promoting youth participation." },
-        { title: "Persons with Disabilities", icon: Accessibility, description: "Advocating for inclusive policies and equal access to justice and services." },
-        { title: "Refugees and Displaced Persons", icon: Tent, description: "Ensuring protection and rights for those forced to flee their homes." },
-        { title: "Rural and Disadvantaged Communities", icon: TreePine, description: "Bridging the justice gap for economically marginalized populations." },
-        { title: "Survivors of Human Rights Violations", icon: Users, description: "Providing legal support and seeking redress for victims of abuse." }
-    ];
+interface BeneficiariesProps {
+    beneficiaryGroups?: any[];
+}
+
+const iconMap: Record<string, any> = {
+    HeartHandshake, Baby, Accessibility, Tent, TreePine, Users,
+};
+
+const defaultBeneficiaryGroups = [
+    { name: "Women and Girls", icon: 'HeartHandshake', description: "Empowering women and girls to claim their rights and challenging discriminatory practices." },
+    { name: "Children and Young People", icon: 'Baby', description: "Protecting the rights of the next generation and promoting youth participation." },
+    { name: "Persons with Disabilities", icon: 'Accessibility', description: "Advocating for inclusive policies and equal access to justice and services." },
+    { name: "Refugees and Displaced Persons", icon: 'Tent', description: "Ensuring protection and rights for those forced to flee their homes." },
+    { name: "Rural and Disadvantaged Communities", icon: 'TreePine', description: "Bridging the justice gap for economically marginalized populations." },
+    { name: "Survivors of Human Rights Violations", icon: 'Users', description: "Providing legal support and seeking redress for victims of abuse." },
+];
+
+export default function Beneficiaries({ beneficiaryGroups = [] }: BeneficiariesProps) {
+    const displayGroups = beneficiaryGroups && beneficiaryGroups.length > 0
+        ? beneficiaryGroups
+        : defaultBeneficiaryGroups;
 
     return (
         <PublicLayout>
@@ -27,7 +39,7 @@ export default function Beneficiaries() {
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="/images/hero-bg.jpg"
+                        src="/images/202411afr_south africa_end_gbv.jpg"
                         alt="Background"
                         className="w-full h-full object-cover opacity-60"
                     />
@@ -75,7 +87,7 @@ export default function Beneficiaries() {
                                 Other targeted groups include persons with albinism, marginalized and excluded communities, and communities affected by governance, environmental and socio-economic challenges.
                             </p>
                         </motion.div>
-                        
+
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
                             whileInView={{ opacity: 1, scale: 1 }}
@@ -84,7 +96,7 @@ export default function Beneficiaries() {
                             className="relative h-full min-h-[400px] rounded-2xl overflow-hidden shadow-2xl"
                         >
                             <img
-                                src="/images/child-hero.png"
+                                src="/images/crying_boychild.jpg"
                                 alt="Community members"
                                 className="absolute inset-0 w-full h-full object-cover"
                             />
@@ -93,11 +105,12 @@ export default function Beneficiaries() {
 
                     {/* Beneficiary Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {beneficiaryGroups.map((group, idx) => {
-                            const IconComp = group.icon;
+                        {displayGroups.map((group, idx) => {
+                            const iconKey = group.icon || 'Users';
+                            const IconComp = iconMap[iconKey] || Users;
                             return (
                                 <motion.div
-                                    key={idx}
+                                    key={group.id || idx}
                                     initial={{ opacity: 0, y: 30 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
@@ -107,7 +120,7 @@ export default function Beneficiaries() {
                                     <div className="w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center mb-6 group-hover:bg-brand-rust transition-colors">
                                         <IconComp className="w-7 h-7 text-brand-rust group-hover:text-white transition-colors" />
                                     </div>
-                                    <h3 className="text-xl font-bold text-slate-900 mb-3">{group.title}</h3>
+                                    <h3 className="text-xl font-bold text-slate-900 mb-3">{group.name || group.title}</h3>
                                     <p className="text-slate-600 leading-relaxed">{group.description}</p>
                                 </motion.div>
                             )

@@ -19,21 +19,22 @@ export interface AnimateImageItem {
 
 const DEFAULT_ANIMATE_ITEMS: AnimateImageItem[] = [
     {
-        src: '/images/animate-img-1.jpg',
+        src: '/images/say_no.jpg',
         alt: 'Human rights and community awareness 1',
         width: 217,
         height: 153,
         parallax: { y: 0, x: 140, smoothness: 50 },
     },
     {
-        src: '/images/animate-img-2.jpg',
-        alt: 'Human rights and community awareness 2',
-        width: 271,
-        height: 191,
-        parallax: { y: 150, x: 0, smoothness: 50 },
-    },
+        src: '/images/animate-img-5.jpg',
+        alt: 'Human rights and community awareness 5',
+        width: 179,
+        height: 126,
+        parallax: { y: 60, x: 70, smoothness: 50 },
+    }
+    ,
     {
-        src: '/images/animate-img-3.jpg',
+        src: '/images/woman.jpg',
         alt: 'Human rights and community awareness 3',
         width: 271,
         height: 191,
@@ -47,12 +48,13 @@ const DEFAULT_ANIMATE_ITEMS: AnimateImageItem[] = [
         parallax: { y: 20, x: 20, smoothness: 50 },
     },
     {
-        src: '/images/animate-img-5.jpg',
-        alt: 'Human rights and community awareness 5',
-        width: 179,
-        height: 126,
-        parallax: { y: 60, x: 70, smoothness: 50 },
-    },
+        src: '/images/gbvreport.png',
+        alt: 'Human rights and community awareness 2',
+        width: 271,
+        height: 191,
+        parallax: { y: 150, x: 0, smoothness: 50 },
+    }
+    ,
     {
         src: '/images/animate-img-6.jpg',
         alt: 'Human rights and community awareness 6',

@@ -34,7 +34,7 @@ interface BlogsProps {
 function BlogCard({ article }: { article: ArticleData }) {
   return (
     <div
-      className="relative cursor-pointer border border-gray-300/50 bg-white/50 shadow-none backdrop-blur-sm transition-shadow hover:shadow-md"
+      className="relative cursor-pointer border border-gray-300/50 bg-white/50 shadow-none backdrop-blur-sm transition-shadow hover:shadow-md group overflow-hidden"
     >
       {/* Border beam — always animating clockwise */}
       <BorderBeam
@@ -55,6 +55,8 @@ function BlogCard({ article }: { article: ArticleData }) {
             #{article.category}
           </p>
         </div>
+        {/* Orange separator bar — between image and text, hover only */}
+        <div className="h-1 w-full bg-gradient-to-r from-brand-rust via-brand-amber to-brand-rust scale-x-0 group-hover:scale-x-100 opacity-0 group-hover:opacity-100 transition-all duration-500 origin-left"></div>
 
         <div className="px-3 pb-3 sm:px-4 sm:pb-4">
           <h3 className="mb-2 font-normal text-base text-gray-900 tracking-tight sm:mb-2 sm:text-lg md:text-2xl">

@@ -12,6 +12,11 @@ use App\Http\Controllers\Admin\TeamController;
 use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\InterventionController;
+use App\Http\Controllers\Admin\BeneficiaryGroupController;
+use App\Http\Controllers\Admin\VacancyController;
+use App\Http\Controllers\Admin\TimelineEventController;
+use App\Http\Controllers\Admin\HrbaPrincipleController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +27,11 @@ use Inertia\Inertia;
 Route::get('/', [PublicController::class, 'home'])->name('home');
 Route::get('/about', [PublicController::class, 'about'])->name('about');
 Route::get('/what-we-do', [PublicController::class, 'whatWeDo'])->name('what-we-do');
+// What We Do Subpages — must be defined BEFORE the {slug} wildcard
+Route::get('/what-we-do/thematic-areas', [PublicController::class, 'thematicAreasPage'])->name('what-we-do.thematic-areas');
+Route::get('/what-we-do/approach-to-programming', [PublicController::class, 'approachToProgramming'])->name('what-we-do.approach-to-programming');
+Route::get('/what-we-do/key-interventions', [PublicController::class, 'keyInterventions'])->name('what-we-do.key-interventions');
+Route::get('/what-we-do/our-reports', [PublicController::class, 'ourReports'])->name('what-we-do.our-reports');
 Route::get('/what-we-do/{slug}', [PublicController::class, 'thematicArea'])->name('thematic-area');
 Route::get('/resources', [PublicController::class, 'resources'])->name('resources');
 Route::get('/resources/{slug}', [PublicController::class, 'resourceDetail'])->name('resources.detail');
@@ -39,19 +49,19 @@ Route::get('/terms', fn () => Inertia::render('Terms'))->name('terms');
 Route::get('/safeguarding', fn () => Inertia::render('Safeguarding'))->name('safeguarding');
 
 // About Subpages
-Route::get('/about/who-we-are', fn () => Inertia::render('About/WhoWeAre'))->name('about.who-we-are');
-Route::get('/about/our-team', fn () => Inertia::render('About/OurTeam'))->name('about.our-team');
-Route::get('/about/board-of-trustees', fn () => Inertia::render('About/BoardOfTrustees'))->name('about.board-of-trustees');
-Route::get('/about/beneficiaries', fn () => Inertia::render('About/Beneficiaries'))->name('about.beneficiaries');
-Route::get('/about/institutional-partnerships', fn () => Inertia::render('About/InstitutionalPartnerships'))->name('about.institutional-partnerships');
-Route::get('/about/core-activities', fn () => Inertia::render('About/CoreActivities'))->name('about.core-activities');
-Route::get('/about/cross-cutting-activities', fn () => Inertia::render('About/CrossCuttingActivities'))->name('about.cross-cutting-activities');
+Route::get('/about/who-we-are', [PublicController::class, 'whoWeAre'])->name('about.who-we-are');
+Route::get('/about/our-team', [PublicController::class, 'ourTeam'])->name('about.our-team');
+Route::get('/about/board-of-trustees', [PublicController::class, 'boardOfTrustees'])->name('about.board-of-trustees');
+Route::get('/about/beneficiaries', [PublicController::class, 'beneficiaries'])->name('about.beneficiaries');
+Route::get('/about/institutional-partnerships', [PublicController::class, 'institutionalPartnerships'])->name('about.institutional-partnerships');
+Route::get('/about/core-activities', [PublicController::class, 'coreActivities'])->name('about.core-activities');
+Route::get('/about/cross-cutting-activities', [PublicController::class, 'crossCuttingActivities'])->name('about.cross-cutting-activities');
+Route::get('/about/vacancies', [PublicController::class, 'vacancies'])->name('about.vacancies');
+Route::get('/about/vacancies/{id}', [PublicController::class, 'vacancyDetail'])->name('about.vacancies.detail');
+Route::get('/vacancies', fn () => redirect()->route('about.vacancies'))->name('vacancies');
+Route::get('/vacancies/{id}', [PublicController::class, 'vacancyDetail'])->name('vacancies.detail');
 
-// What We Do Subpages
-Route::get('/what-we-do/thematic-areas', fn () => Inertia::render('WhatWeDo/ThematicAreas'))->name('what-we-do.thematic-areas');
-Route::get('/what-we-do/approach-to-programming', fn () => Inertia::render('WhatWeDo/ApproachToProgramming'))->name('what-we-do.approach-to-programming');
-Route::get('/what-we-do/key-interventions', fn () => Inertia::render('WhatWeDo/KeyInterventions'))->name('what-we-do.key-interventions');
-Route::get('/what-we-do/our-reports', fn () => Inertia::render('WhatWeDo/OurReports'))->name('what-we-do.our-reports');
+// What We Do Subpages (now defined above near the wildcard; keeping this section for reference)
 
 // ─── ADMIN / CMS ROUTES ───────────────────────────────────────────────────────
 
@@ -127,6 +137,36 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(
     Route::post('/roles', [RoleController::class, 'store'])->name('roles.store');
     Route::put('/roles/{role}', [RoleController::class, 'update'])->name('roles.update');
     Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
+
+    // Interventions
+    Route::get('/interventions', [InterventionController::class, 'index'])->name('interventions');
+    Route::post('/interventions', [InterventionController::class, 'store'])->name('interventions.store');
+    Route::put('/interventions/{id}', [InterventionController::class, 'update'])->name('interventions.update');
+    Route::delete('/interventions/{id}', [InterventionController::class, 'destroy'])->name('interventions.destroy');
+
+    // Beneficiary Groups
+    Route::get('/beneficiary-groups', [BeneficiaryGroupController::class, 'index'])->name('beneficiary-groups');
+    Route::post('/beneficiary-groups', [BeneficiaryGroupController::class, 'store'])->name('beneficiary-groups.store');
+    Route::put('/beneficiary-groups/{id}', [BeneficiaryGroupController::class, 'update'])->name('beneficiary-groups.update');
+    Route::delete('/beneficiary-groups/{id}', [BeneficiaryGroupController::class, 'destroy'])->name('beneficiary-groups.destroy');
+
+    // Vacancies
+    Route::get('/vacancies', [VacancyController::class, 'index'])->name('vacancies');
+    Route::post('/vacancies', [VacancyController::class, 'store'])->name('vacancies.store');
+    Route::put('/vacancies/{id}', [VacancyController::class, 'update'])->name('vacancies.update');
+    Route::delete('/vacancies/{id}', [VacancyController::class, 'destroy'])->name('vacancies.destroy');
+
+    // Timeline Events
+    Route::get('/timeline-events', [TimelineEventController::class, 'index'])->name('timeline-events');
+    Route::post('/timeline-events', [TimelineEventController::class, 'store'])->name('timeline-events.store');
+    Route::put('/timeline-events/{id}', [TimelineEventController::class, 'update'])->name('timeline-events.update');
+    Route::delete('/timeline-events/{id}', [TimelineEventController::class, 'destroy'])->name('timeline-events.destroy');
+
+    // HRBA Principles
+    Route::get('/hrba-principles', [HrbaPrincipleController::class, 'index'])->name('hrba-principles');
+    Route::post('/hrba-principles', [HrbaPrincipleController::class, 'store'])->name('hrba-principles.store');
+    Route::put('/hrba-principles/{id}', [HrbaPrincipleController::class, 'update'])->name('hrba-principles.update');
+    Route::delete('/hrba-principles/{id}', [HrbaPrincipleController::class, 'destroy'])->name('hrba-principles.destroy');
 
     // Remaining stub routes for sidebar links
     $adminStubs = [

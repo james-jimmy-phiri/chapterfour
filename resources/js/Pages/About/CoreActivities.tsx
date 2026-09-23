@@ -61,7 +61,7 @@ export default function CoreActivities() {
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="/images/Parliament_Building_of_Malawioutside.jpg"
+                        src="/images/Tithetse.jpg"
                         alt="Background"
                         className="w-full h-full object-cover opacity-60"
                     />
@@ -91,11 +91,11 @@ export default function CoreActivities() {
             {/* Content Section */}
             <section className="py-24 bg-white relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-slate-50 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/3"></div>
-                
+
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
                     <div className="space-y-20">
                         {coreObjectives.map((objective, idx) => (
-                            <motion.div 
+                            <motion.div
                                 key={idx}
                                 initial={{ opacity: 0, y: 40 }}
                                 whileInView={{ opacity: 1, y: 0 }}
@@ -113,11 +113,11 @@ export default function CoreActivities() {
                                         <div className="w-20 h-1 bg-brand-amber rounded-full"></div>
                                     </div>
                                 </div>
-                                
+
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                     {objective.activities.map((activity, aIdx) => (
-                                        <div 
-                                            key={aIdx} 
+                                        <div
+                                            key={aIdx}
                                             className="bg-slate-50 p-6 rounded-xl border border-slate-100 hover:border-brand-rust/30 hover:shadow-md transition-all group"
                                         >
                                             <div className="flex items-start gap-4">

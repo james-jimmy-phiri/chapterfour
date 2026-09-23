@@ -65,21 +65,25 @@ const defaultTeam: TeamMemberItem[] = [
         name: 'Tuntufye Simwimba',
         role: 'Programs Coordinator',
         bio: 'Constitutional legal advocate leading strategic human rights programs, grassroots paralegal deployments, and public interest litigation.',
+        photo: '/images/animate-img-4.jpg',
     },
     {
         name: 'Monica Ndalama',
         role: 'Project Officer (Human Rights)',
         bio: 'Specialist in human rights monitoring, community civic literacy, and defending civic space freedoms in regional jurisdictions.',
+        photo: '/images/animate-img-5.jpg',
     },
     {
         name: 'Frackson Makangwala',
         role: 'Monitoring & Evidence Lead',
         bio: 'Statistician and empirical researcher analyzing justice indicators, detention metrics, and institutional accountability data.',
+        photo: '/images/animate-img-6.jpg',
     },
     {
         name: 'Stella Chikombole',
         role: 'Legal Aid & Community Outreach',
         bio: 'Community legal counsel coordinating grassroots mobile clinics, pro-bono defense, and rights education for vulnerable youth.',
+        photo: '/images/animate-img-1.jpg',
     },
 ];
 
@@ -88,7 +92,17 @@ export default function About({
     stats = [],
     partners = [],
 }: AboutProps) {
-    const displayTeam = teamMembers.length > 0 ? teamMembers : defaultTeam;
+    const localPlaceholderPhotos = [
+        '/images/animate-img-4.jpg',
+        '/images/animate-img-5.jpg',
+        '/images/animate-img-6.jpg',
+        '/images/animate-img-1.jpg',
+    ];
+    const rawTeam = teamMembers.length > 0 ? teamMembers : defaultTeam;
+    const displayTeam = rawTeam.map((member, idx) => ({
+        ...member,
+        photo: member.photo || localPlaceholderPhotos[idx % localPlaceholderPhotos.length],
+    }));
 
     return (
         <PublicLayout>
@@ -209,61 +223,77 @@ export default function About({
             </section>
 
             {/* The Team Section */}
-            <section className="py-20 bg-slate-50 border-y border-slate-200">
+            <section className="py-24 bg-slate-50 border-y border-slate-200 overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-8">
                     <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
-                        <div className="max-w-2xl">
-                            <span className="text-xs font-bold uppercase tracking-wider text-brand-rust block mb-2">Leadership & Experts</span>
+                        <motion.div
+                            initial={{ opacity: 0, x: -20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6 }}
+                            className="max-w-2xl"
+                        >
+                            <span className="text-xs font-bold uppercase tracking-widest text-slate-500 block mb-3">Leadership & Experts</span>
                             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
                                 The Team Behind Chapter Four
                             </h2>
-                            <p className="text-slate-600 mt-4 text-lg">
+                            <p className="text-slate-500 mt-4 text-lg">
                                 Dedicated human rights practitioners, constitutional lawyers, and researchers fighting for civic justice.
                             </p>
-                        </div>
-                        <Link href="/about/our-team" className="inline-flex items-center gap-2 text-brand-rust font-bold hover:text-brand-rust-dark transition-colors whitespace-nowrap">
-                            Meet the full team <ArrowRight className="w-4 h-4" />
-                        </Link>
+                        </motion.div>
+                        <motion.div
+                            initial={{ opacity: 0, x: 20 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.6 }}
+                        >
+                            <Link href="/about/our-team" className="inline-flex items-center gap-2 text-slate-800 font-bold hover:text-black transition-colors whitespace-nowrap group">
+                                Meet the full team <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                            </Link>
+                        </motion.div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-12">
                         {displayTeam.map((member, idx) => (
                             <motion.article
                                 key={member.name + idx}
-                                initial={{ opacity: 0, y: 20 }}
+                                initial={{ opacity: 0, y: 30 }}
                                 whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                                className="group"
+                                viewport={{ once: true, margin: "-100px" }}
+                                transition={{ duration: 0.7, delay: idx * 0.15, ease: "easeOut" }}
+                                whileHover={{ y: -8 }}
+                                className="group cursor-pointer"
                             >
-                                <div className="relative w-full aspect-[4/5] bg-gradient-to-br from-brand-dark via-[#382015] to-brand-rust rounded-2xl overflow-hidden mb-6 shadow-md border border-slate-200">
+                                <div className="relative w-full aspect-[4/5] bg-slate-200 rounded-2xl overflow-hidden mb-6 shadow-sm border border-slate-200 transition-all duration-500 group-hover:shadow-xl group-hover:shadow-slate-300/50">
                                     {member.photo ? (
                                         <img
                                             src={member.photo}
                                             alt={member.name}
-                                            className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-110"
+                                            className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                                         />
                                     ) : (
-                                        <div className="flex flex-col items-center justify-center h-full p-6 text-white text-center">
-                                            <div className="w-16 h-16 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-brand-amber font-black text-xl mb-3">
+                                        <div className="flex flex-col items-center justify-center h-full p-6 text-slate-400 text-center bg-slate-100">
+                                            <div className="w-16 h-16 rounded-full bg-slate-300 flex items-center justify-center text-slate-600 font-black text-xl mb-3">
                                                 {member.name.split(' ').map((n) => n[0]).join('').slice(0, 2)}
                                             </div>
-                                            <span className="text-xs font-bold tracking-wider text-brand-amber uppercase">Advocate</span>
+                                            <span className="text-xs font-bold tracking-wider uppercase">Advocate</span>
                                         </div>
                                     )}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                                 </div>
-                                <h3 className="text-xl font-bold text-slate-900 group-hover:text-brand-rust transition-colors">
-                                    {member.name}
-                                </h3>
-                                <p className="text-sm font-semibold text-brand-amber mt-1 uppercase tracking-wide">
-                                    {member.role}
-                                </p>
-                                {member.bio && (
-                                    <p className="text-sm text-slate-500 mt-3 leading-relaxed line-clamp-3">
-                                        {member.bio}
+                                <div className="px-2">
+                                    <h3 className="text-xl font-bold text-slate-900 transition-colors group-hover:text-black">
+                                        {member.name}
+                                    </h3>
+                                    <p className="text-sm font-semibold text-slate-500 mt-1 uppercase tracking-wider">
+                                        {member.role}
                                     </p>
-                                )}
+                                    {member.bio && (
+                                        <p className="text-sm text-slate-600 mt-3 leading-relaxed line-clamp-3 opacity-80 group-hover:opacity-100 transition-opacity duration-300">
+                                            {member.bio}
+                                        </p>
+                                    )}
+                                </div>
                             </motion.article>
                         ))}
                     </div>
@@ -271,23 +301,37 @@ export default function About({
             </section>
 
             {/* Call To Action */}
-            <section className="py-24 bg-brand-dark text-white text-center">
-                <div className="max-w-4xl mx-auto px-4 sm:px-8">
-                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-6">
-                        Join Us in Defending Constitutional Rights
-                    </h2>
-                    <p className="text-lg text-slate-300 mb-10 max-w-2xl mx-auto">
-                        Whether you are a human rights organization, legal practitioner, academic researcher, or concerned citizen, there are multiple ways to partner with us.
-                    </p>
-                    <div className="flex flex-wrap justify-center gap-4">
-                        <Link href="/contact" className="inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-brand-rust hover:bg-brand-rust-dark text-white font-bold text-base rounded-lg transition duration-200 shadow-lg hover:scale-105">
-                            <span>Get in Touch</span>
-                            <ArrowRight className="w-5 h-5" />
-                        </Link>
-                        <Link href="/what-we-do" className="inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold text-base rounded-lg transition duration-200 backdrop-blur-sm hover:scale-105 border border-white/20">
-                            <span>Explore Our Work</span>
-                        </Link>
-                    </div>
+            <section className="relative py-28 text-white text-center overflow-hidden">
+                <div
+                    className="absolute inset-0 bg-fixed bg-center bg-cover"
+                    style={{ backgroundImage: "url('/images/Parliament_Building_of_Malawioutside.jpg')" }}
+                ></div>
+                {/* Overlay matching the original background color */}
+                <div className="absolute inset-0 bg-brand-dark/95"></div>
+
+                <div className="max-w-4xl mx-auto px-4 sm:px-8 relative z-10">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.6 }}
+                    >
+                        <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight mb-6">
+                            Join Us in Defending Constitutional Rights
+                        </h2>
+                        <p className="text-lg text-slate-300 mb-10 max-w-2xl mx-auto">
+                            Whether you are a human rights organization, legal practitioner, academic researcher, or concerned citizen, there are multiple ways to partner with us.
+                        </p>
+                        <div className="flex flex-wrap justify-center gap-4">
+                            <Link href="/contact" className="inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-brand-rust hover:bg-brand-rust-dark text-white font-bold text-base rounded-lg transition duration-200 shadow-lg hover:scale-105">
+                                <span>Get in Touch</span>
+                                <ArrowRight className="w-5 h-5" />
+                            </Link>
+                            <Link href="/what-we-do" className="inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-white/10 hover:bg-white/20 text-white font-bold text-base rounded-lg transition duration-200 backdrop-blur-sm hover:scale-105 border border-white/20">
+                                <span>Explore Our Work</span>
+                            </Link>
+                        </div>
+                    </motion.div>
                 </div>
             </section>
         </PublicLayout>

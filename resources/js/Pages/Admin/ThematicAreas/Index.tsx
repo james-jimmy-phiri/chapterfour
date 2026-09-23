@@ -13,6 +13,8 @@ interface ThematicAreaItem {
     short_description?: string;
     body?: string;
     icon?: string;
+    cover_image?: string;
+    hero_image?: string;
     sort_order: number;
     status: string;
 }
@@ -26,12 +28,26 @@ export default function ThematicAreasIndex({ thematicAreas = [] }: ThematicAreas
     const [modalOpen, setModalOpen] = useState(false);
     const [editingItem, setEditingItem] = useState<ThematicAreaItem | null>(null);
 
-    const { data, setData, post, put, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors, reset } = useForm<{
+        title: string;
+        slug: string;
+        short_description: string;
+        body: string;
+        icon: string;
+        icon_file: File | null;
+        cover_image: File | null;
+        hero_image: File | null;
+        sort_order: number;
+        status: string;
+    }>({
         title: '',
         slug: '',
         short_description: '',
         body: '',
         icon: 'Globe',
+        icon_file: null,
+        cover_image: null,
+        hero_image: null,
         sort_order: 0,
         status: 'published',
     });
@@ -45,6 +61,9 @@ export default function ThematicAreasIndex({ thematicAreas = [] }: ThematicAreas
             short_description: '',
             body: '',
             icon: 'Globe',
+            icon_file: null,
+            cover_image: null,
+            hero_image: null,
             sort_order: thematicAreas.length + 1,
             status: 'published',
         });
@@ -59,6 +78,9 @@ export default function ThematicAreasIndex({ thematicAreas = [] }: ThematicAreas
             short_description: item.short_description || '',
             body: item.body || '',
             icon: item.icon || 'Globe',
+            icon_file: null,
+            cover_image: null,
+            hero_image: null,
             sort_order: item.sort_order,
             status: item.status,
         });
@@ -68,7 +90,10 @@ export default function ThematicAreasIndex({ thematicAreas = [] }: ThematicAreas
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (editingItem) {
-            put(`/admin/thematic-areas/${editingItem.id}`, {
+            router.post(`/admin/thematic-areas/${editingItem.id}`, {
+                _method: 'put',
+                ...data,
+            } as any, {
                 onSuccess: () => {
                     setModalOpen(false);
                     reset();
@@ -143,6 +168,16 @@ export default function ThematicAreasIndex({ thematicAreas = [] }: ThematicAreas
                                     {item.status}
                                 </span>
                             </div>
+
+                            {item.cover_image && (
+                                <div className="mb-3 rounded-xl overflow-hidden h-28 bg-slate-100 dark:bg-white/5 border border-slate-200/50 dark:border-white/5">
+                                    <img
+                                        src={item.cover_image}
+                                        alt={item.title}
+                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                    />
+                                </div>
+                            )}
 
                             <h3 className="font-serif text-lg text-slate-900 dark:text-white font-bold group-hover:text-brand-rust dark:group-hover:text-brand-amber transition-colors">
                                 {item.title}
@@ -256,6 +291,65 @@ export default function ThematicAreasIndex({ thematicAreas = [] }: ThematicAreas
                                     value={data.short_description}
                                     onChange={(e) => setData('short_description', e.target.value)}
                                     className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs leading-relaxed focus:outline-none focus:border-brand-rust"
+                                />
+                            </div>
+
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                                        Cover Image (Card Preview)
+                                    </label>
+                                    {editingItem?.cover_image && (
+                                        <div className="mb-2 flex items-center gap-3 p-2 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10">
+                                            <img src={editingItem.cover_image} alt="Current cover" className="w-12 h-10 object-cover rounded-lg" />
+                                            <span className="text-[11px] text-slate-500">Current cover. Uploading new replaces it.</span>
+                                        </div>
+                                    )}
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => setData('cover_image', e.target.files ? e.target.files[0] : null)}
+                                        className="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-rust/10 file:text-brand-rust hover:file:bg-brand-rust/20 file:transition-colors cursor-pointer"
+                                    />
+                                    {errors.cover_image && <p className="text-xs text-red-500 mt-1">{errors.cover_image}</p>}
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                                        Hero Background Image
+                                    </label>
+                                    {editingItem?.hero_image && (
+                                        <div className="mb-2 flex items-center gap-3 p-2 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10">
+                                            <img src={editingItem.hero_image} alt="Current hero" className="w-12 h-10 object-cover rounded-lg" />
+                                            <span className="text-[11px] text-slate-500">Current hero. Uploading new replaces it.</span>
+                                        </div>
+                                    )}
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => setData('hero_image', e.target.files ? e.target.files[0] : null)}
+                                        className="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-rust/10 file:text-brand-rust hover:file:bg-brand-rust/20 file:transition-colors cursor-pointer"
+                                    />
+                                    {errors.hero_image && <p className="text-xs text-red-500 mt-1">{errors.hero_image}</p>}
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                                    Icon (Image / SVG Upload or Name)
+                                </label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => setData('icon_file', e.target.files ? e.target.files[0] : null)}
+                                    className="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-rust/10 file:text-brand-rust hover:file:bg-brand-rust/20 file:transition-colors cursor-pointer mb-2"
+                                />
+                                <input
+                                    type="text"
+                                    value={data.icon}
+                                    onChange={(e) => setData('icon', e.target.value)}
+                                    placeholder="Or specify Lucide icon name (e.g. Globe, Scale)"
+                                    className="w-full px-4 py-2 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-brand-rust"
                                 />
                             </div>
 

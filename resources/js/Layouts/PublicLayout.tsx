@@ -4,7 +4,7 @@ import {
     Menu, X, ChevronDown, ArrowRight,
     Facebook, Twitter, Instagram, Linkedin,
     Mail, Phone, MapPin, CheckCircle2,
-    Shield, Scale, Globe, BookOpen, FileText, Heart, Search, Users
+    Shield, Scale, Globe, BookOpen, FileText, Heart, Search, Users, Briefcase
 } from 'lucide-react';
 import ChapterFourLogo from '@/Components/ChapterFourLogo';
 import PageLoader from '@/Components/PageLoader';
@@ -20,6 +20,14 @@ interface NavLinkItem {
     label: string;
     href: string;
     children?: NavChild[];
+    /* Per-dropdown modal config */
+    modalImage?: string;
+    modalImageAlt?: string;
+
+    modalHeading?: string;
+
+    modalCta?: string;
+    modalCtaHref?: string;
 }
 
 const navLinks: NavLinkItem[] = [
@@ -27,6 +35,13 @@ const navLinks: NavLinkItem[] = [
     {
         label: 'About',
         href: '/about',
+        modalImage: '/images/animate-img-1.jpg',
+        modalImageAlt: 'Chapter Four team and community advocates',
+
+        modalHeading: 'Our People, Purpose & Governance',
+
+        modalCta: 'Explore About Us',
+        modalCtaHref: '/about',
         children: [
             { label: 'Who We Are', href: '/about/who-we-are', desc: 'Organization overview, Vision, Mission and objectives', icon: Globe },
             { label: 'Our Team', href: '/about/our-team', desc: 'Meet the people behind Chapter Four', icon: Users },
@@ -35,11 +50,19 @@ const navLinks: NavLinkItem[] = [
             { label: 'Institutional Partnerships', href: '/about/institutional-partnerships', desc: 'Governance, management and partners', icon: Scale },
             { label: 'Core Activities', href: '/about/core-activities', desc: 'Profile of activities and expected outputs', icon: BookOpen },
             { label: 'Cross Cutting Activities', href: '/about/cross-cutting-activities', desc: 'Research, advocacy, and capacity building', icon: FileText },
+            { label: 'Vacancies', href: '/about/vacancies', desc: 'Open positions and volunteering opportunities', icon: Briefcase },
         ],
     },
     {
         label: 'What We Do',
         href: '/what-we-do',
+        modalImage: '/images/constitutional_book.jpg',
+        modalImageAlt: 'Chapter Four constitutional law and advocacy work',
+
+        modalHeading: 'Rights-Based Programmes & Interventions',
+
+        modalCta: 'View All Programmes',
+        modalCtaHref: '/what-we-do',
         children: [
             { label: 'Thematic Areas of Work', href: '/what-we-do/thematic-areas', desc: 'Promoting human rights, justice, and good governance.', icon: Shield },
             { label: 'Approach to Programming', href: '/what-we-do/approach-to-programming', desc: 'Our Human Rights-Based Approach (HRBA).', icon: Scale },
@@ -110,11 +133,11 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                             <span className="text-[11px] sm:text-xs">info@chapterfourmw.org</span>
                         </a>
                         <a
-                            className="flex items-center gap-1.5 text-slate-200 hover:text-brand-amber transition"
+                            className="md:flex items-center gap-1.5 text-slate-200 hover:text-brand-amber transition"
                             href="tel:+265888596275"
                         >
                             <Phone className="w-3.5 h-3.5 text-brand-amber" />
-                            <span className="text-[11px] sm:text-xs">+265 888 596 275</span>
+                            <span className="hidden md:inline text-[11px] sm:text-xs">+265 888 596 275</span>
                         </a>
                     </div>
 
@@ -180,51 +203,47 @@ export default function PublicLayout({ children }: PropsWithChildren) {
 
                                     {/* Submenu Mega Menu (Appears on Hover) */}
                                     {link.children && (
-                                        <div className="absolute top-full left-1/2 -translate-x-1/2 w-[840px] max-w-[90vw] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-3 group-hover:translate-y-0 z-50 pointer-events-none group-hover:pointer-events-auto">
+                                        <div className="absolute top-full left-1/2 -translate-x-1/2 w-[860px] max-w-[90vw] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-3 group-hover:translate-y-0 z-50 pointer-events-none group-hover:pointer-events-auto">
                                             {/* Invisible bridge so mouse moves cleanly from link to dropdown */}
                                             <div className="h-5 w-full absolute -top-5" />
 
                                             {/* Dropdown Modal Box */}
                                             <div className="bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden flex text-left">
-                                                {/* Left: Image Area (40%) */}
-                                                <div className="w-2/5 relative bg-slate-900 hidden sm:block">
+                                                {/* Left: Image Area (38%) */}
+                                                <div className="w-[38%] relative bg-slate-900 hidden sm:block shrink-0">
                                                     <img
-                                                        src="/images/hero/pexels-akoonie-10875242.jpg"
-                                                        alt="Chapter Four Advocacy and Constitutional Rights"
+                                                        src={link.modalImage || '/images/hero/pexels-akoonie-10875242.jpg'}
+                                                        alt={link.modalImageAlt || `${link.label} — Chapter Four`}
                                                         className="absolute inset-0 w-full h-full object-cover opacity-80"
                                                     />
                                                     <div className="absolute inset-0 bg-gradient-to-t from-[#0a0503] via-[#0a0503]/60 to-transparent" />
                                                     <div className="absolute bottom-0 left-0 p-6 z-10">
-                                                        <span className="text-[10px] font-bold uppercase tracking-wider text-brand-amber bg-brand-rust/50 px-2 py-0.5 rounded backdrop-blur-xs inline-block mb-2">
-                                                            Chapter IV Mandate
-                                                        </span>
+
                                                         <h4 className="text-white text-base font-bold leading-snug">
-                                                            Defending Constitutional Freedoms
+                                                            {link.modalHeading || 'Defending Constitutional Freedoms'}
                                                         </h4>
-                                                        <p className="text-slate-300 text-xs mt-1 leading-relaxed">
-                                                            Promoting human rights, rule of law, and grassroots justice across Malawi.
-                                                        </p>
+
                                                         <Link
-                                                            href="/what-we-do"
+                                                            href={link.modalCtaHref || link.href}
                                                             className="inline-flex items-center gap-1.5 text-brand-amber text-xs font-bold mt-3 hover:underline"
                                                         >
-                                                            <span>Explore All Pillars</span>
+                                                            <span>{link.modalCta || 'Explore'}</span>
                                                             <ArrowRight className="w-3.5 h-3.5" />
                                                         </Link>
                                                     </div>
                                                 </div>
 
-                                                {/* Right: Bullets / Submenu Items (60%) */}
-                                                <div className="w-full sm:w-3/5 p-6 bg-white">
+                                                {/* Right: Bullets / Submenu Items (62%) */}
+                                                <div className="w-full sm:w-[62%] p-6 bg-white">
                                                     <div className="flex items-center justify-between border-b border-slate-100 pb-2.5 mb-3">
-                                                        <h3 className="text-xs font-bold tracking-wider text-brand-rust uppercase">
-                                                            Core Thematic Pillars
+                                                        <h3 className="text-xs font-bold tracking-wider text-slate-500 uppercase">
+                                                            {link.label === 'About' ? 'About Chapter Four' : `What We Do at Chapter Four`}
                                                         </h3>
-                                                        <Link href="/what-we-do" className="text-[11px] text-slate-400 hover:text-brand-rust transition font-medium">
+                                                        <Link href={link.href} className="text-[11px] text-slate-400 hover:text-brand-rust transition font-medium">
                                                             View all &rarr;
                                                         </Link>
                                                     </div>
-                                                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                                                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                                         {link.children.map((child) => {
                                                             const IconComp = child.icon || Shield;
                                                             return (
@@ -233,15 +252,16 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                                                         href={child.href}
                                                                         className="flex items-start p-2 rounded-lg group/item hover:bg-slate-50 transition"
                                                                     >
-                                                                        <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-brand-rust-light text-brand-rust flex items-center justify-center group-hover/item:bg-brand-rust group-hover/item:text-white transition-colors mt-0.5">
+                                                                        {/* Icon: neutral by default, rust on hover */}
+                                                                        <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover/item:bg-brand-rust group-hover/item:text-white transition-colors mt-0.5">
                                                                             <IconComp className="w-4 h-4" />
                                                                         </div>
                                                                         <div className="ml-2.5">
-                                                                            <p className="text-slate-900 font-semibold text-xs group-hover/item:text-brand-rust transition-colors leading-snug">
+                                                                            <p className="text-slate-800 font-semibold text-xs group-hover/item:text-brand-rust transition-colors leading-snug">
                                                                                 {child.label}
                                                                             </p>
                                                                             {child.desc && (
-                                                                                <p className="text-slate-500 text-[10px] mt-0.5 line-clamp-1">
+                                                                                <p className="text-slate-400 text-[10px] mt-0.5 line-clamp-1">
                                                                                     {child.desc}
                                                                                 </p>
                                                                             )}
@@ -285,7 +305,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                     </div>
                 </div>
 
-                {/* ─── MOBILE DRAWER MENU ─────────────────────────────────────── */}
+                {/* ─── MOBILE DRAWER MENU ─────────────────────────────────────────────── */}
                 {mobileOpen && (
                     <div className="lg:hidden bg-[#0e0704] border-b border-white/10 px-4 pt-4 pb-6 space-y-3 animate-fade-in shadow-2xl text-left">
                         {navLinks.map((link) => (
@@ -341,7 +361,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                 {children}
             </main>
 
-            {/* ─── FLOATING CTA BANNER ────────────────────────────────────────── */}
+            {/* ─── FLOATING CTA BANNER ────────────────────────────────────────────── */}
             <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-20 -mb-28 mt-12">
                 <div className="bg-[#d95b38] rounded-3xl overflow-hidden shadow-2xl relative grid grid-cols-1 md:grid-cols-12 items-center bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.1)_1px,_transparent_1px)]" style={{ backgroundSize: '16px 16px' }}>
                     {/* Left Side: Text and Subscribe Form */}
@@ -353,7 +373,6 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                             className="flex items-center bg-white/20 backdrop-blur-md rounded-full p-1.5 max-w-md border border-white/20"
                             onSubmit={(e) => {
                                 e.preventDefault();
-                                // You can attach newsletter subscription logic here
                             }}
                         >
                             <input
@@ -376,7 +395,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                         <img
                             alt="Children with Hope"
                             className="h-64 sm:h-72 object-cover object-top md:rounded-tl-full border-t-4 border-l-4 border-white/20 shadow-2xl"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTPz4__yK2K004vz5_7oiD4-rz9_AgDHF_H8Fq3b1D-RlN8uPg39fGvpWnMLhhAhRPqkk9XrpA_xoHNN2ftgzwF5ZxWSruVAYqa3VvNtXmL-qcvo-sk3qpH1FBHoGyNuuyGT9kq9oyuDsQ4QcbRVo35YTtL5auKiO4s4Bw94Lws1Qw7gYmNLpCTier0Ect2ypwF9oI6M5rqGxL00DMf9yBzvsJrSVyYUcUeHJ-1Z1zdf_LGPd8YJ-R"
+                            src="/images/book/backcover.jpg"
                         />
                     </div>
                 </div>
@@ -430,9 +449,10 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                         </h3>
                         <ul className="space-y-2.5 text-xs sm:text-sm">
                             <li><Link className="hover:text-brand-amber transition" href="/about">About Us</Link></li>
-                            <li><Link className="hover:text-brand-amber transition" href="/about#team">Our Team</Link></li>
+                            <li><Link className="hover:text-brand-amber transition" href="/about/our-team">Our Team</Link></li>
                             <li><Link className="hover:text-brand-amber transition" href="/what-we-do">What We Do</Link></li>
                             <li><Link className="hover:text-brand-amber transition" href="/projects">Field Projects</Link></li>
+                            <li><Link className="hover:text-brand-amber transition" href="/about/vacancies">Vacancies</Link></li>
                             <li><Link className="hover:text-brand-amber transition" href="/contact">Contact Us</Link></li>
                         </ul>
                     </div>

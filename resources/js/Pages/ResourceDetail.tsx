@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
     ArrowLeft, Calendar, User, Download, Share2,
-    Check, Copy, ArrowUpRight, FileText
+    Check, FileText, ChevronRight
 } from 'lucide-react';
 
 interface ResourceItem {
@@ -28,6 +28,25 @@ interface ResourceDetailProps {
     relatedResources?: ResourceItem[];
 }
 
+const formatDate = (dateString?: string) => {
+    if (!dateString) return 'Recent';
+    try {
+        const d = new Date(dateString);
+        if (isNaN(d.getTime())) return dateString;
+        return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    } catch {
+        return dateString;
+    }
+};
+
+const PLACEHOLDER_IMAGE = "/images/hero-bg.jpg";
+
+// Animation Variants
+const fadeInUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+};
+
 export default function ResourceDetail({ resource, relatedResources = [] }: ResourceDetailProps) {
     const [copied, setCopied] = useState(false);
 
@@ -39,7 +58,7 @@ export default function ResourceDetail({ resource, relatedResources = [] }: Reso
         }
     };
 
-    const imageSrc = resource.featured_image || "/images/animate-img-2.jpg";
+    const imageSrc = resource.featured_image || PLACEHOLDER_IMAGE;
 
     return (
         <PublicLayout>
@@ -48,64 +67,99 @@ export default function ResourceDetail({ resource, relatedResources = [] }: Reso
                 <meta name="description" content={resource.excerpt || resource.title} />
             </Head>
 
-            {/* ─── EDITORIAL HERO ─────────────────────────────────────────────── */}
-            <article className="pt-24 lg:pt-32 pb-0 bg-white">
+            {/* ─── EDITORIAL HEADER ─────────────────────────────────────────────── */}
+            <article className="pt-28 lg:pt-36 pb-12 bg-white">
                 <div className="max-w-5xl mx-auto px-4 sm:px-8">
-                    {/* Breadcrumbs & Meta */}
-                    <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-                        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-500 font-bold uppercase tracking-wider">
-                            <Link href="/" className="hover:text-brand-rust transition-colors">Home</Link>
-                            <span>/</span>
-                            <Link href="/resources" className="hover:text-brand-rust transition-colors">Resources</Link>
-                            <span>/</span>
-                            <span className="text-brand-rust">{resource.type || 'Publication'}</span>
-                        </nav>
-                        
-                        <div className="flex items-center gap-4 text-xs font-bold text-slate-400 uppercase tracking-wider">
-                            {resource.published_at && (
-                                <div className="flex items-center gap-1.5">
-                                    <Calendar className="w-3.5 h-3.5 text-brand-amber" />
-                                    <span>{resource.published_at}</span>
-                                </div>
-                            )}
-                            {resource.author?.name && (
-                                <div className="flex items-center gap-1.5">
-                                    <User className="w-3.5 h-3.5 text-brand-amber" />
-                                    <span>{resource.author.name}</span>
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                    
+                    {/* Breadcrumbs */}
+                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-8">
+                        <Link href="/" className="hover:text-slate-900 transition-colors">Home</Link>
+                        <ChevronRight className="w-3 h-3" />
+                        <Link href="/resources" className="hover:text-slate-900 transition-colors">Resources</Link>
+                        <ChevronRight className="w-3 h-3" />
+                        <span className="text-slate-900">{resource.type || 'Publication'}</span>
+                    </nav>
 
                     {/* Title Area */}
                     <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8 }}
-                        className="mb-12"
+                        initial="hidden"
+                        animate="visible"
+                        variants={fadeInUp}
+                        className="mb-10"
                     >
-                        <h1 className="text-4xl sm:text-5xl lg:text-7xl font-black text-slate-900 tracking-tight leading-[1.1] mb-8 font-serif">
+                        <div className="inline-block bg-slate-100 text-slate-700 border border-slate-200 px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider mb-5">
+                            {resource.type || 'Publication'}
+                        </div>
+                        
+                        <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.1] mb-6">
                             {resource.title}
                         </h1>
                         
                         {resource.excerpt && (
-                            <p className="text-xl sm:text-2xl text-slate-600 leading-relaxed font-medium border-l-4 border-brand-amber pl-6">
+                            <p className="text-lg sm:text-xl text-slate-500 leading-relaxed font-medium max-w-4xl border-l-[3px] border-slate-300 pl-5">
                                 {resource.excerpt}
                             </p>
                         )}
                     </motion.div>
 
+                    {/* Meta & Primary Action Bar */}
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: 0.2, duration: 0.6 }}
+                        className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 py-6 border-y border-slate-100 mb-12"
+                    >
+                        <div className="flex flex-wrap items-center gap-6 text-[13px] font-semibold text-slate-600">
+                            {resource.published_at && (
+                                <div className="flex items-center gap-2">
+                                    <Calendar className="w-4 h-4 text-slate-400" />
+                                    <span>{formatDate(resource.published_at)}</span>
+                                </div>
+                            )}
+                            {resource.author?.name && (
+                                <div className="flex items-center gap-2">
+                                    <User className="w-4 h-4 text-slate-400" />
+                                    <span>{resource.author.name}</span>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Top Download Button */}
+                        <div className="flex items-center gap-3">
+                            <button
+                                type="button"
+                                onClick={handleCopy}
+                                className="flex items-center justify-center w-10 h-10 bg-slate-50 hover:bg-slate-100 text-slate-600 rounded-lg transition-colors border border-slate-200"
+                                title="Share Link"
+                            >
+                                {copied ? <Check className="w-4 h-4 text-emerald-600" /> : <Share2 className="w-4 h-4" />}
+                            </button>
+                            
+                            {resource.pdf_path && (
+                                <a
+                                    href={resource.pdf_path}
+                                    download
+                                    className="flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-colors shadow-sm"
+                                >
+                                    <Download className="w-4 h-4" />
+                                    <span>Download PDF</span>
+                                </a>
+                            )}
+                        </div>
+                    </motion.div>
+
                     {/* Featured Image */}
                     <motion.div
-                        initial={{ opacity: 0, y: 30 }}
+                        initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                        className="relative w-full aspect-[21/9] rounded-2xl overflow-hidden shadow-2xl mb-16"
+                        transition={{ duration: 0.6, delay: 0.3 }}
+                        className="relative w-full aspect-[16/9] md:aspect-[21/9] rounded-xl overflow-hidden shadow-sm border border-slate-200"
                     >
                         <img 
                             src={imageSrc} 
                             alt={resource.title}
                             className="w-full h-full object-cover"
+                            onError={(e) => { e.currentTarget.src = PLACEHOLDER_IMAGE; }}
                         />
                     </motion.div>
                 </div>
@@ -114,26 +168,15 @@ export default function ResourceDetail({ resource, relatedResources = [] }: Reso
             {/* ─── DOCUMENT READER AREA ────────────────────────────────────── */}
             <main className="pb-24 bg-white relative">
                 <div className="max-w-3xl mx-auto px-4 sm:px-8">
-                    {/* Share Action */}
-                    <div className="flex justify-end mb-8">
-                        <button
-                            type="button"
-                            onClick={handleCopy}
-                            className="flex items-center gap-2 px-4 py-2 bg-slate-50 hover:bg-slate-100 text-slate-700 rounded-full text-xs font-bold uppercase tracking-wider transition-colors shadow-sm border border-slate-200"
-                        >
-                            {copied ? <Check className="w-4 h-4 text-green-500" /> : <Share2 className="w-4 h-4" />}
-                            <span>{copied ? 'Link Copied!' : 'Share Article'}</span>
-                        </button>
-                    </div>
-
+                    
                     {/* Document Body */}
-                    <div className="prose prose-lg sm:prose-xl prose-slate max-w-none prose-headings:font-black prose-headings:text-slate-900 prose-headings:font-serif prose-p:leading-relaxed prose-a:text-brand-rust hover:prose-a:text-brand-rust-dark prose-blockquote:border-brand-amber prose-blockquote:bg-slate-50 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-r-xl prose-blockquote:not-italic prose-blockquote:text-slate-700">
+                    <div className="prose prose-slate max-w-none prose-headings:font-bold prose-headings:text-slate-900 prose-headings:tracking-tight prose-p:leading-relaxed prose-a:text-brand-rust hover:prose-a:text-brand-rust-dark prose-blockquote:border-slate-300 prose-blockquote:bg-slate-50 prose-blockquote:py-1 prose-blockquote:px-5 prose-blockquote:rounded-r-lg prose-blockquote:not-italic prose-blockquote:text-slate-700">
                         {resource.body ? (
                             <div dangerouslySetInnerHTML={{ __html: resource.body }} />
                         ) : (
-                            <div className="space-y-6 text-slate-800 leading-loose">
-                                <p className="text-xl">
-                                    <span className="float-left text-7xl font-black text-slate-300 mr-4 mt-2 leading-none font-serif">U</span>nder Chapter IV of the Republic of Malawi Constitution, fundamental human rights and freedoms are not mere statutory privileges—they are supreme constitutional mandates that bind the legislature, executive, judiciary, and all organs of the state.
+                            <div className="space-y-6 text-slate-600 leading-relaxed">
+                                <p className="text-lg font-medium text-slate-800">
+                                    Under Chapter IV of the Republic of Malawi Constitution, fundamental human rights and freedoms are not mere statutory privileges—they are supreme constitutional mandates that bind the legislature, executive, judiciary, and all organs of the state.
                                 </p>
                                 <p>
                                     Chapter Four’s legal and research units systematically monitor the operationalization of these rights across subordinate courts, detention facilities, and local administrative authorities. Our empirical findings inform public interest strategic litigation, legislative reform memorandums, and ongoing community paralegal support.
@@ -155,27 +198,28 @@ export default function ResourceDetail({ resource, relatedResources = [] }: Reso
                         )}
                     </div>
 
-                    {/* PDF Download Callout if Available */}
+                    {/* Bottom PDF Download Banner */}
                     {resource.pdf_path && (
-                        <div className="mt-16 bg-slate-50 rounded-3xl p-8 sm:p-12 border border-slate-200 text-center relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-brand-amber/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                            <div className="relative z-10">
-                                <div className="w-16 h-16 rounded-2xl bg-white text-brand-rust flex items-center justify-center mx-auto mb-6 shadow-md shadow-slate-200/50">
-                                    <FileText className="w-8 h-8" />
+                        <div className="mt-16 bg-white rounded-xl p-6 sm:p-8 shadow-sm border border-slate-200 flex flex-col sm:flex-row items-center gap-6 justify-between">
+                            <div className="flex items-center gap-5 w-full sm:w-auto">
+                                <div className="w-14 h-14 rounded-lg bg-slate-50 flex items-center justify-center border border-slate-100 shrink-0">
+                                    <FileText className="w-7 h-7 text-slate-600" />
                                 </div>
-                                <h2 className="text-2xl font-black text-slate-900 mb-3">Download Full Report</h2>
-                                <p className="text-slate-600 mb-8 max-w-md mx-auto">
-                                    Get the complete text, including judicial citations, survey appendices, and detailed methodology.
-                                </p>
-                                <a
-                                    href={resource.pdf_path}
-                                    download
-                                    className="inline-flex items-center justify-center gap-3 px-8 py-4 bg-brand-rust hover:bg-brand-rust-dark text-white text-sm font-bold uppercase tracking-wider rounded-full shadow-lg shadow-brand-rust/30 hover:-translate-y-1 transition-all duration-300"
-                                >
-                                    <span>Download PDF</span>
-                                    <Download className="w-4 h-4" />
-                                </a>
+                                <div>
+                                    <h3 className="text-lg font-bold text-slate-900">Download Full Document</h3>
+                                    <p className="text-sm text-slate-500 mt-1 max-w-sm">
+                                        Access the complete text, including full citations, appendices, and detailed methodology.
+                                    </p>
+                                </div>
                             </div>
+                            <a
+                                href={resource.pdf_path}
+                                download
+                                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold px-6 py-3 rounded-lg transition-colors shrink-0"
+                            >
+                                <Download className="w-4 h-4" />
+                                <span>Save PDF</span>
+                            </a>
                         </div>
                     )}
 
@@ -183,10 +227,10 @@ export default function ResourceDetail({ resource, relatedResources = [] }: Reso
                     <div className="mt-16 pt-8 border-t border-slate-200">
                         <Link
                             href="/resources"
-                            className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-brand-rust uppercase tracking-wider transition-colors group"
+                            className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-slate-900 uppercase tracking-wider transition-colors group"
                         >
                             <ArrowLeft className="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" />
-                            <span>Back to Catalogue</span>
+                            <span>Return to Catalogue</span>
                         </Link>
                     </div>
                 </div>
@@ -194,46 +238,55 @@ export default function ResourceDetail({ resource, relatedResources = [] }: Reso
 
             {/* ─── RELATED RESOURCES ─────────────────────────────────── */}
             {relatedResources && relatedResources.length > 0 && (
-                <section className="py-24 bg-slate-50 border-t border-slate-200">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-8">
-                        <div className="mb-12 text-center sm:text-left">
-                            <span className="text-sm font-bold uppercase tracking-widest text-brand-rust mb-2 block">
-                                Discover More
-                            </span>
-                            <h2 className="text-3xl font-black text-slate-900">Related Publications</h2>
+                <section className="py-16 bg-slate-50 border-t border-slate-200">
+                    <div className="max-w-[1400px] mx-auto px-4 sm:px-6">
+                        <div className="mb-8">
+                            <h2 className="text-2xl font-bold text-slate-900">Related Publications</h2>
                         </div>
                         
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                             {relatedResources.map((item, idx) => (
-                                <motion.div
+                                <motion.article
                                     key={item.slug || idx}
-                                    initial={{ opacity: 0, y: 20 }}
+                                    initial={{ opacity: 0, y: 15 }}
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
-                                    transition={{ duration: 0.5, delay: idx * 0.1 }}
-                                    className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl border border-slate-100 transition-all duration-300 flex flex-col h-full"
+                                    transition={{ duration: 0.4, delay: idx * 0.1 }}
+                                    className="group bg-white rounded-lg border border-slate-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full"
                                 >
-                                    <div className="p-8 flex flex-col flex-grow relative">
-                                        <span className="inline-block px-3 py-1 bg-slate-50 text-brand-rust rounded-full text-[10px] font-bold uppercase tracking-wider mb-4 self-start">
-                                            {item.type || 'Publication'}
-                                        </span>
-                                        
-                                        <h3 className="text-xl font-bold text-slate-900 group-hover:text-brand-rust transition-colors leading-snug mb-4">
-                                            <Link href={`/resources/${item.slug}`}>
+                                    <Link href={`/resources/${item.slug}`} className="relative h-40 block overflow-hidden shrink-0 bg-slate-100 border-b border-slate-100">
+                                        <img
+                                            src={item.featured_image || PLACEHOLDER_IMAGE}
+                                            alt={item.title}
+                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                                            onError={(e) => { e.currentTarget.src = PLACEHOLDER_IMAGE; }}
+                                        />
+                                    </Link>
+
+                                    <div className="p-4 flex flex-col flex-grow">
+                                        <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-400 mb-2 tracking-wider">
+                                            <Calendar className="w-3 h-3" />
+                                            <span>{formatDate(item.published_at)}</span>
+                                        </div>
+
+                                        <h3 className="text-[14px] font-bold text-slate-900 mb-1.5 group-hover:text-slate-600 transition-colors leading-snug line-clamp-2">
+                                            <Link href={`/resources/${item.slug}`} className="focus:outline-none">
+                                                <span className="absolute inset-0" aria-hidden="true" />
                                                 {item.title}
                                             </Link>
                                         </h3>
-                                        
-                                        <div className="mt-auto pt-4 flex items-center text-xs font-bold text-slate-400 uppercase tracking-wider">
-                                            <Calendar className="w-3.5 h-3.5 mr-2" />
-                                            <span>{item.published_at || 'Recent'}</span>
-                                        </div>
-                                        
-                                        <div className="absolute bottom-8 right-8 w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-brand-rust group-hover:text-white transition-colors">
-                                            <ArrowUpRight className="w-4 h-4" />
+
+                                        <p className="text-[13px] text-slate-500 leading-relaxed mb-4 line-clamp-2 flex-grow">
+                                            {item.excerpt || "Click to view more details about this publication."}
+                                        </p>
+
+                                        <div className="mt-auto pt-3 border-t border-slate-100">
+                                            <span className="inline-block bg-indigo-50/50 text-indigo-700 px-2 py-1 rounded text-[10px] font-semibold tracking-wide">
+                                                {item.type || 'Publication'}
+                                            </span>
                                         </div>
                                     </div>
-                                </motion.div>
+                                </motion.article>
                             ))}
                         </div>
                     </div>

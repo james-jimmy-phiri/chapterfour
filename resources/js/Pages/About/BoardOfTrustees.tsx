@@ -1,14 +1,18 @@
 import { Head } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { Briefcase, ArrowRight } from 'lucide-react';
+import { Briefcase, ArrowRight, Share2, Linkedin, Facebook } from 'lucide-react';
 import { useState } from 'react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import TeamMemberModal, { TeamMember } from '@/Components/TeamMemberModal';
 
-export default function BoardOfTrustees() {
+interface BoardOfTrusteesProps {
+    trustees?: any[];
+}
+
+export default function BoardOfTrustees({ trustees = [] }: BoardOfTrusteesProps) {
     const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
 
-    const trustees: TeamMember[] = [
+    const defaultTrustees: TeamMember[] = [
         {
             name: "Placeholder Trustee 1",
             role: "Chairperson",
@@ -28,6 +32,27 @@ export default function BoardOfTrustees() {
             bio: "Ensuring financial accountability and transparency in all our operations."
         }
     ];
+
+    const fallbackPhotos = [
+        "/images/animate-img-4.jpg",
+        "/images/animate-img-5.jpg",
+        "/images/animate-img-6.jpg",
+        "/images/animate-img-1.jpg",
+        "/images/animate-img-2.jpg",
+    ];
+
+    const displayTrustees: TeamMember[] = (trustees && trustees.length > 0)
+        ? trustees.map((t: any, idx: number) => ({
+            name: t.name,
+            role: t.role || "Trustee",
+            image: t.photo || t.image || fallbackPhotos[idx % fallbackPhotos.length],
+            bio: t.biography || t.bio || "Member of the Board of Trustees providing strategic oversight and governance.",
+            location: t.department || t.location || "Malawi",
+            linkedin: t.social_links?.linkedin || t.linkedin,
+            twitter: t.social_links?.twitter || t.twitter,
+            email: t.email,
+        }))
+        : defaultTrustees;
 
     return (
         <PublicLayout>
@@ -73,41 +98,79 @@ export default function BoardOfTrustees() {
             {/* Board Members */}
             <section className="py-24 bg-slate-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-8">
-                    <div className="text-center max-w-3xl mx-auto mb-16">
+                    {/* Header Section */}
+                    <div className="text-center max-w-3xl mx-auto mb-20">
                         <Briefcase className="w-12 h-12 text-brand-rust mx-auto mb-6" />
-                        <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-6 tracking-tight">Our Governing Body</h2>
+                        <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4 tracking-wider uppercase">
+                            Our Governing Body
+                        </h2>
+                        {/* Minimalist accent line inspired by the reference image */}
+                        <div className="w-16 h-1 bg-brand-rust mx-auto mb-6 rounded-full"></div>
                         <p className="text-slate-600 text-lg leading-relaxed">
                             Chapter Four is governed in accordance with its constitution and applicable laws governing non-governmental organizations in Malawi. The Board maintains appropriate governance structures.
                         </p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                        {trustees.map((member, idx) => (
+                    {/* Board Members Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-16 mt-8">
+                        {displayTrustees.map((member, idx) => (
                             <motion.div
                                 key={idx}
-                                initial={{ opacity: 0, y: 30 }}
+                                initial={{ opacity: 0, y: 40 }}
                                 whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
-                                transition={{ duration: 0.6, delay: idx * 0.1 }}
-                                className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-slate-100 p-8 text-center cursor-pointer flex flex-col h-full"
+                                transition={{ duration: 0.7, delay: idx * 0.15, ease: "easeOut" }}
+                                className="relative group cursor-pointer"
                                 onClick={() => setSelectedMember(member)}
                             >
-                                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-brand-rust to-brand-amber transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-                                
-                                <div className="relative w-36 h-36 mx-auto rounded-full overflow-hidden mb-8 border-[6px] border-slate-50 shadow-lg group-hover:border-brand-rust/20 transition-colors duration-500 shrink-0">
+                                {/* Main Image Container - Removed rounded-2xl for sharp corners[cite: 3] */}
+                                <div className="w-full aspect-[3/4] bg-slate-200 overflow-hidden relative shadow-sm group-hover:shadow-lg transition-shadow duration-500">
                                     <img
                                         src={member.image}
                                         alt={member.name}
-                                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                        className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-in-out"
                                     />
+                                    {/* Subtle dark gradient overlay that appears on hover for better contrast */}
+                                    <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors duration-500"></div>
+
+                                    {/* Expandable Social Share Button (Top Right)[cite: 3] */}
+                                    <div
+                                        className="absolute top-4 right-4 flex flex-col bg-white shadow-md z-20 overflow-hidden h-10 hover:h-[120px] transition-all duration-300 ease-in-out"
+                                        onClick={(e) => e.stopPropagation()}
+                                    >
+                                        {/* Share Icon (Always Visible) */}
+                                        <a href="#" className="w-10 h-10 flex items-center justify-center shrink-0 text-slate-400 hover:text-brand-rust transition-colors bg-white">
+                                            <Share2 className="w-[18px] h-[18px]" />
+                                        </a>
+                                        {/* LinkedIn Icon (Revealed on Hover) */}
+                                        <a href="#" className="w-10 h-10 flex items-center justify-center shrink-0 text-[#0A66C2] hover:bg-slate-50 border-t border-slate-100 transition-colors bg-white">
+                                            <Linkedin className="w-[18px] h-[18px]" />
+                                        </a>
+                                        {/* Facebook Icon (Revealed on Hover) */}
+                                        <a href="#" className="w-10 h-10 flex items-center justify-center shrink-0 text-[#1877F2] hover:bg-slate-50 border-t border-slate-100 transition-colors bg-white">
+                                            <Facebook className="w-[18px] h-[18px]" />
+                                        </a>
+                                    </div>
                                 </div>
-                                <h3 className="text-2xl font-bold text-slate-900 mb-1 group-hover:text-brand-rust transition-colors">{member.name}</h3>
-                                <p className="text-brand-rust font-semibold text-sm tracking-wide uppercase mb-6">{member.role}</p>
-                                <p className="text-slate-600 text-base leading-relaxed mb-8 flex-grow">{member.bio}</p>
-                                
-                                <div className="mt-auto pt-6 border-t border-slate-100 flex items-center justify-center text-sm font-bold text-slate-900 group-hover:text-brand-rust transition-colors uppercase tracking-wider">
-                                    <span>Read Profile</span>
-                                    <ArrowRight className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" />
+
+                                {/* Floating Nameplate Overlay - Removed rounded-xl for sharp corners[cite: 3] */}
+                                <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 w-[85%] bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] group-hover:shadow-[0_15px_40px_rgb(0,0,0,0.12)] transition-all duration-500 py-6 px-4 text-center z-10 group-hover:-translate-y-2">
+                                    <h3 className="text-md font-extrabold text-slate-900 tracking-widest uppercase mb-1">
+                                        {member.name}
+                                    </h3>
+                                    <p className="text-slate-500 text-sm font-medium italic">
+                                        {member.role}
+                                    </p>
+
+                                    {/* Hidden 'Read Profile' action that expands on hover */}
+                                    <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-300 ease-in-out">
+                                        <div className="overflow-hidden">
+                                            <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-center text-xs font-bold text-brand-rust uppercase tracking-widest">
+                                                <span>Read Profile</span>
+                                                <ArrowRight className="w-3 h-3 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </motion.div>
                         ))}
@@ -115,7 +178,7 @@ export default function BoardOfTrustees() {
                 </div>
             </section>
 
-            <TeamMemberModal 
+            <TeamMemberModal
                 isOpen={!!selectedMember}
                 onClose={() => setSelectedMember(null)}
                 member={selectedMember}

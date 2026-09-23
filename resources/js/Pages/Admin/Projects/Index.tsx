@@ -14,6 +14,8 @@ interface ProjectItem {
     description?: string;
     locations?: string[];
     beneficiaries?: string[];
+    featured_image?: string;
+    gallery?: string[];
     status: string;
     published_at?: string;
 }
@@ -27,13 +29,25 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
     const [modalOpen, setModalOpen] = useState(false);
     const [editingItem, setEditingItem] = useState<ProjectItem | null>(null);
 
-    const { data, setData, post, put, processing, errors, reset } = useForm({
+    const { data, setData, post, processing, errors, reset } = useForm<{
+        title: string;
+        slug: string;
+        summary: string;
+        description: string;
+        locations: string;
+        beneficiaries: string;
+        featured_image: File | null;
+        gallery_images: File[];
+        status: string;
+    }>({
         title: '',
         slug: '',
         summary: '',
         description: '',
         locations: '',
         beneficiaries: '',
+        featured_image: null,
+        gallery_images: [],
         status: 'published',
     });
 
@@ -47,6 +61,8 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
             description: '',
             locations: '',
             beneficiaries: '',
+            featured_image: null,
+            gallery_images: [],
             status: 'published',
         });
         setModalOpen(true);
@@ -61,6 +77,8 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
             description: item.description || '',
             locations: Array.isArray(item.locations) ? item.locations.join(', ') : '',
             beneficiaries: Array.isArray(item.beneficiaries) ? item.beneficiaries.join(', ') : '',
+            featured_image: null,
+            gallery_images: [],
             status: item.status,
         });
         setModalOpen(true);
@@ -69,21 +87,39 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        const payload = {
-            ...data,
-            locations: data.locations.split(',').map((s) => s.trim()).filter(Boolean),
-            beneficiaries: data.beneficiaries.split(',').map((s) => s.trim()).filter(Boolean),
-        };
+        const formData = new FormData();
+        formData.append('title', data.title);
+        if (data.slug) formData.append('slug', data.slug);
+        formData.append('summary', data.summary);
+        if (data.description) formData.append('description', data.description);
+        formData.append('status', data.status);
+
+        const locs = data.locations.split(',').map((s) => s.trim()).filter(Boolean);
+        locs.forEach((l) => formData.append('locations[]', l));
+
+        const bens = data.beneficiaries.split(',').map((s) => s.trim()).filter(Boolean);
+        bens.forEach((b) => formData.append('beneficiaries[]', b));
+
+        if (data.featured_image) {
+            formData.append('featured_image', data.featured_image);
+        }
+
+        if (data.gallery_images && data.gallery_images.length > 0) {
+            data.gallery_images.forEach((file) => {
+                formData.append('gallery_images[]', file);
+            });
+        }
 
         if (editingItem) {
-            router.put(`/admin/projects/${editingItem.id}`, payload, {
+            formData.append('_method', 'put');
+            router.post(`/admin/projects/${editingItem.id}`, formData as any, {
                 onSuccess: () => {
                     setModalOpen(false);
                     reset();
                 },
             });
         } else {
-            router.post('/admin/projects', payload, {
+            router.post('/admin/projects', formData as any, {
                 onSuccess: () => {
                     setModalOpen(false);
                     reset();
@@ -138,11 +174,19 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
                         key={item.id}
                         className="p-6 rounded-xl bg-white dark:bg-[#0a0e1a] border border-slate-200 dark:border-white/[0.06] hover:border-brand-rust/40 transition flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-xs group"
                     >
-                        <div className="max-w-3xl space-y-2">
-                            <div className="flex items-center gap-2.5">
-                                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-brand-rust transition-colors">
-                                    {item.title}
-                                </h3>
+                        <div className="flex items-start gap-4 max-w-3xl">
+                            {item.featured_image && (
+                                <img
+                                    src={item.featured_image}
+                                    alt=""
+                                    className="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-white/10 shrink-0"
+                                />
+                            )}
+                            <div className="space-y-2">
+                                <div className="flex items-center gap-2.5">
+                                    <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-brand-rust transition-colors">
+                                        {item.title}
+                                    </h3>
                                 <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full ${
                                     item.status === 'published'
                                         ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
@@ -169,8 +213,15 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
                                         <span>{item.beneficiaries.join(', ')}</span>
                                     </div>
                                 )}
+                                {item.gallery && item.gallery.length > 0 && (
+                                    <div className="flex items-center gap-1">
+                                        <Briefcase className="w-3.5 h-3.5 text-brand-rust shrink-0" />
+                                        <span>{item.gallery.length} photos</span>
+                                    </div>
+                                )}
                             </div>
                         </div>
+                    </div>
 
                         <div className="flex items-center gap-2 shrink-0 self-end md:self-center">
                             <a
@@ -273,6 +324,48 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
                                         onChange={(e) => setData('beneficiaries', e.target.value)}
                                         placeholder="Youth, Detained Persons, Women"
                                         className="w-full px-4 py-2 rounded-lg bg-white dark:bg-white/[0.04] border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white text-xs"
+                                    />
+                                </div>
+                            </div>
+
+                            {/* Featured Image & Gallery */}
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                                        Featured Image
+                                    </label>
+                                    {editingItem?.featured_image && (
+                                        <div className="mb-2 flex items-center gap-3 p-2 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10">
+                                            <img src={editingItem.featured_image} alt="Current" className="w-12 h-10 object-cover rounded-lg" />
+                                            <span className="text-[11px] text-slate-500">Current image saved.</span>
+                                        </div>
+                                    )}
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => setData('featured_image', e.target.files ? e.target.files[0] : null)}
+                                        className="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-rust/10 file:text-brand-rust hover:file:bg-brand-rust/20 cursor-pointer"
+                                    />
+                                    {errors.featured_image && <p className="text-red-500 text-xs mt-1">{errors.featured_image}</p>}
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                                        Gallery Images (Multiple)
+                                    </label>
+                                    {editingItem?.gallery && editingItem.gallery.length > 0 && (
+                                        <div className="mb-2 flex items-center gap-1.5 overflow-x-auto p-1.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10">
+                                            {editingItem.gallery.map((g, idx) => (
+                                                <img key={idx} src={g} alt="" className="w-8 h-8 object-cover rounded" />
+                                            ))}
+                                            <span className="text-[10px] text-slate-500 ml-1">({editingItem.gallery.length} saved)</span>
+                                        </div>
+                                    )}
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        onChange={(e) => setData('gallery_images', e.target.files ? Array.from(e.target.files) : [])}
+                                        className="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-rust/10 file:text-brand-rust hover:file:bg-brand-rust/20 cursor-pointer"
                                     />
                                 </div>
                             </div>

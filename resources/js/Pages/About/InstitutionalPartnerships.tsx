@@ -3,7 +3,11 @@ import { motion } from 'framer-motion';
 import { Handshake, Scale, Network, Building2, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import PublicLayout from '@/Layouts/PublicLayout';
 
-export default function InstitutionalPartnerships() {
+interface InstitutionalPartnershipsProps {
+    partners?: any[];
+}
+
+export default function InstitutionalPartnerships({ partners = [] }: InstitutionalPartnershipsProps) {
     const governancePrinciples = [
         "Transparency",
         "Financial accountability",
@@ -15,7 +19,7 @@ export default function InstitutionalPartnerships() {
         "Compliance with applicable legal and regulatory requirements"
     ];
 
-    const partners = [
+    const defaultPartners = [
         "Government institutions",
         "Parliament",
         "Local authorities",
@@ -28,6 +32,10 @@ export default function InstitutionalPartnerships() {
         "Media organizations",
         "International and regional human rights bodies"
     ];
+
+    const displayPartners = partners && partners.length > 0
+        ? partners.map(p => p.name || p.title)
+        : defaultPartners;
 
     return (
         <PublicLayout>
@@ -43,7 +51,7 @@ export default function InstitutionalPartnerships() {
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="/images/animate-img-2.jpg"
+                        src="/images/Parliament_Building_of_Malawioutside.jpg"
                         alt="Background"
                         className="w-full h-full object-cover opacity-60"
                     />
@@ -85,9 +93,9 @@ export default function InstitutionalPartnerships() {
                             <p className="text-slate-600 leading-relaxed text-lg mb-8">
                                 Chapter Four recognizes that sustainable human rights protection requires collaboration among multiple actors. We actively partner with a diverse range of stakeholders to maximize our impact and ensure a coordinated approach to justice.
                             </p>
-                            
+
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {partners.map((partner, idx) => (
+                                {displayPartners.map((partner, idx) => (
                                     <div key={idx} className="flex items-start gap-3">
                                         <CheckCircle2 className="w-5 h-5 text-brand-amber shrink-0 mt-0.5" />
                                         <span className="text-slate-700 font-medium">{partner}</span>
@@ -95,7 +103,7 @@ export default function InstitutionalPartnerships() {
                                 ))}
                             </div>
                         </motion.div>
-                        
+
                         <motion.div
                             initial={{ opacity: 0, scale: 0.95 }}
                             whileInView={{ opacity: 1, scale: 1 }}
@@ -137,9 +145,9 @@ export default function InstitutionalPartnerships() {
                         <div className="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
                             <ShieldCheck className="w-64 h-64 text-slate-900" />
                         </div>
-                        
+
                         <h3 className="text-2xl font-bold text-slate-900 mb-8 relative z-10 text-center">Our Management Systems Promote:</h3>
-                        
+
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 relative z-10">
                             {governancePrinciples.map((principle, idx) => (
                                 <motion.div

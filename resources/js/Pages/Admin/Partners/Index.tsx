@@ -32,6 +32,7 @@ export default function PartnersIndex({ partners = [] }: PartnersProps) {
         category: 'civil_society',
         description: '',
         website: '',
+        logo: null as File | null,
         sort_order: 0,
         status: 'published',
     });
@@ -45,6 +46,7 @@ export default function PartnersIndex({ partners = [] }: PartnersProps) {
             category: 'civil_society',
             description: '',
             website: 'https://',
+            logo: null,
             sort_order: partners.length + 1,
             status: 'published',
         });
@@ -59,6 +61,7 @@ export default function PartnersIndex({ partners = [] }: PartnersProps) {
             category: item.category,
             description: item.description || '',
             website: item.website || '',
+            logo: null,
             sort_order: item.sort_order,
             status: item.status,
         });
@@ -67,8 +70,12 @@ export default function PartnersIndex({ partners = [] }: PartnersProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+        
         if (editingItem) {
-            put(`/admin/partners/${editingItem.id}`, {
+            router.post(`/admin/partners/${editingItem.id}`, {
+                _method: 'put',
+                ...data,
+            } as any, {
                 onSuccess: () => {
                     setModalOpen(false);
                     reset();
@@ -263,6 +270,18 @@ export default function PartnersIndex({ partners = [] }: PartnersProps) {
                                     value={data.description}
                                     onChange={(e) => setData('description', e.target.value)}
                                     className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs leading-relaxed focus:outline-none focus:border-brand-rust"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                                    Partner Logo
+                                </label>
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={(e) => setData('logo', e.target.files ? e.target.files[0] : null)}
+                                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-brand-rust file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-brand-rust/10 file:text-brand-rust hover:file:bg-brand-rust/20"
                                 />
                             </div>
 

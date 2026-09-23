@@ -5,16 +5,17 @@ import {
     Globe, Settings, Bell, Search, ChevronRight, LogOut, Menu, X,
     Shield, MessageSquare, Mail, Image, BarChart3, ChevronDown,
     Building2, Star, Sparkles, ExternalLink, Plus, CheckCircle2, UserCheck,
-    Sun, Moon
+    Sun, Moon, Target, History, HeartHandshake,
 } from 'lucide-react';
 import ChapterFourLogo from '@/Components/ChapterFourLogo';
 
 interface AdminLayoutProps extends PropsWithChildren {
     header?: string;
+    description?: string;
     breadcrumbs?: { label: string; href?: string }[];
 }
 
-export default function AdminLayout({ children, header, breadcrumbs = [] }: AdminLayoutProps) {
+export default function AdminLayout({ children, header, description, breadcrumbs = [] }: AdminLayoutProps) {
     const { url, props } = usePage();
     const auth = (props as any).auth;
     const unreadInquiries = (props as any).unread_inquiries_count || 0;
@@ -76,6 +77,8 @@ export default function AdminLayout({ children, header, breadcrumbs = [] }: Admi
             items: [
                 { label: 'News & Resources', href: '/admin/resources', icon: Newspaper, id: 'admin-nav-resources' },
                 { label: 'Thematic Areas', href: '/admin/thematic-areas', icon: Globe, id: 'admin-nav-thematic' },
+                { label: 'Key Interventions', href: '/admin/interventions', icon: Target, id: 'admin-nav-interventions' },
+                { label: 'HRBA Principles', href: '/admin/hrba-principles', icon: Sparkles, id: 'admin-nav-hrba' },
                 { label: 'Field Projects', href: '/admin/projects', icon: Briefcase, id: 'admin-nav-projects' },
                 { label: 'Publications', href: '/admin/publications', icon: BookOpen, id: 'admin-nav-publications' },
                 { label: 'Pages Management', href: '/admin/pages', icon: FileText, id: 'admin-nav-pages' },
@@ -85,7 +88,10 @@ export default function AdminLayout({ children, header, breadcrumbs = [] }: Admi
             label: 'Institutional',
             items: [
                 { label: 'Leadership & Team', href: '/admin/team', icon: Users, id: 'admin-nav-team' },
+                { label: 'Beneficiary Groups', href: '/admin/beneficiary-groups', icon: HeartHandshake, id: 'admin-nav-beneficiaries' },
                 { label: 'Allies & Partners', href: '/admin/partners', icon: Building2, id: 'admin-nav-partners' },
+                { label: 'Timeline Events', href: '/admin/timeline-events', icon: History, id: 'admin-nav-timeline' },
+                { label: 'Vacancies', href: '/admin/vacancies', icon: Briefcase, id: 'admin-nav-vacancies' },
                 { label: 'Impact Metrics', href: '/admin/statistics', icon: BarChart3, id: 'admin-nav-stats' },
                 { label: 'Testimonials', href: '/admin/testimonials', icon: Star, id: 'admin-nav-testimonials' },
             ],

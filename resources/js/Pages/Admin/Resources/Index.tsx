@@ -12,6 +12,7 @@ interface ResourceItem {
     slug: string;
     type: string;
     status: string;
+    featured_image?: string;
     published_at?: string;
     created_at?: string;
     author?: {
@@ -126,8 +127,14 @@ export default function Index({ resources, filters, resourceTypes }: IndexProps)
                                 {resources.data.map(item => (
                                     <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-white/[0.02] transition-colors">
                                         <td className="py-3.5 px-4 font-medium text-slate-900 dark:text-white max-w-md">
-                                            <div className="flex items-center gap-2">
-                                                <FileText className="w-4 h-4 text-brand-rust shrink-0" />
+                                            <div className="flex items-center gap-3">
+                                                {item.featured_image ? (
+                                                    <img src={item.featured_image} alt="" className="w-9 h-9 object-cover rounded-lg border border-slate-200 dark:border-white/10 shrink-0" />
+                                                ) : (
+                                                    <div className="w-9 h-9 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center border border-slate-200 dark:border-white/10 shrink-0">
+                                                        <FileText className="w-4 h-4 text-brand-rust" />
+                                                    </div>
+                                                )}
                                                 <span className="truncate">{item.title}</span>
                                             </div>
                                         </td>

@@ -7,6 +7,7 @@ use App\Models\TeamMember;
 use App\Services\AuditLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -35,9 +36,15 @@ class TeamController extends Controller
             'department' => 'nullable|string|max:255',
             'category' => 'required|string',
             'biography' => 'nullable|string',
+            'photo' => 'nullable|image|max:2048',
             'sort_order' => 'integer|min:0',
             'status' => 'required|string',
         ]);
+
+        if ($request->hasFile('photo')) {
+            $path = $request->file('photo')->store('team', 'public');
+            $validated['photo'] = '/storage/' . $path;
+        }
 
         $member = TeamMember::create($validated);
 
@@ -62,9 +69,21 @@ class TeamController extends Controller
             'department' => 'nullable|string|max:255',
             'category' => 'required|string',
             'biography' => 'nullable|string',
+            'photo' => 'nullable|image|max:2048',
             'sort_order' => 'integer|min:0',
             'status' => 'required|string',
         ]);
+
+        if ($request->hasFile('photo')) {
+            // Delete old photo if it exists and is in storage
+            if ($member->photo && str_starts_with($member->photo, '/storage/')) {
+                Storage::disk('public')->delete(str_replace('/storage/', '', $member->photo));
+            }
+            $path = $request->file('photo')->store('team', 'public');
+            $validated['photo'] = '/storage/' . $path;
+        } else {
+            unset($validated['photo']);
+        }
 
         $member->update($validated);
 
@@ -82,6 +101,11 @@ class TeamController extends Controller
     {
         $member = TeamMember::findOrFail($id);
         $name = $member->name;
+
+        if ($member->photo && str_starts_with($member->photo, '/storage/')) {
+            Storage::disk('public')->delete(str_replace('/storage/', '', $member->photo));
+        }
+
         $member->delete();
 
         AuditLogger::log('deleted', 'TeamMember', $id, [

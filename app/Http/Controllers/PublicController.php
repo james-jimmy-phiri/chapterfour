@@ -2,13 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BeneficiaryGroup;
+use App\Models\HeroSlide;
+use App\Models\HrbaPrinciple;
 use App\Models\ImpactStatistic;
-use App\Models\ThematicArea;
-use App\Models\Resource;
+use App\Models\Inquiry;
+use App\Models\Intervention;
+use App\Models\NewsletterSubscriber;
 use App\Models\Partner;
 use App\Models\Project;
-use App\Models\Inquiry;
-use App\Models\NewsletterSubscriber;
+use App\Models\Resource;
+use App\Models\TeamMember;
+use App\Models\ThematicArea;
+use App\Models\TimelineEvent;
+use App\Models\Vacancy;
 use App\Enums\InquiryStatus;
 use App\Services\AuditLogger;
 use Illuminate\Http\Request;
@@ -18,172 +25,316 @@ use Inertia\Response;
 
 class PublicController extends Controller
 {
-    /**
-     * Serve the public homepage.
-     */
+    // ─── HOMEPAGE ─────────────────────────────────────────────────────────────
+
     public function home(): Response
     {
-        try {
-            $stats = ImpactStatistic::where('status', 'published')
+        $stats = $this->fetch(fn () =>
+            ImpactStatistic::where('status', 'published')
                 ->orderBy('sort_order')
                 ->get(['label', 'value', 'prefix', 'suffix', 'description', 'icon'])
-                ->toArray();
-        } catch (\Throwable $e) {
-            $stats = [];
-        }
+                ->toArray()
+        );
 
-        try {
-            $thematicAreas = ThematicArea::where('status', 'published')
+        $thematicAreas = $this->fetch(fn () =>
+            ThematicArea::where('status', 'published')
                 ->orderBy('sort_order')
                 ->get(['title', 'slug', 'short_description', 'icon'])
-                ->toArray();
-        } catch (\Throwable $e) {
-            $thematicAreas = [];
-        }
+                ->toArray()
+        );
 
-        try {
-            $latestResources = Resource::where('status', 'published')
+        $latestResources = $this->fetch(fn () =>
+            Resource::where('status', 'published')
                 ->latest('published_at')
                 ->take(3)
                 ->get(['title', 'slug', 'type', 'excerpt', 'published_at', 'featured_image'])
-                ->toArray();
+                ->toArray()
+        );
 
-            $featuredResource = Resource::where('status', 'published')
+        $featuredResource = $this->fetch(fn () =>
+            Resource::where('status', 'published')
                 ->where('is_featured', true)
                 ->latest('published_at')
-                ->first(['title', 'slug', 'excerpt']);
-        } catch (\Throwable $e) {
-            $latestResources = [];
-            $featuredResource = null;
-        }
+                ->first(['title', 'slug', 'excerpt'])
+        );
 
-        try {
-            $partners = Partner::where('status', 'published')
+        $partners = $this->fetch(fn () =>
+            Partner::where('status', 'published')
                 ->orderBy('sort_order')
                 ->get(['name', 'logo', 'website'])
-                ->toArray();
-        } catch (\Throwable $e) {
-            $partners = [];
-        }
+                ->toArray()
+        );
+
+        $heroSlides = $this->fetch(fn () =>
+            HeroSlide::where('status', 'published')
+                ->orderBy('sort_order')
+                ->get(['word', 'bg_image', 'right_image', 'right_alt', 'accent_label'])
+                ->toArray()
+        );
 
         return Inertia::render('Welcome', [
-            'stats' => $stats ?: [],
-            'thematicAreas' => $thematicAreas ?: [],
+            'stats'           => $stats ?: [],
+            'thematicAreas'   => $thematicAreas ?: [],
             'latestResources' => $latestResources ?: [],
-            'featuredResource' => $featuredResource,
-            'partners' => $partners ?: [],
+            'featuredResource'=> $featuredResource,
+            'partners'        => $partners ?: [],
+            'heroSlides'      => $heroSlides ?: [],
         ]);
     }
 
-    /**
-     * Serve the About page.
-     */
+    // ─── ABOUT ────────────────────────────────────────────────────────────────
+
     public function about(): Response
     {
-        try {
-            $teamMembers = \App\Models\TeamMember::where('status', 'published')
+        $teamMembers = $this->fetch(fn () =>
+            TeamMember::where('status', 'published')
                 ->orderBy('sort_order')
                 ->get()
-                ->toArray();
-        } catch (\Throwable $e) {
-            $teamMembers = [];
-        }
+                ->toArray()
+        );
 
-        try {
-            $stats = ImpactStatistic::where('status', 'published')
+        $stats = $this->fetch(fn () =>
+            ImpactStatistic::where('status', 'published')
                 ->orderBy('sort_order')
                 ->get(['label', 'value', 'prefix', 'suffix', 'description', 'icon'])
-                ->toArray();
-        } catch (\Throwable $e) {
-            $stats = [];
-        }
+                ->toArray()
+        );
 
-        try {
-            $partners = Partner::where('status', 'published')
+        $partners = $this->fetch(fn () =>
+            Partner::where('status', 'published')
                 ->orderBy('sort_order')
                 ->get(['name', 'description', 'website', 'category'])
-                ->toArray();
-        } catch (\Throwable $e) {
-            $partners = [];
-        }
+                ->toArray()
+        );
 
         return Inertia::render('About', [
             'teamMembers' => $teamMembers ?: [],
-            'stats' => $stats ?: [],
+            'stats'       => $stats ?: [],
+            'partners'    => $partners ?: [],
+        ]);
+    }
+
+    // ─── ABOUT SUBPAGES ───────────────────────────────────────────────────────
+
+    public function ourTeam(): Response
+    {
+        $teamMembers = $this->fetch(fn () =>
+            TeamMember::where('status', 'published')
+                ->where('category', 'staff')
+                ->orderBy('sort_order')
+                ->get()
+                ->toArray()
+        );
+
+        return Inertia::render('About/OurTeam', [
+            'teamMembers' => $teamMembers ?: [],
+        ]);
+    }
+
+    public function boardOfTrustees(): Response
+    {
+        $trustees = $this->fetch(fn () =>
+            TeamMember::where('status', 'published')
+                ->where('category', 'board')
+                ->orderBy('sort_order')
+                ->get()
+                ->toArray()
+        );
+
+        return Inertia::render('About/BoardOfTrustees', [
+            'trustees' => $trustees ?: [],
+        ]);
+    }
+
+    public function beneficiaries(): Response
+    {
+        $groups = $this->fetch(fn () =>
+            BeneficiaryGroup::where('status', 'published')
+                ->orderBy('sort_order')
+                ->get(['id', 'name', 'description', 'icon', 'image'])
+                ->toArray()
+        );
+
+        return Inertia::render('About/Beneficiaries', [
+            'beneficiaryGroups' => $groups ?: [],
+        ]);
+    }
+
+    public function institutionalPartnerships(): Response
+    {
+        $partners = $this->fetch(fn () =>
+            Partner::where('status', 'published')
+                ->orderBy('sort_order')
+                ->get()
+                ->toArray()
+        );
+
+        return Inertia::render('About/InstitutionalPartnerships', [
             'partners' => $partners ?: [],
         ]);
     }
 
-    /**
-     * Serve the What We Do overview page.
-     */
-    public function whatWeDo(): Response
+    public function vacancies(): Response
     {
-        try {
-            $thematicAreas = ThematicArea::where('status', 'published')
+        $vacancies = $this->fetch(fn () =>
+            Vacancy::where('status', 'open')
                 ->orderBy('sort_order')
                 ->get()
-                ->toArray();
-        } catch (\Throwable $e) {
-            $thematicAreas = [];
-        }
+                ->toArray()
+        );
+
+        return Inertia::render('About/Vacancies', [
+            'vacancies' => $vacancies ?: [],
+        ]);
+    }
+
+    public function vacancyDetail(int|string $id): Response
+    {
+        $vacancy = $this->fetch(fn () =>
+            Vacancy::where('id', $id)
+                ->orWhere('slug', $id)
+                ->where('status', 'open')
+                ->first()
+        );
+
+        return Inertia::render('About/VacancyDetails', [
+            'vacancy' => $vacancy,
+            'id'      => $id,
+        ]);
+    }
+
+    // ─── WHAT WE DO ───────────────────────────────────────────────────────────
+
+    public function whatWeDo(): Response
+    {
+        $thematicAreas = $this->fetch(fn () =>
+            ThematicArea::where('status', 'published')
+                ->orderBy('sort_order')
+                ->get()
+                ->toArray()
+        );
 
         return Inertia::render('WhatWeDo', [
             'thematicAreas' => $thematicAreas,
         ]);
     }
 
-    /**
-     * Serve an individual thematic area page.
-     */
     public function thematicArea(string $slug): Response
     {
-        try {
-            $area = ThematicArea::where('slug', $slug)
+        $area = $this->fetch(fn () =>
+            ThematicArea::where('slug', $slug)
                 ->where('status', 'published')
-                ->first();
-        } catch (\Throwable $e) {
-            $area = null;
-        }
+                ->first()
+        );
 
         if (!$area) {
             $title = ucwords(str_replace('-', ' ', $slug));
             $area = [
-                'title' => $title,
-                'slug' => $slug,
+                'title'             => $title,
+                'slug'              => $slug,
                 'short_description' => "Advancing {$title} through grassroots legal empowerment, policy research, and civic education.",
             ];
         }
 
-        try {
-            $relatedResources = Resource::where('status', 'published')
+        $relatedResources = $this->fetch(fn () =>
+            Resource::where('status', 'published')
                 ->latest('published_at')
                 ->take(3)
                 ->get(['title', 'slug', 'type', 'excerpt', 'published_at'])
-                ->toArray();
+                ->toArray()
+        );
 
-            $relatedProjects = Project::where('status', 'published')
+        $relatedProjects = $this->fetch(fn () =>
+            Project::where('status', 'published')
                 ->take(2)
                 ->get(['title', 'slug', 'summary', 'locations'])
-                ->toArray();
-        } catch (\Throwable $e) {
-            $relatedResources = [];
-            $relatedProjects = [];
-        }
+                ->toArray()
+        );
 
         return Inertia::render('ThematicArea', [
-            'area' => $area,
+            'area'             => $area,
             'relatedResources' => $relatedResources,
-            'relatedProjects' => $relatedProjects,
+            'relatedProjects'  => $relatedProjects,
         ]);
     }
 
-    /**
-     * Serve the Resources / News listing page.
-     */
+    public function keyInterventions(): Response
+    {
+        $interventions = $this->fetch(fn () =>
+            Intervention::where('status', 'published')
+                ->orderBy('sort_order')
+                ->get(['id', 'title', 'short_title', 'description', 'examples', 'image', 'icon'])
+                ->toArray()
+        );
+
+        return Inertia::render('WhatWeDo/KeyInterventions', [
+            'interventions' => $interventions ?: [],
+        ]);
+    }
+
+    public function whoWeAre(): Response
+    {
+        return Inertia::render('About/WhoWeAre');
+    }
+
+    public function coreActivities(): Response
+    {
+        return Inertia::render('About/CoreActivities');
+    }
+
+    public function crossCuttingActivities(): Response
+    {
+        return Inertia::render('About/CrossCuttingActivities');
+    }
+
+    public function approachToProgramming(): Response
+    {
+        $principles = $this->fetch(fn () =>
+            HrbaPrinciple::where('status', 'published')
+                ->orderBy('sort_order')
+                ->get()
+                ->toArray()
+        );
+
+        return Inertia::render('WhatWeDo/ApproachToProgramming', [
+            'hrbaPrinciples' => $principles ?: [],
+        ]);
+    }
+
+    public function ourReports(): Response
+    {
+        $reports = $this->fetch(fn () =>
+            Resource::where('status', 'published')
+                ->whereIn('type', ['report', 'publication'])
+                ->latest('published_at')
+                ->get(['id', 'title', 'slug', 'type', 'excerpt', 'published_at', 'featured_image', 'file_url'])
+                ->toArray()
+        );
+
+        return Inertia::render('WhatWeDo/OurReports', [
+            'reports' => $reports ?: [],
+        ]);
+    }
+
+    public function thematicAreasPage(): Response
+    {
+        $thematicAreas = $this->fetch(fn () =>
+            ThematicArea::where('status', 'published')
+                ->orderBy('sort_order')
+                ->get()
+                ->toArray()
+        );
+
+        return Inertia::render('WhatWeDo/ThematicAreas', [
+            'thematicAreas' => $thematicAreas ?: [],
+        ]);
+    }
+
+    // ─── RESOURCES ────────────────────────────────────────────────────────────
+
     public function resources(Request $request): Response
     {
-        $type = $request->query('type');
+        $type   = $request->query('type');
         $search = $request->query('search');
 
         $query = Resource::where('status', 'published')->latest('published_at');
@@ -203,16 +354,13 @@ class PublicController extends Controller
 
         return Inertia::render('Resources', [
             'resources' => $resources,
-            'filters' => [
-                'type' => $type ?? 'All',
+            'filters'   => [
+                'type'   => $type ?? 'All',
                 'search' => $search ?? '',
             ],
         ]);
     }
 
-    /**
-     * Serve a single Resource / Publication detail page.
-     */
     public function resourceDetail(string $slug): Response
     {
         $resource = Resource::with(['author'])
@@ -221,16 +369,16 @@ class PublicController extends Controller
             ->first();
 
         if (!$resource) {
-            $title = ucwords(str_replace('-', ' ', $slug));
+            $title    = ucwords(str_replace('-', ' ', $slug));
             $resource = (object) [
-                'title' => $title,
-                'slug' => $slug,
-                'type' => 'publication',
-                'excerpt' => 'An in-depth human rights publication defending constitutional principles under Chapter IV.',
-                'body' => "<p>In Malawi's contemporary democratic landscape, constitutional rights and administrative accountability serve as the baseline for human dignity. This publication unpacks the structural mechanisms required to ensure public bodies, law enforcement, and courts adhere strictly to Chapter IV obligations.</p><p>Through grassroots legal clinics and continuous empirical monitoring across all regions, Chapter Four works directly with affected citizens, local paralegals, and duty-bearers to convert constitutional promises into everyday protections.</p>",
+                'title'        => $title,
+                'slug'         => $slug,
+                'type'         => 'publication',
+                'excerpt'      => 'An in-depth human rights publication defending constitutional principles under Chapter IV.',
+                'body'         => '<p>In Malawi\'s contemporary democratic landscape, constitutional rights and administrative accountability serve as the baseline for human dignity.</p>',
                 'published_at' => now()->format('M d, Y'),
-                'author' => (object) ['name' => 'Chapter Four Legal Research Unit'],
-                'pdf_path' => null,
+                'author'       => (object) ['name' => 'Chapter Four Legal Research Unit'],
+                'pdf_path'     => null,
             ];
         }
 
@@ -241,14 +389,13 @@ class PublicController extends Controller
             ->get(['title', 'slug', 'type', 'excerpt', 'published_at']);
 
         return Inertia::render('ResourceDetail', [
-            'resource' => $resource,
+            'resource'         => $resource,
             'relatedResources' => $relatedResources,
         ]);
     }
 
-    /**
-     * Serve the Projects catalog page.
-     */
+    // ─── PROJECTS ─────────────────────────────────────────────────────────────
+
     public function projects(): Response
     {
         $projects = Project::where('status', 'published')
@@ -260,9 +407,6 @@ class PublicController extends Controller
         ]);
     }
 
-    /**
-     * Serve a single Project detail page.
-     */
     public function projectDetail(string $slug): Response
     {
         $project = Project::where('slug', $slug)
@@ -274,63 +418,58 @@ class PublicController extends Controller
         ]);
     }
 
-    /**
-     * Serve the Contact page.
-     */
+    // ─── CONTACT ──────────────────────────────────────────────────────────────
+
     public function contact(): Response
     {
         return Inertia::render('Contact');
     }
 
-    /**
-     * Handle public contact form submissions.
-     */
     public function submitContact(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'nullable|string|max:50',
+            'name'         => 'required|string|max:255',
+            'email'        => 'required|email|max:255',
+            'phone'        => 'nullable|string|max:50',
             'inquiry_type' => 'required|string|max:100',
-            'subject' => 'required|string|max:255',
-            'message' => 'required|string|max:5000',
+            'subject'      => 'required|string|max:255',
+            'message'      => 'required|string|max:5000',
         ]);
 
         $inquiry = Inquiry::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'phone' => $validated['phone'] ?? null,
-            'type' => $validated['inquiry_type'],
-            'subject' => $validated['subject'],
-            'message' => $validated['message'],
-            'status' => InquiryStatus::New,
+            'name'       => $validated['name'],
+            'email'      => $validated['email'],
+            'phone'      => $validated['phone'] ?? null,
+            'type'       => $validated['inquiry_type'],
+            'subject'    => $validated['subject'],
+            'message'    => $validated['message'],
+            'status'     => InquiryStatus::New,
             'ip_address' => $request->ip(),
         ]);
 
         AuditLogger::log('submitted', 'Inquiry', $inquiry->id, [
             'subject' => $inquiry->subject,
-            'email' => $inquiry->email,
+            'email'   => $inquiry->email,
         ]);
 
         return redirect()->back()->with('success', 'Thank you! Your message has been received. Our legal and advocacy team will review it promptly.');
     }
 
-    /**
-     * Handle newsletter subscriptions.
-     */
+    // ─── NEWSLETTER ───────────────────────────────────────────────────────────
+
     public function subscribeNewsletter(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'email' => 'required|email|max:255',
+            'email'  => 'required|email|max:255',
             'source' => 'nullable|string|max:50',
         ]);
 
         $subscriber = NewsletterSubscriber::updateOrCreate(
             ['email' => strtolower($validated['email'])],
             [
-                'status' => 'subscribed',
-                'source' => $validated['source'] ?? 'website',
-                'consented_at' => now(),
+                'status'          => 'subscribed',
+                'source'          => $validated['source'] ?? 'website',
+                'consented_at'    => now(),
                 'unsubscribed_at' => null,
             ]
         );
@@ -342,11 +481,24 @@ class PublicController extends Controller
         return redirect()->back()->with('success', 'Thank you for subscribing to Chapter Four updates!');
     }
 
-    /**
-     * Serve the Get Involved page.
-     */
+    // ─── GET INVOLVED ─────────────────────────────────────────────────────────
+
     public function getInvolved(): Response
     {
         return Inertia::render('GetInvolved');
+    }
+
+    // ─── HELPER ───────────────────────────────────────────────────────────────
+
+    /**
+     * Safe DB fetch with fallback to null on any error.
+     */
+    private function fetch(callable $callback): mixed
+    {
+        try {
+            return $callback();
+        } catch (\Throwable) {
+            return null;
+        }
     }
 }

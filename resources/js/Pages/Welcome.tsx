@@ -42,12 +42,25 @@ interface PartnerItem {
     website?: string;
 }
 
+interface HeroSlideItem {
+    word: string;
+    bg_image?: string;
+    bgImage?: string;
+    right_image?: string;
+    rightImage?: string;
+    right_alt?: string;
+    rightAlt?: string;
+    accent_label?: string;
+    accentLabel?: string;
+}
+
 interface WelcomeProps {
     stats?: StatItem[];
     thematicAreas?: ThematicAreaItem[];
     latestResources?: ResourceItem[];
     featuredResource?: { title: string; slug: string; excerpt?: string } | null;
     partners?: PartnerItem[];
+    heroSlides?: HeroSlideItem[];
 }
 
 // ─── ANIMATED STAT COUNTER COMPONENT ───────────────────────────────────────────
@@ -81,7 +94,7 @@ function getThematicIcon(slug: string, index: number) {
 
 // ─── HERO SLIDES DATA FOR SYNCHRONIZED TRANSITIONS ────────────────────────────
 
-const heroSlides = [
+const defaultHeroSlides = [
     {
         word: 'human rights,',
         bgImage: '/images/hero-bg.jpg',
@@ -118,7 +131,18 @@ export default function Welcome({
     latestResources = [],
     featuredResource = null,
     partners = [],
+    heroSlides = [],
 }: WelcomeProps) {
+    const activeHeroSlides = heroSlides && heroSlides.length > 0
+        ? heroSlides.map((s) => ({
+            word: s.word,
+            bgImage: s.bg_image || s.bgImage || '/images/hero-bg.jpg',
+            rightImage: s.right_image || s.rightImage || '/images/child-hero.png',
+            rightAlt: s.right_alt || s.rightAlt || '',
+            accentLabel: s.accent_label || s.accentLabel || 'Chapter Four',
+        }))
+        : defaultHeroSlides;
+
     const [searchQuery, setSearchQuery] = useState('');
     const [resourceType, setResourceType] = useState('All');
     const [slideIndex, setSlideIndex] = useState(0);
@@ -127,7 +151,8 @@ export default function Welcome({
 
     // Typewriter effect synchronized with rotating hero slides
     useEffect(() => {
-        const currentTarget = heroSlides[slideIndex].word;
+        const safeIndex = slideIndex % activeHeroSlides.length;
+        const currentTarget = activeHeroSlides[safeIndex].word;
         let timer: ReturnType<typeof setTimeout>;
 
         if (!isDeleting) {
@@ -151,12 +176,12 @@ export default function Welcome({
             } else {
                 // Done deleting: advance to next slide and start typing next word
                 setIsDeleting(false);
-                setSlideIndex((prev) => (prev + 1) % heroSlides.length);
+                setSlideIndex((prev) => (prev + 1) % activeHeroSlides.length);
             }
         }
 
         return () => clearTimeout(timer);
-    }, [typedText, isDeleting, slideIndex]);
+    }, [typedText, isDeleting, slideIndex, activeHeroSlides]);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
@@ -276,8 +301,8 @@ export default function Welcome({
                 <div className="absolute inset-0 z-0 bg-black overflow-hidden">
                     <AnimatePresence mode="sync">
                         <motion.img
-                            key={heroSlides[slideIndex].bgImage}
-                            src={heroSlides[slideIndex].bgImage}
+                            key={activeHeroSlides[slideIndex % activeHeroSlides.length].bgImage}
+                            src={activeHeroSlides[slideIndex % activeHeroSlides.length].bgImage}
                             alt="Chapter Four Malawi Community"
                             initial={{ opacity: 0, scale: 1.05 }}
                             animate={{ opacity: 1, scale: 1 }}
@@ -342,7 +367,7 @@ export default function Welcome({
                         <div className="relative w-full max-w-md lg:max-w-none flex justify-center min-h-[380px] sm:min-h-[460px] lg:min-h-[540px] items-center">
                             <AnimatePresence mode="wait">
                                 <motion.div
-                                    key={heroSlides[slideIndex].rightImage + slideIndex}
+                                    key={activeHeroSlides[slideIndex % activeHeroSlides.length].rightImage + (slideIndex % activeHeroSlides.length)}
                                     initial={{ opacity: 0, y: 25, scale: 0.95 }}
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, y: -20, scale: 0.97 }}
@@ -350,8 +375,8 @@ export default function Welcome({
                                     className="relative flex justify-center w-full"
                                 >
                                     <img
-                                        src={heroSlides[slideIndex].rightImage}
-                                        alt={heroSlides[slideIndex].rightAlt}
+                                        src={activeHeroSlides[slideIndex % activeHeroSlides.length].rightImage}
+                                        alt={activeHeroSlides[slideIndex % activeHeroSlides.length].rightAlt}
                                         className="relative z-10 w-full max-w-sm sm:max-w-md lg:max-w-lg h-auto max-h-[500px] lg:max-h-[560px] object-contain drop-shadow-[0_25px_35px_rgba(0,0,0,0.8)] select-none pointer-events-none"
                                     />
                                 </motion.div>
@@ -516,10 +541,10 @@ export default function Welcome({
                             className="lg:w-1/2 relative h-[350px] sm:h-[450px] w-full"
                         >
                             <div className="absolute top-0 left-0 w-3/4 h-56 sm:h-72 border-[6px] border-black/40 rounded-2xl overflow-hidden shadow-2xl z-10 transform -rotate-2">
-                                <img src="/images/animate-img-2.jpg" alt="Youth" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
+                                <img src="/images/crying_boychild.jpg" alt="Child" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
                             </div>
                             <div className="absolute bottom-0 right-0 w-3/4 h-56 sm:h-72 border-[6px] border-brand-rust rounded-2xl overflow-hidden shadow-2xl z-20 transform rotate-2">
-                                <img src="/images/animate-img-3.jpg" alt="Education" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
+                                <img src="/images/no_justice.jpg" alt="No Justice" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
                             </div>
 
                             {/* Accent graphics */}
