@@ -58,66 +58,26 @@ const crossCuttingAreas = [
     },
 ];
 
-const reports = [
-    {
-        title: "Annual Human Rights Monitor 2025 — Malawi",
-        category: "Annual Report",
-        date: "January 15, 2026",
-        image: "/images/paliament.jpg",
-        description: "A comprehensive national assessment of civil liberties, constitutional compliance, civic participation, and access to justice across all 28 districts of Malawi — drawing on monitoring data, court observations, and community surveys.",
-        type: "Report",
-    },
-    {
-        title: "Access to Justice Baseline Survey",
-        category: "Research Report",
-        date: "November 2, 2025",
-        image: "/images/Chief_Justice.jpg",
-        description: "Empirical assessment of judicial delays, bail accessibility, legal representation deficits, and community legal awareness across lower courts and magistrate jurisdictions in Malawi.",
-        type: "Research",
-    },
-    {
-        title: "Gender Justice in Rural Jurisdictions — Policy Brief",
-        category: "Policy Brief",
-        date: "August 22, 2025",
-        image: "/images/woman.jpg",
-        description: "Evaluating the enforcement of statutory protections for women and girls in traditional leadership areas — documenting legal gaps, advocacy priorities, and duty bearer obligations under the Gender Equality Act.",
-        type: "Policy Brief",
-    },
-    {
-        title: "Constitutional Rights & Police Powers: A Citizens Legal Handbook",
-        category: "Legal Handbook",
-        date: "October 14, 2025",
-        image: "/images/constitutional_book.jpg",
-        description: "A simplified, field-tested legal guide outlining citizens' rights upon arrest, lawful detention safeguards, bail mechanisms, and fair trial protections — designed for paralegals and community rights defenders.",
-        type: "Publication",
-    },
-    {
-        title: "State of Constitutionalism in Malawi: A Decade Review",
-        category: "Research Report",
-        date: "June 5, 2025",
-        image: "/images/open_book.jpg",
-        description: "A decade-long review of landmark constitutional litigation, legislative reform, and human rights jurisprudence development in Malawi — assessing progress, setbacks, and future priorities for rights protection.",
-        type: "Research",
-    },
-    {
-        title: "Democracy, Civic Space & Youth Participation: Country Profile",
-        category: "Country Profile",
-        date: "March 20, 2025",
-        image: "/images/animate-img-2.jpg",
-        description: "A situational analysis of youth civic engagement, political participation, freedom of assembly, and democratic space in Malawi — informing Chapter Four's democracy and governance programme strategy.",
-        type: "Report",
-    },
-];
-
 const typeColors: Record<string, string> = {
-    'Report': 'bg-brand-rust/10 text-brand-rust border-brand-rust/20',
-    'Research': 'bg-amber-50 text-amber-700 border-amber-200',
-    'Policy Brief': 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    'Publication': 'bg-violet-50 text-violet-700 border-violet-200',
-    'Country Profile': 'bg-slate-100 text-slate-700 border-slate-200',
+    'report': 'bg-brand-rust/10 text-brand-rust border-brand-rust/20',
+    'research': 'bg-amber-50 text-amber-700 border-amber-200',
+    'policy_brief': 'bg-emerald-50 text-emerald-700 border-emerald-200',
+    'publication': 'bg-violet-50 text-violet-700 border-violet-200',
+    'other': 'bg-slate-100 text-slate-700 border-slate-200',
 };
 
-export default function OurReports() {
+interface Report {
+    id: number;
+    title: string;
+    slug: string;
+    type: string;
+    excerpt: string;
+    published_at: string;
+    featured_image: string | null;
+    file_url: string | null;
+}
+
+export default function OurReports({ reports }: { reports: Report[] }) {
     return (
         <PublicLayout>
             <Head>
@@ -290,65 +250,80 @@ export default function OurReports() {
                         </Link>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {reports.map((report, idx) => (
-                            <motion.div
-                                key={idx}
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.6, delay: idx * 0.08 }}
-                                className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-100 flex flex-col"
-                            >
-                                {/* Image */}
-                                <div className="relative h-52 overflow-hidden shrink-0">
-                                    <img
-                                        src={report.image}
-                                        alt={report.title}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                                    />
-                                    <div className="absolute inset-0 bg-slate-900/25 group-hover:bg-slate-900/10 transition-colors duration-500" />
-                                    {/* Hover bar */}
-                                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-rust via-brand-amber to-brand-rust scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-                                </div>
-
-                                {/* Content */}
-                                <div className="p-6 flex flex-col flex-1">
-                                    <div className="flex items-center justify-between mb-3">
-                                        <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${typeColors[report.type] || typeColors['Report']}`}>
-                                            {report.category}
-                                        </span>
-                                        <span className="text-xs font-medium text-slate-400">{report.date}</span>
+                    {reports && reports.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {reports.map((report, idx) => (
+                                <motion.div
+                                    key={idx}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    transition={{ duration: 0.6, delay: idx * 0.08 }}
+                                    className="group bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-slate-100 flex flex-col"
+                                >
+                                    {/* Image */}
+                                    <div className="relative h-52 overflow-hidden shrink-0">
+                                        <img
+                                            src={report.featured_image || '/images/default_report.jpg'}
+                                            alt={report.title}
+                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                                            onError={(e) => { e.currentTarget.src = '/images/animate-img-2.jpg'; }}
+                                        />
+                                        <div className="absolute inset-0 bg-slate-900/25 group-hover:bg-slate-900/10 transition-colors duration-500" />
+                                        {/* Hover bar */}
+                                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-rust via-brand-amber to-brand-rust scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
                                     </div>
 
-                                    <h3 className="text-base font-bold text-slate-900 mb-3 group-hover:text-brand-rust transition-colors leading-snug line-clamp-2">
-                                        {report.title}
-                                    </h3>
+                                    {/* Content */}
+                                    <div className="p-6 flex flex-col flex-1">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${typeColors[report.type] || typeColors['other']}`}>
+                                                {report.type.replace('_', ' ')}
+                                            </span>
+                                            <span className="text-xs font-medium text-slate-400">{new Date(report.published_at).toLocaleDateString()}</span>
+                                        </div>
 
-                                    <p className="text-slate-500 leading-relaxed text-sm mb-6 line-clamp-3 flex-1">
-                                        {report.description}
-                                    </p>
+                                        <h3 className="text-base font-bold text-slate-900 mb-3 group-hover:text-brand-rust transition-colors leading-snug line-clamp-2">
+                                            {report.title}
+                                        </h3>
 
-                                    <div className="flex items-center justify-between pt-4 border-t border-slate-100 mt-auto">
-                                        <button
-                                            type="button"
-                                            onClick={() => {}}
-                                            className="text-brand-rust hover:text-brand-rust-dark font-semibold text-xs flex items-center gap-1.5 transition-colors"
-                                        >
-                                            <Download className="w-3.5 h-3.5" />
-                                            <span>Download PDF</span>
-                                        </button>
-                                        <Link
-                                            href="/resources"
-                                            className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-brand-rust group-hover:text-white transition-all"
-                                        >
-                                            <ArrowRight className="w-3.5 h-3.5" />
-                                        </Link>
+                                        <p className="text-slate-500 leading-relaxed text-sm mb-6 line-clamp-3 flex-1">
+                                            {report.excerpt}
+                                        </p>
+
+                                        <div className="flex items-center justify-between pt-4 border-t border-slate-100 mt-auto">
+                                            {report.file_url ? (
+                                                <a
+                                                    href={report.file_url}
+                                                    download
+                                                    className="text-brand-rust hover:text-brand-rust-dark font-semibold text-xs flex items-center gap-1.5 transition-colors"
+                                                >
+                                                    <Download className="w-3.5 h-3.5" />
+                                                    <span>Download File</span>
+                                                </a>
+                                            ) : (
+                                                <span className="text-slate-300 font-semibold text-xs flex items-center gap-1.5 transition-colors">
+                                                    No file attached
+                                                </span>
+                                            )}
+                                            <Link
+                                                href={`/resources/${report.slug}`}
+                                                className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-brand-rust group-hover:text-white transition-all"
+                                            >
+                                                <ArrowRight className="w-3.5 h-3.5" />
+                                            </Link>
+                                        </div>
                                     </div>
-                                </div>
-                            </motion.div>
-                        ))}
-                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-20 bg-slate-50 rounded-3xl border border-slate-100">
+                            <FileText className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                            <h3 className="text-xl font-bold text-slate-700 mb-2">No Reports Available</h3>
+                            <p className="text-slate-500">Check back later for our latest research and publications.</p>
+                        </div>
+                    )}
                 </div>
             </section>
 

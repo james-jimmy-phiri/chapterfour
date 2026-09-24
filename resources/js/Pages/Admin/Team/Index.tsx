@@ -13,6 +13,7 @@ interface TeamMemberItem {
     department?: string;
     category: string;
     biography?: string;
+    photo?: string;
     sort_order: number;
     status: string;
 }
@@ -140,9 +141,17 @@ export default function TeamIndex({ teamMembers = [] }: TeamProps) {
                     >
                         <div>
                             <div className="flex items-start justify-between gap-3 mb-4">
-                                <div className="w-12 h-12 rounded-full bg-brand-rust/10 border border-brand-rust/20 flex items-center justify-center text-brand-rust dark:text-brand-amber font-serif font-bold text-lg">
-                                    {member.name.split(' ').map((n) => n[0]).join('').slice(0, 2)}
-                                </div>
+                                {member.photo ? (
+                                    <img
+                                        src={member.photo}
+                                        alt={member.name}
+                                        className="w-14 h-14 rounded-full object-cover border-2 border-brand-rust/20 shrink-0 shadow-sm"
+                                    />
+                                ) : (
+                                    <div className="w-14 h-14 rounded-full bg-brand-rust/10 border border-brand-rust/20 flex items-center justify-center text-brand-rust dark:text-brand-amber font-serif font-bold text-lg shrink-0">
+                                        {member.name.split(' ').map((n) => n[0]).join('').slice(0, 2)}
+                                    </div>
+                                )}
                                 <span className={`text-[10px] uppercase font-bold px-2.5 py-0.5 rounded-full ${
                                     member.category === 'board' 
                                         ? 'bg-purple-50 text-purple-700 dark:bg-purple-500/20 dark:text-purple-300 border border-purple-200 dark:border-purple-500/20' 
@@ -224,6 +233,7 @@ export default function TeamIndex({ teamMembers = [] }: TeamProps) {
                                     required
                                     className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs focus:ring-2 focus:ring-brand-rust/50 focus:outline-none"
                                 />
+                                {errors.name && <div className="text-red-500 text-xs mt-1">{errors.name}</div>}
                             </div>
 
                             <div className="grid grid-cols-2 gap-4">
@@ -238,6 +248,7 @@ export default function TeamIndex({ teamMembers = [] }: TeamProps) {
                                         required
                                         className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-brand-rust"
                                     />
+                                    {errors.role && <div className="text-red-500 text-xs mt-1">{errors.role}</div>}
                                 </div>
                                 <div>
                                     <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
@@ -251,6 +262,7 @@ export default function TeamIndex({ teamMembers = [] }: TeamProps) {
                                         <option value="staff" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Secretariat Staff</option>
                                         <option value="board" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">Board of Trustees</option>
                                     </select>
+                                    {errors.category && <div className="text-red-500 text-xs mt-1">{errors.category}</div>}
                                 </div>
                             </div>
 
@@ -264,18 +276,26 @@ export default function TeamIndex({ teamMembers = [] }: TeamProps) {
                                     onChange={(e) => setData('department', e.target.value)}
                                     className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-brand-rust"
                                 />
+                                {errors.department && <div className="text-red-500 text-xs mt-1">{errors.department}</div>}
                             </div>
 
                             <div>
                                 <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                                     Profile Photo
                                 </label>
+                                {editingItem?.photo && (
+                                    <div className="mb-2 flex items-center gap-3 p-2 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10">
+                                        <img src={editingItem.photo} alt="Current" className="w-10 h-10 object-cover rounded-full border border-slate-200" />
+                                        <span className="text-[11px] text-slate-500">Current photo saved. Upload new to replace.</span>
+                                    </div>
+                                )}
                                 <input
                                     type="file"
                                     accept="image/*"
                                     onChange={(e) => setData('photo', e.target.files ? e.target.files[0] : null)}
                                     className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-brand-rust file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-brand-rust/10 file:text-brand-rust hover:file:bg-brand-rust/20"
                                 />
+                                {errors.photo && <div className="text-red-500 text-xs mt-1">{errors.photo}</div>}
                             </div>
 
                             <div>
@@ -288,6 +308,7 @@ export default function TeamIndex({ teamMembers = [] }: TeamProps) {
                                     onChange={(e) => setData('biography', e.target.value)}
                                     className="w-full px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-xs leading-relaxed focus:outline-none focus:border-brand-rust"
                                 />
+                                {errors.biography && <div className="text-red-500 text-xs mt-1">{errors.biography}</div>}
                             </div>
 
                             <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-white/10">

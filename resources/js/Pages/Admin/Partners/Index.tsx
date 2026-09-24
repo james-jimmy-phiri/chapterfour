@@ -13,6 +13,7 @@ interface PartnerItem {
     category: string;
     description?: string;
     website?: string;
+    logo?: string;
     sort_order: number;
     status: string;
 }
@@ -138,7 +139,20 @@ export default function PartnersIndex({ partners = [] }: PartnersProps) {
                         className="p-6 rounded-2xl bg-white dark:bg-[#0a0e1a] border border-slate-200 dark:border-white/10 hover:border-brand-rust/40 dark:hover:border-brand-rust/40 transition-all flex flex-col justify-between group shadow-sm"
                     >
                         <div>
-                            <div className="flex items-start justify-between gap-2 mb-3">
+                            {/* Logo */}
+                            <div className="mb-4 h-20 rounded-xl bg-white dark:bg-white/[0.06] border border-slate-200 dark:border-white/10 flex items-center justify-center overflow-hidden p-3">
+                                {partner.logo ? (
+                                    <img
+                                        src={partner.logo}
+                                        alt={partner.name}
+                                        className="max-h-full max-w-full object-contain"
+                                    />
+                                ) : (
+                                    <Building2 className="w-8 h-8 text-slate-300 dark:text-white/20" />
+                                )}
+                            </div>
+
+                            <div className="flex items-start justify-between gap-2 mb-2">
                                 <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider bg-brand-rust/10 text-brand-rust dark:bg-brand-rust/20 dark:text-brand-amber border border-brand-rust/20 font-medium">
                                     {partner.category.replace('_', ' ')}
                                 </span>
@@ -151,11 +165,11 @@ export default function PartnersIndex({ partners = [] }: PartnersProps) {
                                 </span>
                             </div>
 
-                            <h3 className="font-serif text-lg text-slate-900 dark:text-white font-bold group-hover:text-brand-rust dark:group-hover:text-brand-amber transition-colors">
+                            <h3 className="font-serif text-base text-slate-900 dark:text-white font-bold group-hover:text-brand-rust dark:group-hover:text-brand-amber transition-colors">
                                 {partner.name}
                             </h3>
 
-                            <p className="mt-2 text-xs text-slate-600 dark:text-slate-400 font-light leading-relaxed line-clamp-3">
+                            <p className="mt-1.5 text-xs text-slate-600 dark:text-slate-400 font-light leading-relaxed line-clamp-2">
                                 {partner.description || 'No description provided.'}
                             </p>
                         </div>
@@ -277,6 +291,12 @@ export default function PartnersIndex({ partners = [] }: PartnersProps) {
                                 <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
                                     Partner Logo
                                 </label>
+                                {editingItem?.logo && (
+                                    <div className="mb-2 flex items-center gap-3 p-3 rounded-xl bg-slate-50 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10">
+                                        <img src={editingItem.logo} alt="Current logo" className="h-10 max-w-[120px] object-contain" />
+                                        <span className="text-[11px] text-slate-500">Current logo saved. Upload new to replace.</span>
+                                    </div>
+                                )}
                                 <input
                                     type="file"
                                     accept="image/*"

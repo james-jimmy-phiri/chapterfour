@@ -334,15 +334,55 @@ class PublicController extends Controller
 
     public function resources(Request $request): Response
     {
-        $type   = $request->query('type');
+        $rawType = $request->query('type');
+        $type = is_array($rawType) ? $rawType : ($rawType !== null && $rawType !== '' ? explode(',', (string) $rawType) : []);
+
+        $rawAuthor = $request->query('author');
+        $author = is_array($rawAuthor) ? $rawAuthor : ($rawAuthor !== null && $rawAuthor !== '' ? explode(',', (string) $rawAuthor) : []);
+
+        $rawYear = $request->query('year');
+        $year = is_array($rawYear) ? $rawYear : ($rawYear !== null && $rawYear !== '' ? explode(',', (string) $rawYear) : []);
+
         $search = $request->query('search');
 
         $query = Resource::where('status', 'published')->latest('published_at');
 
-        if ($type && $type !== 'All') {
-            $query->where('type', strtolower($type));
+        if ($request->routeIs('news')) {
+            $type = ['news'];
         }
 
+        // Map friendly slugs/plurals from links to actual database enum values
+        $typeMap = [
+            'statements'      => 'statement',
+            'reports'         => 'report',
+            'press-releases'  => 'press_release',
+            'press_releases'  => 'press_release',
+            'publications'    => 'publication',
+            'success-stories' => 'success_story',
+            'success_stories' => 'success_story',
+            'policy-briefs'   => 'policy_brief',
+            'policy_briefs'   => 'policy_brief',
+            'researches'      => 'research',
+        ];
+
+        $normalizedType = array_values(array_filter(array_map(function ($t) use ($typeMap) {
+            $trimmed = strtolower(trim((string) $t));
+            return $typeMap[$trimmed] ?? $trimmed;
+        }, $type)));
+
+        if (!empty($normalizedType)) {
+            $query->whereIn('type', $normalizedType);
+        }
+        if (!empty($author)) {
+            $query->whereIn('author_id', array_values($author));
+        }
+        if (!empty($year)) {
+            $query->where(function ($q) use ($year) {
+                foreach ($year as $y) {
+                    $q->orWhereYear('published_at', $y);
+                }
+            });
+        }
         if ($search) {
             $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
@@ -352,10 +392,52 @@ class PublicController extends Controller
 
         $resources = $query->paginate(12)->withQueryString();
 
+        // Compute filters
+        $all = Resource::where('status', 'published')->with('author')->get();
+
+        $types = $all->groupBy('type')->map->count()->map(function($count, $key) {
+            // $key might be an Enum if cast, or a string
+            $val = $key instanceof \App\Enums\ResourceType ? $key->value : $key;
+            $label = $key instanceof \App\Enums\ResourceType ? $key->label() : (\App\Enums\ResourceType::tryFrom($val)?->label() ?? ucfirst($val));
+            return ['label' => $label, 'value' => $val, 'count' => $count];
+        })->values();
+
+        $authors = $all->groupBy('author_id')->map->count()->map(function($count, $key) use ($all) {
+            $authorName = $all->where('author_id', $key)->first()->author?->name ?? 'Unknown';
+            return ['label' => $authorName, 'value' => (string)$key, 'count' => $count];
+        })->values();
+
+        $years = $all->groupBy(function($item) {
+            return $item->published_at ? $item->published_at->format('Y') : 'N/A';
+        })->map->count()->map(function($count, $key) {
+            return ['label' => $key, 'value' => $key, 'count' => $count];
+        })->filter(fn($i) => $i['label'] !== 'N/A')->sortByDesc('label')->values();
+
+        $filterCategories = [
+            [
+                'id' => 'type',
+                'title' => 'Resource Type',
+                'options' => $types
+            ],
+            [
+                'id' => 'author',
+                'title' => 'Author',
+                'options' => $authors
+            ],
+            [
+                'id' => 'year',
+                'title' => 'Date (Year)',
+                'options' => $years
+            ]
+        ];
+
         return Inertia::render('Resources', [
             'resources' => $resources,
+            'filterCategories' => $filterCategories,
             'filters'   => [
-                'type'   => $type ?? 'All',
+                'type'   => $normalizedType,
+                'author' => array_values($author),
+                'year'   => array_values($year),
                 'search' => $search ?? '',
             ],
         ]);

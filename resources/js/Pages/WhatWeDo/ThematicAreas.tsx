@@ -6,10 +6,11 @@ import {
     Heart, Search, Users, ArrowRight, ChevronRight,
     ArrowUpRight, X, Layers
 } from 'lucide-react';
+import * as Icons from 'lucide-react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { cn } from "@/lib/utils"; // Shadcn utility for tailwind class merging
 
-const thematicAreas = [
+const fallbackThematicAreas = [
     {
         number: '01',
         title: "Human Rights & Constitutionalism",
@@ -148,9 +149,20 @@ const thematicAreas = [
     }
 ];
 
+const colorPalette = [
+    { accentColor: "bg-brand-rust", textAccent: "text-brand-rust", borderAccent: "border-brand-rust" },
+    { accentColor: "bg-amber-700", textAccent: "text-amber-700", borderAccent: "border-amber-600" },
+    { accentColor: "bg-slate-700", textAccent: "text-slate-700", borderAccent: "border-slate-600" },
+    { accentColor: "bg-emerald-700", textAccent: "text-emerald-700", borderAccent: "border-emerald-600" },
+    { accentColor: "bg-violet-700", textAccent: "text-violet-700", borderAccent: "border-violet-600" },
+    { accentColor: "bg-rose-700", textAccent: "text-rose-700", borderAccent: "border-rose-600" },
+    { accentColor: "bg-orange-700", textAccent: "text-orange-700", borderAccent: "border-orange-600" },
+    { accentColor: "bg-teal-700", textAccent: "text-teal-700", borderAccent: "border-teal-600" },
+];
+
 // --- Modal Component (Replaces the inline layout for the rich cards) ---
-function ThematicModal({ area, onClose }: { area: typeof thematicAreas[0], onClose: () => void }) {
-    const Icon = area.icon;
+function ThematicModal({ area, onClose }: { area: any, onClose: () => void }) {
+    const Icon = typeof area.icon === 'string' && (Icons as any)[area.icon] ? (Icons as any)[area.icon] : Icons.Shield;
 
     // Prevent body scroll when modal is open
     useEffect(() => {
@@ -225,7 +237,7 @@ function ThematicModal({ area, onClose }: { area: typeof thematicAreas[0], onClo
                         </ul>
 
                         <Link
-                            href="/contact"
+                            href={`/what-we-do/${area.slug || ''}`}
                             className={`inline-flex items-center gap-2 text-sm font-bold ${area.textAccent} hover:underline transition-colors group/link w-fit`}
                         >
                             <span>Learn More About This Pillar</span>
@@ -237,9 +249,24 @@ function ThematicModal({ area, onClose }: { area: typeof thematicAreas[0], onClo
         </div>
     );
 }
-export default function ThematicAreas() {
-    const [activeId, setActiveId] = useState<string>("01");
-    const [selectedArea, setSelectedArea] = useState<typeof thematicAreas[0] | null>(null);
+export default function ThematicAreas({ thematicAreas: dbThematicAreas = [] }: { thematicAreas?: any[] }) {
+    const thematicAreas = dbThematicAreas.length > 0 ? dbThematicAreas.map((area, index) => {
+        const palette = colorPalette[index % colorPalette.length];
+        return {
+            number: String(index + 1).padStart(2, '0'),
+            title: area.title,
+            shortTitle: area.title.split(' ')[0],
+            description: area.short_description || area.full_description || '',
+            keyPoints: Array.isArray(area.interventions) ? area.interventions : [],
+            icon: area.icon || 'Shield',
+            image: area.cover_image || '/images/constitutional_book.jpg',
+            slug: area.slug,
+            ...palette
+        };
+    }) : fallbackThematicAreas;
+
+    const [activeId, setActiveId] = useState<string>(thematicAreas[0]?.number || "01");
+    const [selectedArea, setSelectedArea] = useState<any | null>(null);
     return (
         <PublicLayout>
             <Head>

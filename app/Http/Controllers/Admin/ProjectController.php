@@ -38,15 +38,20 @@ class ProjectController extends Controller
             'description' => 'nullable|string',
             'locations' => 'nullable|array',
             'beneficiaries' => 'nullable|array',
-            'featured_image' => 'nullable|image|max:4096',
+            'outputs' => 'nullable|array',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
+            'featured_image' => 'nullable|image|max:8096',
             'gallery_images' => 'nullable|array',
-            'gallery_images.*' => 'image|max:4096',
+            'gallery_images.*' => 'image|max:8096',
             'status' => 'required|string',
             'published_at' => 'nullable|date',
         ]);
 
         if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['title']);
+            $slug = Str::slug($validated['title']);
+            $count = Project::where('slug', 'LIKE', "{$slug}%")->count();
+            $validated['slug'] = $count ? "{$slug}-{$count}" : $slug;
         }
 
         if ($request->hasFile('featured_image')) {
@@ -88,9 +93,12 @@ class ProjectController extends Controller
             'description' => 'nullable|string',
             'locations' => 'nullable|array',
             'beneficiaries' => 'nullable|array',
-            'featured_image' => 'nullable|image|max:4096',
+            'outputs' => 'nullable|array',
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date',
+            'featured_image' => 'nullable|image|max:8096',
             'gallery_images' => 'nullable|array',
-            'gallery_images.*' => 'image|max:4096',
+            'gallery_images.*' => 'image|max:8096',
             'status' => 'required|string',
             'published_at' => 'nullable|date',
         ]);

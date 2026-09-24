@@ -1,7 +1,7 @@
 import PublicLayout from '@/Layouts/PublicLayout';
 import { Head, Link } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     ArrowLeft, MapPin, Users, Calendar, CheckCircle2,
     Briefcase, ArrowRight, Shield, Target, ArrowUpRight,
@@ -23,23 +23,47 @@ interface ProjectItem {
     budget?: string;
     duration?: string;
     featured_image?: string;
+    gallery?: string[];
+    outputs?: string[];
 }
 
 interface ProjectDetailProps {
     project: ProjectItem;
 }
 
-// Placeholder gallery images from the available image folder
+// Gallery images from project data or default fallback
 const getGalleryImages = (project: ProjectItem) => {
-    const base = [
-        { src: project.featured_image || '/images/animate-img-1.jpg', caption: `${project.title} — Field Operations` },
-        { src: '/images/paliament.jpg', caption: 'Parliament of Malawi — Policy Advocacy' },
-        { src: '/images/Chief_Justice.jpg', caption: 'Judiciary Engagement — Court Monitoring' },
-        { src: '/images/constitutional_book.jpg', caption: 'Constitutional Rights Materials' },
-        { src: '/images/animate-img-2.jpg', caption: 'Community Outreach Sessions' },
-        { src: '/images/Parliament_Building_of_Malawioutside.jpg', caption: 'Legislative Advocacy — National Assembly' },
-    ];
-    return base;
+    const list: { src: string; caption: string }[] = [];
+
+    if (project.gallery && Array.isArray(project.gallery) && project.gallery.length > 0) {
+        if (project.featured_image && !project.gallery.includes(project.featured_image)) {
+            list.push({
+                src: project.featured_image,
+                caption: `${project.title} — Featured Image`,
+            });
+        }
+        project.gallery.forEach((src, idx) => {
+            if (src) {
+                list.push({
+                    src,
+                    caption: `${project.title} — Photo ${idx + 1}`,
+                });
+            }
+        });
+    }
+
+    if (list.length === 0) {
+        return [
+            { src: project.featured_image || '/images/animate-img-1.jpg', caption: `${project.title} — Field Operations` },
+            { src: '/images/paliament.jpg', caption: 'Parliament of Malawi — Policy Advocacy' },
+            { src: '/images/Chief_Justice.jpg', caption: 'Judiciary Engagement — Court Monitoring' },
+            { src: '/images/constitutional_book.jpg', caption: 'Constitutional Rights Materials' },
+            { src: '/images/animate-img-2.jpg', caption: 'Community Outreach Sessions' },
+            { src: '/images/Parliament_Building_of_Malawioutside.jpg', caption: 'Legislative Advocacy — National Assembly' },
+        ];
+    }
+
+    return list;
 };
 
 // Animation Variants
@@ -71,32 +95,49 @@ function Lightbox({
     const prev = () => setCurrent((c) => (c - 1 + images.length) % images.length);
     const next = () => setCurrent((c) => (c + 1) % images.length);
 
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'ArrowLeft') {
+                prev();
+            } else if (e.key === 'ArrowRight') {
+                next();
+            } else if (e.key === 'Escape') {
+                onClose();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [images.length]);
+
     return (
         <AnimatePresence>
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[100] bg-slate-950/95 flex items-center justify-center"
+                className="fixed inset-0 z-[100] bg-slate-950/95 flex items-center justify-center select-none"
                 onClick={onClose}
             >
                 {/* Close button */}
                 <button
-                    className="absolute top-6 right-6 z-10 p-2 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-all"
+                    className="absolute top-6 right-6 z-10 p-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white transition-all focus:outline-none"
                     onClick={onClose}
+                    title="Close (Esc)"
                 >
                     <X className="w-6 h-6" />
                 </button>
 
                 {/* Counter */}
-                <div className="absolute top-8 left-1/2 -translate-x-1/2 z-10 text-white/60 text-sm font-semibold tracking-widest uppercase">
+                <div className="absolute top-7 left-1/2 -translate-x-1/2 z-10 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md text-white/80 text-xs sm:text-sm font-semibold tracking-wider">
                     {current + 1} / {images.length}
                 </div>
 
                 {/* Prev button */}
                 <button
-                    className="absolute left-6 z-10 p-3 rounded-lg bg-white/5 hover:bg-white/10 text-white transition-all hidden sm:block"
+                    className="absolute left-3 sm:left-6 z-10 p-2.5 sm:p-3 rounded-full sm:rounded-lg bg-black/40 sm:bg-white/10 hover:bg-black/60 sm:hover:bg-white/20 text-white backdrop-blur-sm transition-all focus:outline-none"
                     onClick={(e) => { e.stopPropagation(); prev(); }}
+                    title="Previous (Left Arrow)"
                 >
                     <ChevronLeft className="w-6 h-6" />
                 </button>
@@ -107,35 +148,37 @@ function Lightbox({
                     initial={{ opacity: 0, scale: 0.98 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.98 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.25 }}
                     className="w-full max-w-5xl mx-auto px-4 sm:px-16 flex flex-col items-center"
                     onClick={(e) => e.stopPropagation()}
                 >
                     <img
                         src={images[current].src}
                         alt={images[current].caption}
-                        className="w-full max-h-[75vh] object-contain shadow-2xl"
+                        className="w-full max-h-[72vh] object-contain shadow-2xl rounded-md"
                     />
-                    <p className="text-white/80 text-sm md:text-base text-center mt-6 font-medium">
+                    <p className="text-white/85 text-xs sm:text-sm md:text-base text-center mt-4 sm:mt-5 font-medium px-4">
                         {images[current].caption}
                     </p>
                 </motion.div>
 
                 {/* Next button */}
                 <button
-                    className="absolute right-6 z-10 p-3 rounded-lg bg-white/5 hover:bg-white/10 text-white transition-all hidden sm:block"
+                    className="absolute right-3 sm:right-6 z-10 p-2.5 sm:p-3 rounded-full sm:rounded-lg bg-black/40 sm:bg-white/10 hover:bg-black/60 sm:hover:bg-white/20 text-white backdrop-blur-sm transition-all focus:outline-none"
                     onClick={(e) => { e.stopPropagation(); next(); }}
+                    title="Next (Right Arrow)"
                 >
                     <ChevronRight className="w-6 h-6" />
                 </button>
 
                 {/* Thumbnail strip */}
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 px-4 w-full justify-center overflow-x-auto pb-2">
+                <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex gap-2 px-4 max-w-full justify-start sm:justify-center overflow-x-auto pb-2 scrollbar-none">
                     {images.map((img, i) => (
                         <button
                             key={i}
                             onClick={(e) => { e.stopPropagation(); setCurrent(i); }}
-                            className={`w-16 h-12 rounded overflow-hidden transition-all duration-200 ${i === current ? 'ring-2 ring-white opacity-100' : 'opacity-40 hover:opacity-100'}`}
+                            className={`w-14 sm:w-16 h-10 sm:h-12 rounded overflow-hidden transition-all duration-200 shrink-0 ${i === current ? 'ring-2 ring-white opacity-100 scale-105' : 'opacity-40 hover:opacity-100'}`}
+                            title={`Jump to photo ${i + 1}`}
                         >
                             <img src={img.src} alt="" className="w-full h-full object-cover" />
                         </button>
@@ -149,7 +192,18 @@ function Lightbox({
 export default function ProjectDetail({ project }: ProjectDetailProps) {
     const imageSrc = project.featured_image || '/images/animate-img-1.jpg';
     const galleryImages = getGalleryImages(project);
+    const gridImages = galleryImages.slice(0, 6);
     const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
+    const calculateDuration = (start?: string, end?: string) => {
+        if (!start || !end) return project.duration || 'Ongoing';
+        const startD = new Date(start);
+        const endD = new Date(end);
+        if (isNaN(startD.getTime()) || isNaN(endD.getTime())) return `${start} – ${end}`;
+        const diffMonths = (endD.getFullYear() - startD.getFullYear()) * 12 + (endD.getMonth() - startD.getMonth());
+        return `${diffMonths > 0 ? diffMonths : 1} Months (${start} – ${end})`;
+    };
+
 
     return (
         <PublicLayout>
@@ -227,7 +281,9 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
 
                                 <div className="prose prose-slate max-w-none text-slate-600 leading-relaxed">
                                     {project.description ? (
-                                        <p>{project.description}</p>
+                                        project.description.split('\n').filter(p => p.trim() !== '').map((paragraph, index) => (
+                                            <p key={index} className="mb-4">{paragraph}</p>
+                                        ))
                                     ) : (
                                         <div className="space-y-6">
                                             <p className="text-slate-800 font-medium text-lg">
@@ -257,12 +313,12 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
                                 </div>
                                 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
-                                    {[
+                                    {(project.outputs && project.outputs.length > 0 ? project.outputs : [
                                         'Direct pro-bono defense and bail assistance in magistrate courts across target districts.',
                                         'Continuous monitoring of police custody facilities and compliance with the 48-hour rule.',
                                         'Training community paralegals and youth rights champions on fundamental Chapter IV rights.',
                                         'Compilation of empirical detention and human rights abuse case records for institutional advocacy.',
-                                    ].map((res, i) => (
+                                    ]).map((res, i) => (
                                         <div key={i} className="flex items-start gap-3 p-4 rounded-lg bg-slate-50 border border-slate-100">
                                             <CheckCircle2 className="w-5 h-5 text-slate-700 shrink-0 mt-0.5" />
                                             <p className="text-slate-700 font-medium text-sm leading-relaxed">{res}</p>
@@ -292,28 +348,54 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
                                             <span className="text-sm font-medium text-slate-500 mt-0.5 block">Visual Documentation</span>
                                         </div>
                                     </div>
-                                    <span className="text-xs font-bold text-slate-600 uppercase tracking-widest bg-slate-100 border border-slate-200 px-3 py-1.5 rounded w-fit">
-                                        {galleryImages.length} Photos
-                                    </span>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-xs font-bold text-slate-600 uppercase tracking-widest bg-slate-100 border border-slate-200 px-3 py-1.5 rounded w-fit">
+                                            {galleryImages.length} Photos
+                                        </span>
+                                        {galleryImages.length > 6 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => setLightboxIndex(0)}
+                                                className="text-xs font-semibold text-brand-rust hover:text-brand-rust/80 bg-brand-rust/10 border border-brand-rust/20 px-3 py-1.5 rounded transition hover:bg-brand-rust/15"
+                                            >
+                                                Slide All ({galleryImages.length})
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                                    {galleryImages.map((img, i) => (
-                                        <button
-                                            key={i}
-                                            className="relative rounded-lg overflow-hidden cursor-pointer group/img aspect-[4/3] bg-slate-100"
-                                            onClick={() => setLightboxIndex(i)}
-                                        >
-                                            <img
-                                                src={img.src}
-                                                alt={img.caption}
-                                                className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
-                                            />
-                                            <div className="absolute inset-0 bg-slate-900/0 group-hover/img:bg-slate-900/20 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover/img:opacity-100">
-                                                <ExternalLink className="w-6 h-6 text-white drop-shadow-md" />
-                                            </div>
-                                        </button>
-                                    ))}
+                                    {gridImages.map((img, i) => {
+                                        const isSixthWithMore = i === 5 && galleryImages.length > 6;
+                                        const extraCount = galleryImages.length - 6;
+
+                                        return (
+                                            <button
+                                                key={i}
+                                                type="button"
+                                                className="relative rounded-lg overflow-hidden cursor-pointer group/img aspect-[4/3] bg-slate-100 text-left focus:outline-none focus:ring-2 focus:ring-brand-rust"
+                                                onClick={() => setLightboxIndex(i)}
+                                            >
+                                                <img
+                                                    src={img.src}
+                                                    alt={img.caption}
+                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover/img:scale-105"
+                                                />
+
+                                                {isSixthWithMore ? (
+                                                    <div className="absolute inset-0 bg-slate-950/70 group-hover/img:bg-slate-950/80 backdrop-blur-[2px] transition-colors flex flex-col items-center justify-center text-white p-2">
+                                                        <span className="text-2xl sm:text-3xl font-extrabold tracking-tight">+{extraCount}</span>
+                                                        <span className="text-xs sm:text-sm font-semibold text-white/95 mt-0.5">More Photos</span>
+                                                        <span className="text-[10px] text-white/70 mt-1 uppercase tracking-wider font-medium">Click to slide all</span>
+                                                    </div>
+                                                ) : (
+                                                    <div className="absolute inset-0 bg-slate-900/0 group-hover/img:bg-slate-900/25 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover/img:opacity-100">
+                                                        <ExternalLink className="w-6 h-6 text-white drop-shadow-md" />
+                                                    </div>
+                                                )}
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             </motion.div>
 
@@ -356,7 +438,7 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
                                             <Calendar className="w-4 h-4" /> Implementation Timeline
                                         </span>
                                         <p className="text-sm font-semibold text-slate-900">
-                                            {project.duration || (project.start_date && project.end_date ? `${project.start_date} – ${project.end_date}` : '24 Months (Multi-Year)')}
+                                            {calculateDuration(project.start_date, project.end_date)}
                                         </p>
                                     </div>
 

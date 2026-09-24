@@ -1,5 +1,5 @@
 import PublicLayout from '@/Layouts/PublicLayout';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import {
     Shield, Scale, Users, Heart, ArrowRight,
@@ -92,6 +92,7 @@ export default function About({
     stats = [],
     partners = [],
 }: AboutProps) {
+    const { site } = usePage<any>().props;
     const localPlaceholderPhotos = [
         '/images/animate-img-4.jpg',
         '/images/animate-img-5.jpg',
@@ -164,7 +165,7 @@ export default function About({
                             <span className="text-xs font-bold uppercase tracking-wider text-brand-amber block mb-2 relative z-10">Our Vision</span>
                             <h2 className="text-2xl font-bold text-slate-900 mb-4 relative z-10">A Just, Accountable & Democratic Malawi</h2>
                             <p className="text-lg text-slate-600 leading-relaxed relative z-10 font-medium">
-                                A just, democratic and inclusive Malawi where the rights and freedoms guaranteed by the Constitution are respected, protected and enjoyed by all.
+                                {site?.vision || 'A just, democratic and inclusive Malawi where the rights and freedoms guaranteed by the Constitution are respected, protected and enjoyed by all.'}
                             </p>
                         </motion.div>
 
@@ -180,7 +181,7 @@ export default function About({
                             <span className="text-xs font-bold uppercase tracking-wider text-brand-rust block mb-2 relative z-10">Our Mission</span>
                             <h2 className="text-2xl font-bold text-slate-900 mb-4 relative z-10">Protecting Rights Through Law & Empowerment</h2>
                             <p className="text-lg text-slate-600 leading-relaxed relative z-10 font-medium">
-                                To promote and protect constitutional rights, strengthen access to justice, empower citizens, and contribute to accountable, democratic and rights-respecting governance in Malawi.
+                                {site?.mission || 'To promote and protect constitutional rights, strengthen access to justice, empower citizens, and contribute to accountable, democratic and rights-respecting governance in Malawi.'}
                             </p>
                         </motion.div>
                     </div>

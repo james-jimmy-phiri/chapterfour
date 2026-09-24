@@ -17,6 +17,8 @@ interface VacancyItem {
     status: string;
     closes_at?: string;
     sort_order: number;
+    description?: string;
+    document_path?: string;
 }
 
 interface VacanciesProps {
@@ -41,6 +43,7 @@ export default function VacanciesIndex({ vacancies = [] }: VacanciesProps) {
         status: 'open',
         closes_at: '',
         sort_order: 0,
+        document_file: null as File | null,
     });
 
     const openCreate = () => {
@@ -59,6 +62,7 @@ export default function VacanciesIndex({ vacancies = [] }: VacanciesProps) {
             status: 'open',
             closes_at: '',
             sort_order: vacancies.length + 1,
+            document_file: null,
         });
         setModalOpen(true);
     };
@@ -76,11 +80,12 @@ export default function VacanciesIndex({ vacancies = [] }: VacanciesProps) {
             type: item.type,
             tag: item.tag || '',
             organization: '',
-            description: '',
+            description: item.description || '',
             scope_intro: '',
             status: item.status,
             closes_at: item.closes_at ? item.closes_at.split('T')[0] : '', // Extract just the date part
             sort_order: item.sort_order,
+            document_file: null,
         });
         setModalOpen(true);
     };
@@ -89,6 +94,8 @@ export default function VacanciesIndex({ vacancies = [] }: VacanciesProps) {
         e.preventDefault();
         if (editingItem) {
             put(`/admin/vacancies/${editingItem.id}`, {
+                preserveScroll: true,
+                forceFormData: true,
                 onSuccess: () => {
                     setModalOpen(false);
                     reset();
@@ -96,6 +103,8 @@ export default function VacanciesIndex({ vacancies = [] }: VacanciesProps) {
             });
         } else {
             post('/admin/vacancies', {
+                preserveScroll: true,
+                forceFormData: true,
                 onSuccess: () => {
                     setModalOpen(false);
                     reset();
@@ -339,6 +348,38 @@ export default function VacanciesIndex({ vacancies = [] }: VacanciesProps) {
                                     </select>
                                 </div>
 
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                {/* Description */}
+                                <div className="space-y-1 md:col-span-2">
+                                    <label className="block text-sm font-medium text-slate-700">Description *</label>
+                                    <textarea
+                                        required
+                                        rows={4}
+                                        value={data.description}
+                                        onChange={e => setData('description', e.target.value)}
+                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-rust focus:border-transparent text-sm"
+                                    />
+                                    {errors.description && <p className="text-red-500 text-xs">{errors.description}</p>}
+                                </div>
+                                
+                                {/* Document Upload */}
+                                <div className="space-y-1 md:col-span-2">
+                                    <label className="block text-sm font-medium text-slate-700">Document Upload (PDF, DOC, DOCX)</label>
+                                    <input
+                                        type="file"
+                                        accept=".pdf,.doc,.docx"
+                                        onChange={e => setData('document_file', e.target.files ? e.target.files[0] : null)}
+                                        className="w-full px-3 py-2 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-rust focus:border-transparent text-sm"
+                                    />
+                                    {errors.document_file && <p className="text-red-500 text-xs">{errors.document_file}</p>}
+                                    {editingItem?.document_path && (
+                                        <p className="text-xs text-slate-500 mt-1">
+                                            Current document: <a href={editingItem.document_path} target="_blank" className="text-brand-rust hover:underline">View File</a>
+                                        </p>
+                                    )}
+                                </div>
                             </div>
 
                             <div className="pt-6 border-t border-slate-100 flex justify-end gap-3">

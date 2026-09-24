@@ -28,6 +28,7 @@ export interface Vacancy {
         addressLines: string[];
         email: string;
     };
+    document_path?: string;
 }
 
 export const defaultVacancies: Vacancy[] = [

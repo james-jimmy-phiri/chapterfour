@@ -33,6 +33,7 @@ class SettingController extends Controller
             'emergency_helpline' => '+265 999 000 111',
             'mission' => 'To promote and protect constitutional rights, strengthen access to justice, empower citizens, and contribute to accountable governance in Malawi.',
             'vision' => 'A just, democratic and inclusive Malawi where the rights and freedoms guaranteed by the Constitution are respected, protected and enjoyed by all.',
+            'contact_image' => '/images/child-hero.png',
         ];
 
         $settings = array_merge($defaults, $allSettings);
@@ -47,7 +48,12 @@ class SettingController extends Controller
      */
     public function update(Request $request): RedirectResponse
     {
-        $input = $request->except(['_token', '_method']);
+        $input = $request->except(['_token', '_method', 'contact_image_file']);
+
+        if ($request->hasFile('contact_image_file')) {
+            $path = $request->file('contact_image_file')->store('settings', 'public');
+            $input['contact_image'] = '/storage/' . $path;
+        }
 
         foreach ($input as $key => $value) {
             SiteSetting::updateOrCreate(

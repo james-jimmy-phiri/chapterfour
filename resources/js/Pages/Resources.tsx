@@ -43,6 +43,11 @@ interface ResourcesProps {
         search?: string;
         sort?: string;
     };
+    filterCategories?: {
+        id: string;
+        title: string;
+        options: { label: string; value: string; count: number }[];
+    }[];
 }
 
 // Single Placeholder image to use when an image is missing or broken
@@ -118,49 +123,6 @@ const defaultResourcesList: ResourceItem[] = [
     },
 ];
 
-// Exact filters from the screenshot
-const filterCategories = [
-    {
-        id: 'type',
-        title: 'Resource Type',
-        options: [
-            { label: 'Election Statement', count: 4 },
-            { label: 'Press Release', count: 4 },
-            { label: 'Article/OP-ED', count: 2 },
-            { label: 'Report', count: 4 },
-            { label: 'Success Stories', count: 0 },
-        ]
-    },
-    {
-        id: 'author',
-        title: 'Author',
-        options: [
-            { label: 'Chikondi Basikolo', count: 1 },
-            { label: 'Chisankho Watch', count: 11 },
-            { label: 'Chisankho Watch Secretariat', count: 1 },
-            { label: 'Frackson Makwangwala & Henry Chilobwe', count: 1 },
-        ]
-    },
-    {
-        id: 'tags',
-        title: 'Tags',
-        options: [
-            { label: 'Election', count: 3 },
-            { label: 'PRVT', count: 2 },
-            { label: 'Elections', count: 2 },
-            { label: 'Reports', count: 1 },
-        ]
-    },
-    {
-        id: 'year',
-        title: 'Date (Year)',
-        options: [
-            { label: '2026', count: 1 },
-            { label: '2025', count: 10 },
-            { label: '2024', count: 3 },
-        ]
-    }
-];
 
 const formatDate = (dateString?: string) => {
     if (!dateString) return '';
@@ -187,7 +149,7 @@ const itemVariants = {
     show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } }
 };
 
-export default function Resources({ resources, filters = {} }: ResourcesProps) {
+export default function Resources({ resources, filters = {}, filterCategories = [] }: ResourcesProps) {
     const isPaginator = resources && !Array.isArray(resources) && 'data' in resources;
     const items: ResourceItem[] = isPaginator
         ? (resources as any).data || []
@@ -201,12 +163,17 @@ export default function Resources({ resources, filters = {} }: ResourcesProps) {
 
     const [searchInput, setSearchInput] = useState(filters.search || '');
     
+    const toArray = (val: any): string[] => {
+        if (!val) return [];
+        return Array.isArray(val) ? val.map(String) : [String(val)];
+    };
+
     // Manage checkbox states
     const [selectedFilters, setSelectedFilters] = useState<Record<string, string[]>>({
-        type: filters.type || [],
-        author: filters.author || [],
-        tags: filters.tags || [],
-        year: filters.year || [],
+        type: toArray(filters.type),
+        author: toArray(filters.author),
+        tags: toArray(filters.tags),
+        year: toArray(filters.year),
     });
 
     const handleSearch = (e: React.FormEvent) => {
@@ -308,21 +275,21 @@ export default function Resources({ resources, filters = {} }: ResourcesProps) {
                                             <h3 className="text-[13px] font-bold text-slate-900 mb-3">{category.title}</h3>
                                             <ul className="space-y-2.5">
                                                 {category.options.map((opt) => {
-                                                    const isChecked = selectedFilters[category.id]?.includes(opt.label);
+                                                    const isChecked = selectedFilters[category.id]?.includes(opt.value);
                                                     return (
-                                                        <li key={opt.label} className="flex items-start gap-2">
+                                                        <li key={opt.value} className="flex items-start gap-2">
                                                             <div className="flex items-center h-4 mt-0.5">
                                                                 <input
-                                                                    id={`filter-${category.id}-${opt.label}`}
+                                                                    id={`filter-${category.id}-${opt.value}`}
                                                                     type="checkbox"
                                                                     checked={isChecked}
-                                                                    onChange={() => toggleFilter(category.id, opt.label)}
+                                                                    onChange={() => toggleFilter(category.id, opt.value)}
                                                                     className="w-3.5 h-3.5 rounded-sm border-slate-300 text-slate-800 focus:ring-slate-800 cursor-pointer"
                                                                 />
                                                             </div>
                                                             <div className="flex-1 min-w-0 flex justify-between gap-2 items-start">
                                                                 <label 
-                                                                    htmlFor={`filter-${category.id}-${opt.label}`}
+                                                                    htmlFor={`filter-${category.id}-${opt.value}`}
                                                                     className="text-[13px] text-slate-600 hover:text-slate-900 cursor-pointer leading-tight truncate"
                                                                     title={opt.label}
                                                                 >
@@ -338,22 +305,31 @@ export default function Resources({ resources, filters = {} }: ResourcesProps) {
                                     ))}
                                 </div>
 
-                                {/* Clear Filters */}
-                                <AnimatePresence>
-                                    {hasActiveFilters && (
-                                        <motion.button
-                                            initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                                            animate={{ opacity: 1, height: 'auto', marginTop: 24 }}
-                                            exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                                            type="button"
-                                            onClick={clearFilters}
-                                            className="w-full py-2 text-[13px] font-semibold text-slate-600 hover:text-slate-900 border border-slate-200 hover:bg-slate-50 rounded flex items-center justify-center gap-2 transition-colors"
-                                        >
-                                            <X className="w-3.5 h-3.5" />
-                                            <span>Clear All Filters</span>
-                                        </motion.button>
-                                    )}
-                                </AnimatePresence>
+                                {/* Apply / Clear Filters */}
+                                <div className="mt-6 flex flex-col gap-2">
+                                    <button
+                                        type="button"
+                                        onClick={applyFilters}
+                                        className="w-full py-2.5 text-[13px] font-bold text-white bg-slate-900 hover:bg-slate-800 border border-transparent rounded flex items-center justify-center transition-colors shadow-sm"
+                                    >
+                                        Apply Filters
+                                    </button>
+                                    <AnimatePresence>
+                                        {hasActiveFilters && (
+                                            <motion.button
+                                                initial={{ opacity: 0, height: 0 }}
+                                                animate={{ opacity: 1, height: 'auto' }}
+                                                exit={{ opacity: 0, height: 0 }}
+                                                type="button"
+                                                onClick={clearFilters}
+                                                className="w-full py-2 text-[13px] font-semibold text-slate-600 hover:text-slate-900 border border-slate-200 hover:bg-slate-50 rounded flex items-center justify-center gap-2 transition-colors"
+                                            >
+                                                <X className="w-3.5 h-3.5" />
+                                                <span>Clear All Filters</span>
+                                            </motion.button>
+                                        )}
+                                    </AnimatePresence>
+                                </div>
                             </div>
                         </aside>
 
@@ -387,7 +363,7 @@ export default function Resources({ resources, filters = {} }: ResourcesProps) {
                                         <motion.article
                                             variants={itemVariants}
                                             key={item.slug || idx}
-                                            className="group bg-white rounded-lg border border-slate-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full"
+                                            className="group relative bg-white rounded-lg border border-slate-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full"
                                         >
                                             {/* Image container */}
                                             <Link href={`/resources/${item.slug}`} className="relative h-44 block overflow-hidden shrink-0 bg-slate-100 border-b border-slate-100">

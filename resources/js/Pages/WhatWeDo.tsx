@@ -301,7 +301,7 @@ export default function WhatWeDo({ thematicAreas = [] }: WhatWeDoProps) {
                                 We publish baseline studies, policy briefs, and court monitoring digests to foster informed judicial debate, public awareness, and evidence-based advocacy.
                             </p>
                             <Link
-                                href="/resources?type=reports"
+                                href="/resources?type=report"
                                 className="inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-brand-amber hover:bg-amber-500 text-slate-900 font-bold text-base rounded-lg transition duration-200 shadow-lg hover:scale-105 w-full sm:w-auto"
                             >
                                 <span>View Evidence & Reports</span>

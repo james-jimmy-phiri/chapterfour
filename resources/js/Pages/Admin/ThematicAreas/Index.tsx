@@ -169,13 +169,17 @@ export default function ThematicAreasIndex({ thematicAreas = [] }: ThematicAreas
                                 </span>
                             </div>
 
-                            {item.cover_image && (
+                            {item.cover_image ? (
                                 <div className="mb-3 rounded-xl overflow-hidden h-28 bg-slate-100 dark:bg-white/5 border border-slate-200/50 dark:border-white/5">
                                     <img
                                         src={item.cover_image}
                                         alt={item.title}
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                                     />
+                                </div>
+                            ) : (
+                                <div className="mb-3 rounded-xl h-28 bg-slate-100 dark:bg-white/5 border border-slate-200/50 dark:border-white/5 flex items-center justify-center">
+                                    <Globe className="w-8 h-8 text-slate-300 dark:text-white/15" />
                                 </div>
                             )}
 

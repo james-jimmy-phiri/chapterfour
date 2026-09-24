@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import ChapterFourLogo from '@/Components/ChapterFourLogo';
 import PageLoader from '@/Components/PageLoader';
+import BackToTop from '@/Components/BackToTop';
 
 interface NavChild {
     label: string;
@@ -77,7 +78,8 @@ const navLinks: NavLinkItem[] = [
 ];
 
 export default function PublicLayout({ children }: PropsWithChildren) {
-    const { url } = usePage();
+    const { url, props } = usePage<any>();
+    const site = props.site;
     const [scrolled, setScrolled] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -127,17 +129,17 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                     <div className="flex items-center flex-wrap gap-x-6 gap-y-1">
                         <a
                             className="flex items-center gap-1.5 text-slate-200 hover:text-brand-amber transition"
-                            href="mailto:info@chapterfourmw.org"
+                            href={`mailto:${site?.contact_email || 'info@chapterfourmw.org'}`}
                         >
                             <Mail className="w-3.5 h-3.5 text-brand-amber" />
-                            <span className="text-[11px] sm:text-xs">info@chapterfourmw.org</span>
+                            <span className="text-[11px] sm:text-xs">{site?.contact_email || 'info@chapterfourmw.org'}</span>
                         </a>
                         <a
                             className="md:flex items-center gap-1.5 text-slate-200 hover:text-brand-amber transition"
-                            href="tel:+265888596275"
+                            href={`tel:${site?.contact_phone || '+265888596275'}`}
                         >
                             <Phone className="w-3.5 h-3.5 text-brand-amber" />
-                            <span className="hidden md:inline text-[11px] sm:text-xs">+265 888 596 275</span>
+                            <span className="hidden md:inline text-[11px] sm:text-xs">{site?.contact_phone || '+265 888 596 275'}</span>
                         </a>
                     </div>
 
@@ -147,16 +149,16 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                             Defending Constitutional Rights & Freedoms
                         </span>
                         <div className="flex items-center space-x-3 text-slate-300">
-                            <a aria-label="Facebook" className="hover:text-brand-amber transition" href="https://facebook.com" target="_blank" rel="noreferrer">
+                            <a aria-label="Facebook" className="hover:text-brand-amber transition" href={site?.facebook_url || "https://facebook.com"} target="_blank" rel="noreferrer">
                                 <Facebook className="w-3.5 h-3.5" />
                             </a>
-                            <a aria-label="X Twitter" className="hover:text-brand-amber transition" href="https://twitter.com" target="_blank" rel="noreferrer">
+                            <a aria-label="X Twitter" className="hover:text-brand-amber transition" href={site?.twitter_url || "https://twitter.com"} target="_blank" rel="noreferrer">
                                 <Twitter className="w-3.5 h-3.5" />
                             </a>
-                            <a aria-label="LinkedIn" className="hover:text-brand-amber transition" href="https://linkedin.com" target="_blank" rel="noreferrer">
+                            <a aria-label="LinkedIn" className="hover:text-brand-amber transition" href={site?.linkedin_url || "https://linkedin.com"} target="_blank" rel="noreferrer">
                                 <Linkedin className="w-3.5 h-3.5" />
                             </a>
-                            <a aria-label="Instagram" className="hover:text-brand-amber transition" href="https://instagram.com" target="_blank" rel="noreferrer">
+                            <a aria-label="Instagram" className="hover:text-brand-amber transition" href={site?.instagram_url || "https://instagram.com"} target="_blank" rel="noreferrer">
                                 <Instagram className="w-3.5 h-3.5" />
                             </a>
                         </div>
@@ -415,15 +417,15 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                         <div className="space-y-2.5 text-xs sm:text-sm text-slate-300">
                             <div className="flex items-start gap-2.5">
                                 <MapPin className="w-4 h-4 text-brand-amber mt-0.5 shrink-0" />
-                                <span>P.O. Box 30384, Capital City, Lilongwe, Malawi</span>
+                                <span>{site?.office_address || 'P.O. Box 30384, Capital City, Lilongwe, Malawi'}</span>
                             </div>
                             <div className="flex items-center gap-2.5">
                                 <Phone className="w-4 h-4 text-brand-amber shrink-0" />
-                                <a className="hover:text-white transition" href="tel:+265888596275">+265 888 596 275</a>
+                                <a className="hover:text-white transition" href={`tel:${site?.contact_phone || '+265888596275'}`}>{site?.contact_phone || '+265 888 596 275'}</a>
                             </div>
                             <div className="flex items-center gap-2.5">
                                 <Mail className="w-4 h-4 text-brand-amber shrink-0" />
-                                <a className="hover:text-white transition" href="mailto:info@chapterfourmw.org">info@chapterfourmw.org</a>
+                                <a className="hover:text-white transition" href={`mailto:${site?.contact_email || 'info@chapterfourmw.org'}`}>{site?.contact_email || 'info@chapterfourmw.org'}</a>
                             </div>
                         </div>
                     </div>
@@ -434,10 +436,10 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                             Resources
                         </h3>
                         <ul className="space-y-2.5 text-xs sm:text-sm">
-                            <li><Link className="hover:text-brand-amber transition" href="/resources?type=reports">Field Reports</Link></li>
-                            <li><Link className="hover:text-brand-amber transition" href="/resources?type=statements">Legal Statements</Link></li>
-                            <li><Link className="hover:text-brand-amber transition" href="/resources?type=press-releases">Press Releases</Link></li>
-                            <li><Link className="hover:text-brand-amber transition" href="/resources?type=publications">Publications</Link></li>
+                            <li><Link className="hover:text-brand-amber transition" href="/resources?type=report">Field Reports</Link></li>
+                            <li><Link className="hover:text-brand-amber transition" href="/resources?type=statement">Legal Statements</Link></li>
+                            <li><Link className="hover:text-brand-amber transition" href="/resources?type=press_release">Press Releases</Link></li>
+                            <li><Link className="hover:text-brand-amber transition" href="/resources?type=publication">Publications</Link></li>
                             <li><Link className="hover:text-brand-amber transition" href="/resources?type=research">Legal Research</Link></li>
                         </ul>
                     </div>
@@ -517,6 +519,9 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                     </div>
                 </div>
             </footer>
+
+            {/* Floating Back To Top Button */}
+            <BackToTop />
         </div>
     );
 }

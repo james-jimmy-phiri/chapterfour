@@ -11,7 +11,7 @@ class Vacancy extends Model
 
     protected $fillable = [
         'title', 'slug', 'department', 'location', 'type', 'tag', 'organization',
-        'description', 'scope_intro', 'scope_sections', 'requirements',
+        'description', 'document_path', 'scope_intro', 'scope_sections', 'requirements',
         'evaluation_criteria', 'reservation_of_rights', 'application_email',
         'application_url', 'submission_address', 'is_urgent', 'posted_date',
         'closes_at', 'deadline_text', 'status', 'sort_order',

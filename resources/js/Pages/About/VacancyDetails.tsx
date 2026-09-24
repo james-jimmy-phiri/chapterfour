@@ -3,8 +3,9 @@ import { Head, Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import {
     Calendar, MapPin, Briefcase, Mail, FileText,
-    ArrowLeft, Clock, Building, CheckCircle2
+    ArrowLeft, Clock, Building, CheckCircle2, Upload, X
 } from 'lucide-react';
+import { useForm, usePage } from '@inertiajs/react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { Vacancy, defaultVacancies, formatDate } from '@/data/vacancies';
 
@@ -22,7 +23,32 @@ export default function VacancyDetails({ id, vacancy }: VacancyDetailsProps) {
 
     const emailSubject = encodeURIComponent(`Application: ${currentVacancy.title}`);
     const submissionEmail = currentVacancy.submissionEmail || 'info@chapterfourmw.org';
-    const deadlineDisplay = currentVacancy.deadlineText || `${formatDate(currentVacancy.closingDate)}, 5:00 PM`;
+    const deadlineDisplay = currentVacancy.deadlineText || `${currentVacancy.closingDate ? formatDate(currentVacancy.closingDate) : 'No Deadline'} ${currentVacancy.closingDate ? ', 5:00 PM' : ''}`;
+
+    const [isApplyModalOpen, setIsApplyModalOpen] = React.useState(false);
+    const { data, setData, post, processing, errors, reset, recentlySuccessful } = useForm({
+        name: '',
+        email: '',
+        phone: '',
+        location: '',
+        document_file: null as File | null,
+    });
+    
+    // Add success listener to close modal automatically
+    React.useEffect(() => {
+        if (recentlySuccessful) {
+            setIsApplyModalOpen(false);
+            reset();
+        }
+    }, [recentlySuccessful]);
+
+    const submitApplication = (e: React.FormEvent) => {
+        e.preventDefault();
+        post(`/vacancies/${currentVacancy.id}/apply`, {
+            preserveScroll: true,
+            forceFormData: true,
+        });
+    };
 
     return (
         <PublicLayout>
@@ -212,21 +238,34 @@ export default function VacancyDetails({ id, vacancy }: VacancyDetailsProps) {
                                     </div>
 
                                     <div className="space-y-3">
-                                        <a
-                                            href={`mailto:${submissionEmail}?subject=${emailSubject}`}
+                                        <button
+                                            onClick={() => setIsApplyModalOpen(true)}
                                             className="flex items-center justify-center gap-2 bg-brand-rust hover:bg-[#a64222] text-white font-bold px-6 py-4 rounded-xl text-sm transition-colors shadow-lg shadow-brand-rust/30 w-full"
                                         >
-                                            <Mail className="w-4 h-4" />
+                                            <Upload className="w-4 h-4" />
                                             {currentVacancy.type === 'Consultancy' ? 'Submit Proposal' : 'Apply for Position'}
-                                        </a>
-                                        <button
-                                            type="button"
-                                            onClick={() => window.print()}
-                                            className="flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-4 rounded-xl text-sm transition-colors w-full"
-                                        >
-                                            <FileText className="w-4 h-4" />
-                                            {currentVacancy.type === 'Consultancy' ? 'Download RFP PDF' : 'Download Job Spec'}
                                         </button>
+                                        
+                                        {currentVacancy.document_path ? (
+                                            <a
+                                                href={currentVacancy.document_path}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-4 rounded-xl text-sm transition-colors w-full"
+                                            >
+                                                <FileText className="w-4 h-4" />
+                                                {currentVacancy.type === 'Consultancy' ? 'Download RFP PDF' : 'Download Job Spec'}
+                                            </a>
+                                        ) : (
+                                            <button
+                                                type="button"
+                                                onClick={() => window.print()}
+                                                className="flex items-center justify-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold px-6 py-4 rounded-xl text-sm transition-colors w-full"
+                                            >
+                                                <FileText className="w-4 h-4" />
+                                                {currentVacancy.type === 'Consultancy' ? 'Download RFP PDF' : 'Download Job Spec'}
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
 
@@ -266,6 +305,107 @@ export default function VacancyDetails({ id, vacancy }: VacancyDetailsProps) {
                     </div>
                 </div>
             </div>
+
+            {/* Application Modal */}
+            {isApplyModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden">
+                        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 bg-slate-50">
+                            <h3 className="text-lg font-bold text-slate-900">
+                                Apply: {currentVacancy.title}
+                            </h3>
+                            <button
+                                onClick={() => setIsApplyModalOpen(false)}
+                                className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-200 rounded-full transition-colors"
+                            >
+                                <X className="w-5 h-5" />
+                            </button>
+                        </div>
+                        <form onSubmit={submitApplication} className="p-6 space-y-4 max-h-[80vh] overflow-y-auto">
+                            {/* Flash Errors */}
+                            {usePage().props.errors.email && (
+                                <div className="bg-red-50 text-red-600 p-3 rounded-lg text-sm mb-4">
+                                    {usePage().props.errors.email}
+                                </div>
+                            )}
+                            
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">Full Name *</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={data.name}
+                                    onChange={e => setData('name', e.target.value)}
+                                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-rust focus:border-transparent transition-shadow"
+                                    placeholder="Jane Doe"
+                                />
+                                {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name}</p>}
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">Email Address *</label>
+                                <input
+                                    type="email"
+                                    required
+                                    value={data.email}
+                                    onChange={e => setData('email', e.target.value)}
+                                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-rust focus:border-transparent transition-shadow"
+                                    placeholder="jane@example.com"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">Phone Number</label>
+                                <input
+                                    type="tel"
+                                    value={data.phone}
+                                    onChange={e => setData('phone', e.target.value)}
+                                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-rust focus:border-transparent transition-shadow"
+                                    placeholder="+265 888 123 456"
+                                />
+                                {errors.phone && <p className="text-red-500 text-xs mt-1">{errors.phone}</p>}
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">Location</label>
+                                <input
+                                    type="text"
+                                    value={data.location}
+                                    onChange={e => setData('location', e.target.value)}
+                                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-rust focus:border-transparent transition-shadow"
+                                    placeholder="Lilongwe, Malawi"
+                                />
+                                {errors.location && <p className="text-red-500 text-xs mt-1">{errors.location}</p>}
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">Upload CV / Document *</label>
+                                <input
+                                    type="file"
+                                    required
+                                    accept=".pdf,.doc,.docx"
+                                    onChange={e => setData('document_file', e.target.files ? e.target.files[0] : null)}
+                                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-rust focus:border-transparent transition-shadow text-sm"
+                                />
+                                <p className="text-xs text-slate-500 mt-1">Accepted formats: PDF, DOC, DOCX. Max size 10MB.</p>
+                                {errors.document_file && <p className="text-red-500 text-xs mt-1">{errors.document_file}</p>}
+                            </div>
+                            <div className="pt-4 mt-4 border-t border-slate-100 flex justify-end gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsApplyModalOpen(false)}
+                                    className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    disabled={processing}
+                                    className="px-4 py-2 bg-brand-rust text-white text-sm font-medium rounded-lg hover:bg-[#a64222] transition-colors disabled:opacity-50"
+                                >
+                                    {processing ? 'Submitting...' : 'Submit Application'}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
         </PublicLayout>
     );
 }

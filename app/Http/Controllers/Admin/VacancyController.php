@@ -30,7 +30,8 @@ class VacancyController extends Controller
             'type'                => 'required|string|max:100',
             'tag'                 => 'nullable|string|max:100',
             'organization'        => 'nullable|string|max:255',
-            'description'         => 'nullable|string',
+            'description'         => 'required|string',
+            'document_file'       => 'nullable|file|mimes:pdf,doc,docx|max:10240',
             'scope_intro'         => 'nullable|string',
             'scope_sections'      => 'nullable|array',
             'requirements'        => 'nullable|array',
@@ -51,7 +52,13 @@ class VacancyController extends Controller
             $validated['slug'] = Str::slug($validated['title']);
         }
 
-        $vacancy = Vacancy::create($validated);
+        $input = $request->except(['document_file']);
+        if ($request->hasFile('document_file')) {
+            $path = $request->file('document_file')->store('vacancies', 'public');
+            $input['document_path'] = '/storage/' . $path;
+        }
+
+        $vacancy = Vacancy::create(array_merge($validated, $input));
         AuditLogger::log('created', 'Vacancy', $vacancy->id, ['title' => $vacancy->title]);
 
         return redirect()->back()->with('success', "Vacancy '{$vacancy->title}' created.");
@@ -69,7 +76,8 @@ class VacancyController extends Controller
             'type'                => 'required|string|max:100',
             'tag'                 => 'nullable|string|max:100',
             'organization'        => 'nullable|string|max:255',
-            'description'         => 'nullable|string',
+            'description'         => 'required|string',
+            'document_file'       => 'nullable|file|mimes:pdf,doc,docx|max:10240',
             'scope_intro'         => 'nullable|string',
             'scope_sections'      => 'nullable|array',
             'requirements'        => 'nullable|array',
@@ -86,7 +94,13 @@ class VacancyController extends Controller
             'sort_order'          => 'integer|min:0',
         ]);
 
-        $vacancy->update($validated);
+        $input = $request->except(['document_file']);
+        if ($request->hasFile('document_file')) {
+            $path = $request->file('document_file')->store('vacancies', 'public');
+            $input['document_path'] = '/storage/' . $path;
+        }
+
+        $vacancy->update(array_merge($validated, $input));
         AuditLogger::log('updated', 'Vacancy', $vacancy->id, ['title' => $vacancy->title]);
 
         return redirect()->back()->with('success', "Vacancy '{$vacancy->title}' updated.");

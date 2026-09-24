@@ -18,6 +18,9 @@ interface ProjectItem {
     gallery?: string[];
     status: string;
     published_at?: string;
+    start_date?: string;
+    end_date?: string;
+    outputs?: string[];
 }
 
 interface ProjectsProps {
@@ -36,6 +39,9 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
         description: string;
         locations: string;
         beneficiaries: string;
+        outputs: string;
+        start_date: string;
+        end_date: string;
         featured_image: File | null;
         gallery_images: File[];
         status: string;
@@ -46,6 +52,9 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
         description: '',
         locations: '',
         beneficiaries: '',
+        outputs: '',
+        start_date: '',
+        end_date: '',
         featured_image: null,
         gallery_images: [],
         status: 'published',
@@ -61,6 +70,9 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
             description: '',
             locations: '',
             beneficiaries: '',
+            outputs: '',
+            start_date: '',
+            end_date: '',
             featured_image: null,
             gallery_images: [],
             status: 'published',
@@ -77,6 +89,9 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
             description: item.description || '',
             locations: Array.isArray(item.locations) ? item.locations.join(', ') : '',
             beneficiaries: Array.isArray(item.beneficiaries) ? item.beneficiaries.join(', ') : '',
+            outputs: Array.isArray(item.outputs) ? item.outputs.join('\n') : '',
+            start_date: item.start_date || '',
+            end_date: item.end_date || '',
             featured_image: null,
             gallery_images: [],
             status: item.status,
@@ -99,6 +114,12 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
 
         const bens = data.beneficiaries.split(',').map((s) => s.trim()).filter(Boolean);
         bens.forEach((b) => formData.append('beneficiaries[]', b));
+
+        const outs = data.outputs.split('\n').map((s) => s.trim()).filter(Boolean);
+        outs.forEach((o) => formData.append('outputs[]', o));
+
+        if (data.start_date) formData.append('start_date', data.start_date);
+        if (data.end_date) formData.append('end_date', data.end_date);
 
         if (data.featured_image) {
             formData.append('featured_image', data.featured_image);
@@ -175,12 +196,16 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
                         className="p-6 rounded-xl bg-white dark:bg-[#0a0e1a] border border-slate-200 dark:border-white/[0.06] hover:border-brand-rust/40 transition flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-xs group"
                     >
                         <div className="flex items-start gap-4 max-w-3xl">
-                            {item.featured_image && (
+                            {item.featured_image ? (
                                 <img
                                     src={item.featured_image}
                                     alt=""
                                     className="w-20 h-20 rounded-xl object-cover border border-slate-200 dark:border-white/10 shrink-0"
                                 />
+                            ) : (
+                                <div className="w-20 h-20 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/10 flex items-center justify-center shrink-0">
+                                    <Briefcase className="w-7 h-7 text-slate-300 dark:text-white/20" />
+                                </div>
                             )}
                             <div className="space-y-2">
                                 <div className="flex items-center gap-2.5">
@@ -286,6 +311,7 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
                                     required
                                     className="w-full px-4 py-2 rounded-lg bg-white dark:bg-white/[0.04] border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white text-xs focus:ring-1 focus:ring-brand-rust"
                                 />
+                                {errors.title && <p className="text-red-500 text-xs mt-1">{errors.title}</p>}
                             </div>
 
                             <div>
@@ -299,6 +325,21 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
                                     required
                                     className="w-full px-4 py-2 rounded-lg bg-white dark:bg-white/[0.04] border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white text-xs leading-relaxed"
                                 />
+                                {errors.summary && <p className="text-red-500 text-xs mt-1">{errors.summary}</p>}
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                                    Full Description (Paragraphs preserved)
+                                </label>
+                                <textarea
+                                    rows={8}
+                                    value={data.description}
+                                    onChange={(e) => setData('description', e.target.value)}
+                                    className="w-full px-4 py-2 rounded-lg bg-white dark:bg-white/[0.04] border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white text-xs leading-relaxed"
+                                    placeholder="Enter full project description..."
+                                />
+                                {errors.description && <p className="text-red-500 text-xs mt-1">{errors.description}</p>}
                             </div>
 
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -313,6 +354,7 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
                                         placeholder="Lilongwe, Blantyre, Zomba"
                                         className="w-full px-4 py-2 rounded-lg bg-white dark:bg-white/[0.04] border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white text-xs"
                                     />
+                                    {errors.locations && <p className="text-red-500 text-xs mt-1">{errors.locations}</p>}
                                 </div>
                                 <div>
                                     <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
@@ -325,7 +367,49 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
                                         placeholder="Youth, Detained Persons, Women"
                                         className="w-full px-4 py-2 rounded-lg bg-white dark:bg-white/[0.04] border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white text-xs"
                                     />
+                                    {errors.beneficiaries && <p className="text-red-500 text-xs mt-1">{errors.beneficiaries}</p>}
                                 </div>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                                        Start Date
+                                    </label>
+                                    <input
+                                        type="date"
+                                        value={data.start_date}
+                                        onChange={(e) => setData('start_date', e.target.value)}
+                                        className="w-full px-4 py-2 rounded-lg bg-white dark:bg-white/[0.04] border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white text-xs"
+                                    />
+                                    {errors.start_date && <p className="text-red-500 text-xs mt-1">{errors.start_date}</p>}
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                                        End Date
+                                    </label>
+                                    <input
+                                        type="date"
+                                        value={data.end_date}
+                                        onChange={(e) => setData('end_date', e.target.value)}
+                                        className="w-full px-4 py-2 rounded-lg bg-white dark:bg-white/[0.04] border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white text-xs"
+                                    />
+                                    {errors.end_date && <p className="text-red-500 text-xs mt-1">{errors.end_date}</p>}
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-1.5">
+                                    Key Outcomes / Outputs (One per line)
+                                </label>
+                                <textarea
+                                    rows={4}
+                                    value={data.outputs}
+                                    onChange={(e) => setData('outputs', e.target.value)}
+                                    placeholder="Enter multiple outcomes..."
+                                    className="w-full px-4 py-2 rounded-lg bg-white dark:bg-white/[0.04] border border-slate-300 dark:border-white/10 text-slate-900 dark:text-white text-xs leading-relaxed"
+                                />
+                                {errors.outputs && <p className="text-red-500 text-xs mt-1">{errors.outputs}</p>}
                             </div>
 
                             {/* Featured Image & Gallery */}
@@ -367,6 +451,7 @@ export default function ProjectsIndex({ projects = [] }: ProjectsProps) {
                                         onChange={(e) => setData('gallery_images', e.target.files ? Array.from(e.target.files) : [])}
                                         className="w-full text-xs text-slate-500 dark:text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-brand-rust/10 file:text-brand-rust hover:file:bg-brand-rust/20 cursor-pointer"
                                     />
+                                    {errors.gallery_images && <p className="text-red-500 text-xs mt-1">{errors.gallery_images}</p>}
                                 </div>
                             </div>
 

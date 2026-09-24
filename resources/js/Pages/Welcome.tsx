@@ -1,4 +1,4 @@
-import { Head, Link, router } from '@inertiajs/react';
+import { Head, Link, router, usePage } from '@inertiajs/react';
 import { useState, useRef, useEffect } from 'react';
 import { motion, useInView, animate, AnimatePresence } from 'framer-motion';
 import {
@@ -133,6 +133,7 @@ export default function Welcome({
     partners = [],
     heroSlides = [],
 }: WelcomeProps) {
+    const { site } = usePage<any>().props;
     const activeHeroSlides = heroSlides && heroSlides.length > 0
         ? heroSlides.map((s) => ({
             word: s.word,
@@ -566,7 +567,7 @@ export default function Welcome({
                             </div>
 
                             <p className="text-slate-300 leading-relaxed text-lg">
-                                To promote a just, inclusive and democratic Malawi in which constitutional rights and freedoms are respected and protected, citizens are empowered to claim their rights, access to justice is strengthened, and public institutions are accountable, transparent and responsive.
+                                {site?.mission || 'To promote a just, inclusive and democratic Malawi in which constitutional rights and freedoms are respected and protected, citizens are empowered to claim their rights, access to justice is strengthened, and public institutions are accountable, transparent and responsive.'}
                             </p>
 
 
@@ -601,7 +602,7 @@ export default function Welcome({
                     <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-6">
                         Allies, Donors & Institutional Partners
                     </span>
-                    <LogosSlider />
+                    <LogosSlider partners={partners} />
                 </div>
             </section>
         </PublicLayout>

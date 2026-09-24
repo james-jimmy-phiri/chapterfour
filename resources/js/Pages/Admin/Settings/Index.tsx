@@ -21,6 +21,7 @@ interface SettingsProps {
         emergency_helpline?: string;
         mission?: string;
         vision?: string;
+        contact_image?: string;
     };
 }
 
@@ -41,11 +42,12 @@ export default function Index({ settings }: SettingsProps) {
         emergency_helpline: settings.emergency_helpline || '',
         mission: settings.mission || '',
         vision: settings.vision || '',
+        contact_image_file: null as File | null,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post('/admin/settings', { preserveScroll: true });
+        post('/admin/settings', { preserveScroll: true, forceFormData: true });
     };
 
     return (
@@ -192,6 +194,26 @@ export default function Index({ settings }: SettingsProps) {
                                             className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-brand-rust focus:ring-1 focus:ring-brand-rust"
                                         />
                                     </div>
+                                </div>
+                                
+                                <div>
+                                    <label className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                                        Contact Us Image
+                                    </label>
+                                    <div className="flex items-center gap-4">
+                                        {settings.contact_image && (
+                                            <div className="w-24 h-24 rounded-lg overflow-hidden shrink-0 bg-slate-100">
+                                                <img src={settings.contact_image} alt="Contact Image" className="w-full h-full object-cover" />
+                                            </div>
+                                        )}
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={e => setData('contact_image_file', e.target.files ? e.target.files[0] : null)}
+                                            className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-900 dark:text-white text-sm focus:outline-none focus:border-brand-rust focus:ring-1 focus:ring-brand-rust"
+                                        />
+                                    </div>
+                                    <p className="text-xs text-slate-500 mt-1">Upload a new image to replace the one displayed under the contact information.</p>
                                 </div>
                             </div>
                         )}

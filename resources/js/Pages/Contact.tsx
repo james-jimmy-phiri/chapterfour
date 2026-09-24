@@ -1,5 +1,5 @@
 import PublicLayout from '@/Layouts/PublicLayout';
-import { Head, Link, useForm } from '@inertiajs/react';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import {
     Mail, Phone, MapPin, Send, MessageSquare, Clock,
@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 
 export default function Contact() {
+    const { site } = usePage<any>().props;
     const { data, setData, post, processing, errors, reset, recentlySuccessful } = useForm({
         name: '',
         email: '',
@@ -102,8 +103,12 @@ export default function Contact() {
                                     </div>
                                     <div>
                                         <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-1">Head Office</h3>
-                                        <p className="text-lg font-bold text-slate-900 leading-tight">P.O. Box 30384, Capital City</p>
-                                        <p className="text-slate-600 mt-1">Lilongwe, Malawi</p>
+                                        <p className="text-lg font-bold text-slate-900 leading-tight">
+                                            {site?.office_address ? site.office_address.split(',')[0] : 'P.O. Box 30384, Capital City'}
+                                        </p>
+                                        <p className="text-slate-600 mt-1">
+                                            {site?.office_address ? site.office_address.split(',').slice(1).join(',').trim() : 'Lilongwe, Malawi'}
+                                        </p>
                                     </div>
                                 </div>
 
@@ -114,10 +119,12 @@ export default function Contact() {
                                     <div>
                                         <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-1">Telephone Hotline</h3>
                                         <p className="text-lg font-bold text-slate-900 leading-tight">
-                                            <a href="tel:+265888596275" className="hover:text-brand-amber transition">+265 888 596 275</a>
+                                            <a href={`tel:${site?.contact_phone || '+265888596275'}`} className="hover:text-brand-amber transition">
+                                                {site?.contact_phone || '+265 888 596 275'}
+                                            </a>
                                         </p>
                                         <p className="text-slate-600 mt-1 flex items-center gap-2">
-                                            <Clock className="w-4 h-4" /> 8:00 AM – 5:00 PM CAT
+                                            <Clock className="w-4 h-4" /> {site?.hours || '8:00 AM – 5:00 PM CAT'}
                                         </p>
                                     </div>
                                 </div>
@@ -129,8 +136,8 @@ export default function Contact() {
                                     <div>
                                         <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-1">Email Address</h3>
                                         <p className="text-base font-bold text-slate-900 leading-tight">
-                                            <a href="mailto:communication@chapterfourmalawi.org" className="hover:text-slate-600 transition break-all">
-                                                communication@chapterfourmalawi.org
+                                            <a href={`mailto:${site?.contact_email || 'communication@chapterfourmalawi.org'}`} className="hover:text-slate-600 transition break-all">
+                                                {site?.contact_email || 'communication@chapterfourmalawi.org'}
                                             </a>
                                         </p>
                                         <p className="text-slate-600 mt-1">Inquiries typically answered within 24 hours</p>
@@ -140,8 +147,8 @@ export default function Contact() {
                             
                             <div className="rounded-2xl overflow-hidden shadow-lg h-48 relative">
                                 <img 
-                                    src="/images/child-hero.png" 
-                                    alt="Lilongwe Map Location" 
+                                    src={site?.contact_image || "/images/child-hero.png"} 
+                                    alt="Location or Contact Image" 
                                     className="w-full h-full object-cover"
                                 />
                                 <div className="absolute inset-0 bg-slate-900/20"></div>

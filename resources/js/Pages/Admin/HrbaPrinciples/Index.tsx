@@ -11,6 +11,7 @@ interface HrbaPrincipleItem {
     title: string;
     description: string;
     icon?: string;
+    image?: string;
     sort_order: number;
     status: string;
 }
@@ -150,8 +151,16 @@ export default function HrbaPrinciplesIndex({ hrbaPrinciples = [] }: HrbaPrincip
                                     <tr key={item.id} className="hover:bg-slate-50/50 transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                {item.icon && item.icon.startsWith('/storage/') && (
-                                                    <img src={item.icon} alt="" className="w-8 h-8 object-contain rounded-lg bg-slate-50 border border-slate-200 p-1" />
+                                                {(item.image || (item.icon && (item.icon.startsWith('/') || item.icon.startsWith('http')))) ? (
+                                                    <img
+                                                        src={item.image || item.icon}
+                                                        alt=""
+                                                        className="w-10 h-10 object-contain rounded-lg bg-slate-50 border border-slate-200 p-1 shrink-0"
+                                                    />
+                                                ) : (
+                                                    <div className="w-10 h-10 rounded-lg bg-brand-rust/10 border border-brand-rust/20 flex items-center justify-center shrink-0 text-brand-rust font-bold text-sm">
+                                                        {item.sort_order}
+                                                    </div>
                                                 )}
                                                 <div>
                                                     <div className="font-medium text-slate-900">{item.title}</div>
@@ -254,7 +263,7 @@ export default function HrbaPrinciplesIndex({ hrbaPrinciples = [] }: HrbaPrincip
                                 {/* Icon */}
                                 <div className="space-y-1 md:col-span-2">
                                     <label className="block text-sm font-medium text-slate-700">Icon (Upload SVG/Image or Name)</label>
-                                    {editingItem?.icon && editingItem.icon.startsWith('/storage/') && (
+                                    {editingItem?.icon && (editingItem.icon.startsWith('/') || editingItem.icon.startsWith('http')) && (
                                         <div className="mb-2 flex items-center gap-2 p-1.5 rounded-lg bg-slate-50 border border-slate-200">
                                             <img src={editingItem.icon} alt="Current icon" className="w-8 h-8 object-contain rounded bg-white p-1" />
                                             <span className="text-[11px] text-slate-500">Current icon file saved.</span>

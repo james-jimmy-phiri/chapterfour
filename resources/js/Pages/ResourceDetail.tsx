@@ -252,7 +252,7 @@ export default function ResourceDetail({ resource, relatedResources = [] }: Reso
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ duration: 0.4, delay: idx * 0.1 }}
-                                    className="group bg-white rounded-lg border border-slate-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full"
+                                    className="group relative bg-white rounded-lg border border-slate-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full"
                                 >
                                     <Link href={`/resources/${item.slug}`} className="relative h-40 block overflow-hidden shrink-0 bg-slate-100 border-b border-slate-100">
                                         <img

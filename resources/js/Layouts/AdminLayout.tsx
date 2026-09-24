@@ -92,6 +92,7 @@ export default function AdminLayout({ children, header, description, breadcrumbs
                 { label: 'Allies & Partners', href: '/admin/partners', icon: Building2, id: 'admin-nav-partners' },
                 { label: 'Timeline Events', href: '/admin/timeline-events', icon: History, id: 'admin-nav-timeline' },
                 { label: 'Vacancies', href: '/admin/vacancies', icon: Briefcase, id: 'admin-nav-vacancies' },
+                { label: 'Applications', href: '/admin/vacancy-applications', icon: FileText, id: 'admin-nav-vacancy-applications' },
                 { label: 'Impact Metrics', href: '/admin/statistics', icon: BarChart3, id: 'admin-nav-stats' },
                 { label: 'Testimonials', href: '/admin/testimonials', icon: Star, id: 'admin-nav-testimonials' },
             ],

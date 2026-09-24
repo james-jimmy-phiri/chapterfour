@@ -60,6 +60,7 @@ Route::get('/about/vacancies', [PublicController::class, 'vacancies'])->name('ab
 Route::get('/about/vacancies/{id}', [PublicController::class, 'vacancyDetail'])->name('about.vacancies.detail');
 Route::get('/vacancies', fn () => redirect()->route('about.vacancies'))->name('vacancies');
 Route::get('/vacancies/{id}', [PublicController::class, 'vacancyDetail'])->name('vacancies.detail');
+Route::post('/vacancies/{id}/apply', [\App\Http\Controllers\VacancyApplicationController::class, 'store'])->name('vacancies.apply');
 
 // What We Do Subpages (now defined above near the wildcard; keeping this section for reference)
 
@@ -155,6 +156,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(
     Route::post('/vacancies', [VacancyController::class, 'store'])->name('vacancies.store');
     Route::put('/vacancies/{id}', [VacancyController::class, 'update'])->name('vacancies.update');
     Route::delete('/vacancies/{id}', [VacancyController::class, 'destroy'])->name('vacancies.destroy');
+    Route::get('/vacancy-applications', [\App\Http\Controllers\Admin\VacancyApplicationController::class, 'index'])->name('vacancy-applications');
 
     // Timeline Events
     Route::get('/timeline-events', [TimelineEventController::class, 'index'])->name('timeline-events');
