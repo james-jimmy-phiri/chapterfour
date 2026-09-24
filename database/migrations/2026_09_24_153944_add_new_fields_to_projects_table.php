@@ -11,11 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('projects', function (Blueprint $table) {
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
-            $table->json('outputs')->nullable();
-        });
+        // These fields are already created with the projects table.
     }
 
     /**
@@ -23,8 +19,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('projects', function (Blueprint $table) {
-            $table->dropColumn(['start_date', 'end_date', 'outputs']);
-        });
+        // The fields belong to the projects table migration and must not be removed here.
     }
 };
