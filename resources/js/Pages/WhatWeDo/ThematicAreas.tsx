@@ -1,6 +1,6 @@
 import { Head, Link } from '@inertiajs/react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, type ComponentType } from 'react';
 import {
     Shield, Scale, Globe, BookOpen, FileText,
     Heart, Search, Users, ArrowRight, ChevronRight,
@@ -160,8 +160,21 @@ const colorPalette = [
     { accentColor: "bg-teal-700", textAccent: "text-teal-700", borderAccent: "border-teal-600" },
 ];
 
+type ThematicArea = {
+    number: string;
+    title: string;
+    description: string;
+    keyPoints: string[];
+    icon: string | ComponentType<{ className?: string }>;
+    image: string;
+    slug?: string;
+    accentColor: string;
+    textAccent: string;
+    borderAccent: string;
+};
+
 // --- Modal Component (Replaces the inline layout for the rich cards) ---
-function ThematicModal({ area, onClose }: { area: any, onClose: () => void }) {
+function ThematicModal({ area, onClose }: { area: ThematicArea, onClose: () => void }) {
     const Icon = typeof area.icon === 'string' && (Icons as any)[area.icon] ? (Icons as any)[area.icon] : Icons.Shield;
 
     // Prevent body scroll when modal is open
