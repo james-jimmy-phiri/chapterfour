@@ -11,6 +11,8 @@ import BoxImgAnimate from '@/Components/BoxImgAnimate';
 import { LogosSlider } from '@/Components/LogosSlider';
 import Blogs from '@/Components/ui/blogs';
 
+import ContactModal from '@/Components/ContactModal';
+
 interface StatItem {
     label: string;
     value: string | number;
@@ -143,6 +145,10 @@ export default function Welcome({
             accentLabel: s.accent_label || s.accentLabel || 'Chapter Four',
         }))
         : defaultHeroSlides;
+
+    const [floatingMessage, setFloatingMessage] = useState('');
+    const [floatingInquiryType, setFloatingInquiryType] = useState('General Inquiry');
+    const [isMessageModalOpen, setIsMessageModalOpen] = useState(false);
 
     const [searchQuery, setSearchQuery] = useState('');
     const [resourceType, setResourceType] = useState('All');
@@ -295,7 +301,8 @@ export default function Welcome({
             {/* 1. HERO BANNER SECTION (Starts After Contacts Bar, Pure Black Overlay) */}
             {/* ═══════════════════════════════════════════════════════════════════ */}
             <section
-                className="relative min-h-[calc(100vh-80px)] lg:min-h-[92vh] flex items-center text-white overflow-hidden pt-36 sm:pt-38 lg:pt-42 pb-6 sm:pb-14"
+
+                className="relative lg:min-h-[92vh] flex items-center text-white overflow-hidden pt-28 sm:pt-32 lg:pt-42 pb-10 sm:pb-14"
                 data-purpose="hero-banner"
             >
                 {/* Background Image Carousel with Pure Black Overlay & High Photo Visibility */}
@@ -313,41 +320,40 @@ export default function Welcome({
                         />
                     </AnimatePresence>
 
-                    {/* Pure Black Overlay with enhanced visibility for background photo */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/40 sm:from-black/85 sm:via-black/55 sm:to-black/40 z-1" />
+                    {/* Pure Black Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/40 sm:from-black/85 sm:via-black/55 sm:to-black/40 z-1" />
 
                     {/* Subtle ambient glow accents */}
                     <div className="absolute top-1/4 -left-20 w-96 h-96 bg-brand-amber/10 rounded-full blur-3xl pointer-events-none z-1" />
                     <div className="absolute bottom-10 right-10 w-96 h-96 bg-brand-rust/15 rounded-full blur-3xl pointer-events-none z-1" />
                 </div>
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-8 w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+                <div className="max-w-7xl mx-auto px-4 sm:px-8 w-full relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
+
                     {/* Left Hero Column: Headings, Text, 2 Buttons in a Row */}
-                    <div className="lg:col-span-7 flex flex-col items-start text-left">
-
-
-                        {/* Main Hero Headline (Spartan Typography) with Typewriter Animation */}
-                        <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold tracking-tight leading-[1.08] text-white mb-6">
-                            Promoting, Protecting and advancing{' '}:
+                    <div className="lg:col-span-7 flex flex-col items-start text-left mt-4 lg:mt-0">
+                        {/* Main Hero Headline */}
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-extrabold tracking-tight leading-tight lg:leading-[1.08] text-white">
+                            Rights. Justice. Dignity.{' '}
                             <br />
-                            <span className="text-brand-amber  relative inline-block">
+                            For Everyone.
+                            <br />
+                            <span className="text-brand-amber text-3xl sm:text-4xl lg:text-5xl xl:text-6xl relative inline-block mt-2 lg:mt-0">
                                 {typedText}
-                                <span className="inline-block  w-[3px] h-[0.85em] bg-brand-amber ml-1.5 animate-pulse align-middle" />
-                            </span>{' '}
-                            <br />
-                            for Everyone.
+                                <span className="inline-block w-[3px] h-[0.85em] bg-brand-amber ml-1.5 animate-pulse align-middle" />
+                            </span>
                         </h1>
 
-                        {/* Subtitle */}
-                        <p className="text-slate-200 text-base sm:text-lg  lg:text-xl font-normal leading-relaxed mb-8 max-w-2xl">
+                        {/* Subtitle - tighter bottom margin on mobile */}
+                        <p className="text-slate-200 text-base sm:text-lg lg:text-xl font-normal leading-relaxed mt-4 mb-6 lg:mb-8 max-w-2xl">
                             We promote <strong className="text-white font-semibold">human rights, constitutionalism, access to justice and accountable democracy </strong> working with communities to turn constitutional rights into everyday realities.
                         </p>
 
-                        {/* Two Action Buttons in a Row */}
-                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 w-full sm:w-auto mb-10">
+                        {/* Action Buttons - reduced mobile padding (py-3), smaller text (text-sm) */}
+                        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 lg:gap-4 w-full sm:w-auto">
                             <Link
                                 href="/what-we-do"
-                                className="inline-flex items-center justify-center gap-2.5 px-8 py-4 bg-brand-rust hover:bg-brand-rust-dark text-white font-bold text-sm sm:text-base rounded-md transition duration-200 shadow-lg shadow-brand-rust/30 hover:scale-[1.02] active:scale-[0.98]"
+                                className="inline-flex items-center justify-center gap-2 px-6 py-3 lg:px-8 lg:py-4 bg-brand-rust hover:bg-brand-rust-dark text-white font-bold text-sm lg:text-base rounded-md transition duration-200 shadow-lg shadow-brand-rust/30 hover:scale-[1.02] active:scale-[0.98]"
                             >
                                 <span>Explore Our Work</span>
                                 <ArrowRight className="w-4 h-4" />
@@ -355,7 +361,7 @@ export default function Welcome({
 
                             <Link
                                 href="/about"
-                                className="inline-flex items-center justify-center gap-2.5 px-8 py-4 border-2 border-white/70 hover:border-white hover:bg-white/10 text-white font-bold text-sm sm:text-base rounded-md transition duration-200 backdrop-blur-sm hover:scale-[1.02] active:scale-[0.98]"
+                                className="inline-flex items-center justify-center gap-2 px-6 py-3 lg:px-8 lg:py-4 border-2 border-white/70 hover:border-white hover:bg-white/10 text-white font-bold text-sm lg:text-base rounded-md transition duration-200 backdrop-blur-sm hover:scale-[1.02] active:scale-[0.98]"
                             >
                                 <span>About Chapter Four</span>
                                 <ChevronRight className="w-4 h-4 text-brand-amber" />
@@ -363,9 +369,10 @@ export default function Welcome({
                         </div>
                     </div>
 
-                    {/* Right Hero Column: Animated Cutout Image changing in sync */}
-                    <div className="lg:col-span-5 relative flex justify-center items-center mt-6 lg:mt-0">
-                        <div className="relative w-full max-w-md lg:max-w-none flex justify-center min-h-[380px] sm:min-h-[460px] lg:min-h-[540px] items-center">
+                    {/* Right Hero Column: Animated Cutout Image */}
+                    <div className="lg:col-span-5 relative flex justify-center items-center mt-8 lg:mt-0">
+                        {/* Fixed massive mobile height: changed to h-[250px] for mobile, restoring large height for lg screens */}
+                        <div className="relative w-full flex justify-center h-[250px] sm:h-[350px] lg:min-h-[540px] items-end lg:items-center">
                             <AnimatePresence mode="wait">
                                 <motion.div
                                     key={activeHeroSlides[slideIndex % activeHeroSlides.length].rightImage + (slideIndex % activeHeroSlides.length)}
@@ -373,17 +380,19 @@ export default function Welcome({
                                     animate={{ opacity: 1, y: 0, scale: 1 }}
                                     exit={{ opacity: 0, y: -20, scale: 0.97 }}
                                     transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                                    className="relative flex justify-center w-full"
+                                    className="relative flex justify-center w-full h-full"
                                 >
                                     <img
                                         src={activeHeroSlides[slideIndex % activeHeroSlides.length].rightImage}
                                         alt={activeHeroSlides[slideIndex % activeHeroSlides.length].rightAlt}
-                                        className="relative z-10 w-full max-w-sm sm:max-w-md lg:max-w-lg h-auto max-h-[500px] lg:max-h-[560px] object-contain drop-shadow-[0_25px_35px_rgba(0,0,0,0.8)] select-none pointer-events-none"
+                                        // Tightly controlled mobile max-height so it doesn't push the next section away
+                                        className="relative z-10 w-auto h-full max-h-[250px] sm:max-h-[350px] lg:max-h-[560px] object-contain drop-shadow-[0_25px_35px_rgba(0,0,0,0.8)] select-none pointer-events-none"
                                     />
                                 </motion.div>
                             </AnimatePresence>
                         </div>
                     </div>
+
                 </div>
             </section>
 
@@ -393,43 +402,45 @@ export default function Welcome({
             <section className="relative max-w-7xl items-center mx-auto px-4 sm:px-8 -mt-10 sm:-mt-14 z-20" data-purpose="search-and-advisory">
                 <div className="bg-white items-center rounded-2xl shadow-2xl border border-slate-200/90 p-5 sm:p-7">
                     <div className=" items-center">
-                        {/* Search & Filter Container (Repositioned from Hero) */}
                         <div className="lg:col-span-7">
                             <div className="mb-2 flex items-center justify-between">
                                 <span className="text-xs font-bold uppercase tracking-wider text-brand-rust flex items-center gap-1.5">
-                                    <Search className="w-3.5 h-3.5" />
-                                    <span>Search Legal Advisories & Field Reports</span>
+                                    <Shield className="w-3.5 h-3.5" />
+                                    <span>rights been violated or You have any Concern? Send Us a  Message</span>
                                 </span>
-                                <span className="text-[11px] text-slate-400 font-medium">Chapter Four Archive</span>
+                                <span className="text-[11px] text-slate-400 font-medium">Chapter Four</span>
                             </div>
 
                             <form
-                                onSubmit={handleSearch}
+                                onSubmit={(e) => { e.preventDefault(); setIsMessageModalOpen(true); }}
                                 className="bg-slate-50 rounded-xl p-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 border border-slate-200 focus-within:border-brand-rust focus-within:ring-2 focus-within:ring-brand-rust/20 transition"
                                 data-purpose="repositioned-search"
                             >
-                                {/* Resource Type Dropdown */}
+                                {/* Inquiry Type Dropdown */}
                                 <div className="flex items-center border-b sm:border-b-0 sm:border-r border-slate-200 px-3 py-1.5">
                                     <FileText className="w-4 h-4 text-slate-400 mr-2 shrink-0" />
                                     <select
-                                        value={resourceType}
-                                        onChange={(e) => setResourceType(e.target.value)}
+                                        value={floatingInquiryType}
+                                        onChange={(e) => setFloatingInquiryType(e.target.value)}
                                         className="text-xs font-semibold text-slate-700 bg-transparent border-none focus:ring-0 cursor-pointer pr-6 py-0 focus:outline-none"
                                     >
-                                        <option value="All">All Resources</option>
-                                        <option value="reports">Field Reports</option>
-                                        <option value="statements">Legal Statements</option>
-                                        <option value="publications">Publications</option>
-                                        <option value="research">Legal Research</option>
+                                        <option value="General Inquiry">General Inquiry</option>
+                                        <option value="Legal Aid & Defense">Legal Aid & Defense</option>
+                                        <option value="Rights Violation Report">Report Rights Violation</option>
+                                        <option value="Safeguarding Issue">Safeguarding Issue</option>
+                                        <option value="Anonymous Complaint">Anonymous Complaint</option>
+                                        <option value="Media & Press">Media & Press</option>
+                                        <option value="Partnership & Funding">Partnership & Funding</option>
+                                        <option value="Research Collaboration">Research Collaboration</option>
                                     </select>
                                 </div>
 
                                 {/* Text Input */}
                                 <input
                                     type="text"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    placeholder="Search legal briefs, bail guides, court rulings..."
+                                    value={floatingMessage}
+                                    onChange={(e) => setFloatingMessage(e.target.value)}
+                                    placeholder="Briefly describe your inquiry or report a concern..."
                                     className="w-full text-xs sm:text-sm px-3 py-2 text-slate-800 placeholder-slate-400 bg-transparent border-none focus:ring-0 focus:outline-none"
                                 />
 
@@ -438,8 +449,8 @@ export default function Welcome({
                                     type="submit"
                                     className="bg-brand-rust hover:bg-brand-rust-dark text-white text-xs sm:text-sm font-semibold px-6 py-2.5 rounded-lg transition shrink-0 flex items-center justify-center gap-1.5 shadow-sm"
                                 >
-                                    <Search className="w-3.5 h-3.5" />
-                                    <span>Search</span>
+                                    <ArrowRight className="w-3.5 h-3.5" />
+                                    <span>Continue</span>
                                 </button>
                             </form>
                         </div>
@@ -447,55 +458,84 @@ export default function Welcome({
                 </div>
             </section>
 
+            <ContactModal
+                show={isMessageModalOpen}
+                onClose={() => setIsMessageModalOpen(false)}
+                initialInquiryType={floatingInquiryType}
+                initialMessage={floatingMessage}
+            />
+
             {/* ═══════════════════════════════════════════════════════════════════ */}
             {/* 3. THE CHALLENGE (Problem Statement)                               */}
             {/* ═══════════════════════════════════════════════════════════════════ */}
-            <section className="py-4 sm:py-6 bg-slate-50 relative overflow-hidden border-b border-slate-200" data-purpose="the-challenge">
+            <section className="py-16 sm:py-24 bg-white relative overflow-hidden border-b border-slate-200" data-purpose="the-challenge">
                 <div className="max-w-7xl mx-auto px-4 sm:px-8">
-                    <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-16">
-                        {/* Animated Images Component (Left Column - Faithful replica of 51679 site component) */}
-                        <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            whileInView={{ opacity: 1, scale: 1 }}
-                            viewport={{ once: true, margin: "-80px" }}
-                            transition={{ duration: 0.8, ease: "easeOut" }}
-                            className="w-full lg:w-1/2 order-2 lg:order-1 flex justify-center py-6"
-                        >
-                            <BoxImgAnimate />
-                        </motion.div>
+                    <div className="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
 
-                        {/* Text Side (Right Column) */}
+                        {/* Left Column: Anchor Image with Overlapping Impact Card */}
                         <motion.div
-                            initial={{ opacity: 0, x: 50 }}
-                            whileInView={{ opacity: 1, x: 0 }}
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
                             viewport={{ once: true, margin: "-100px" }}
-                            transition={{ duration: 0.8, ease: "easeOut" }}
-                            className="w-full lg:w-1/2 order-1 lg:order-2"
+                            transition={{ duration: 1 }}
+                            className="w-full lg:w-1/2 order-2 lg:order-1 relative py-6"
                         >
-                            <span className="text-sm font-bold uppercase tracking-widest text-brand-rust mb-3 flex items-center gap-2">
-                                <span className="w-8 h-0.5 bg-brand-rust"></span>
-                                Why We Exist
-                            </span>
-                            <h2 className="text-4xl sm:text-5xl font-black mb-8 text-slate-900 leading-tight tracking-tight">
-                                Bridging the Gap Between Law and Reality
-                            </h2>
-                            <p className="text-lg text-slate-600 mb-6 leading-relaxed font-medium">
-                                While the Constitution of the Republic of Malawi guarantees fundamental rights and freedoms, many individuals and communities still experience exclusion, discrimination, poverty, and marginalization.
-                            </p>
-                            <p className="text-lg text-slate-600 leading-relaxed">
-                                We exist to ensure that the Bill of Rights serves as the foundation for a just society, transforming legal guarantees into practical realities for those who face barriers to accessing justice.
-                            </p>
+                            {/* Main Image */}
+                            <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
+                                <img
+                                    src="/images/speaktoservice.jpg"
+                                    alt="Community engagement"
+                                    className="w-full h-full object-cover"
+                                />
+                                {/* Subtle gradient overlay to ensure the image doesn't look flat */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-slate-900/30 to-transparent"></div>
+                            </div>
 
-                            <div className="mt-10 flex gap-4">
-                                <Link
-                                    href="/about"
-                                    className="inline-flex items-center gap-2.5 px-6 py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg transition shadow-xl shadow-slate-900/20"
-                                >
-                                    <span>Read Our Full Story</span>
-                                    <ArrowRight className="w-4 h-4" />
-                                </Link>
+                            {/* Overlapping Impact Card */}
+                            <div className="absolute -bottom-6 -right-6 sm:bottom-8 sm:-right-8 bg-brand-rust p-6 sm:p-8 rounded-xl shadow-xl max-w-[240px]">
+                                <span className="block text-4xl font-black text-white mb-1">45k+</span>
+                                <span className="block text-sm font-semibold text-white/90 leading-snug">
+                                    Citizens Reach Across 28 Districts
+                                </span>
                             </div>
                         </motion.div>
+
+                        {/* Right Column: Structured Typography */}
+                        <motion.div
+                            initial={{ opacity: 0, y: 20 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true, margin: "-100px" }}
+                            transition={{ duration: 0.8 }}
+                            className="w-full lg:w-1/2 order-1 lg:order-2"
+                        >
+                            <span className="text-sm font-bold uppercase tracking-widest text-brand-rust mb-4 flex items-center gap-3">
+                                <span className="w-10 h-0.5 bg-brand-rust"></span>
+                                Why We Exist
+                            </span>
+
+                            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-8 text-slate-900 leading-tight tracking-tight">
+                                Bridging the Gap Between Law and Reality
+                            </h2>
+
+                            {/* Text block with vertical visual anchor */}
+                            <div className="border-l-4 border-brand-amber/40 pl-6 mb-8">
+                                <p className="text-lg text-slate-700 mb-4 leading-relaxed font-medium">
+                                    While the Constitution of the Republic of Malawi guarantees fundamental rights and freedoms, many individuals and communities still experience exclusion, discrimination, poverty, and marginalization.
+                                </p>
+                                <p className="text-lg text-slate-600 leading-relaxed">
+                                    We exist to ensure that the Bill of Rights serves as the foundation for a just society, transforming legal guarantees into practical realities for those who face barriers to accessing justice.
+                                </p>
+                            </div>
+
+                            <Link
+                                href="/about"
+                                className="inline-flex items-center gap-2.5 px-8 py-4 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
+                            >
+                                <span>Read Our Full Story</span>
+                                <ArrowRight className="w-4 h-4" />
+                            </Link>
+                        </motion.div>
+
                     </div>
                 </div>
             </section>

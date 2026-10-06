@@ -9,12 +9,14 @@ import {
 import ChapterFourLogo from '@/Components/ChapterFourLogo';
 import PageLoader from '@/Components/PageLoader';
 import BackToTop from '@/Components/BackToTop';
+import ContactModal from '@/Components/ContactModal';
 
 interface NavChild {
     label: string;
     href: string;
     desc?: string;
     icon?: any;
+    isAction?: boolean;
 }
 
 interface NavLinkItem {
@@ -69,6 +71,7 @@ const navLinks: NavLinkItem[] = [
             { label: 'Approach to Programming', href: '/what-we-do/approach-to-programming', desc: 'Our Human Rights-Based Approach (HRBA).', icon: Scale },
             { label: 'Key Programmatic Interventions', href: '/what-we-do/key-interventions', desc: 'Education, research, advocacy, and accountability.', icon: Globe },
             { label: 'Our Reports', href: '/what-we-do/our-reports', desc: 'Publications and research insights.', icon: FileText },
+            { label: 'Report a Concern', href: '#', desc: 'Have your rights been violated? Learn how you can seek help or report a concern.', icon: Shield, isAction: true },
         ],
     },
     { label: 'Projects', href: '/projects' },
@@ -86,6 +89,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
     const [email, setEmail] = useState('');
     const [subscribed, setSubscribed] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 40);
@@ -136,10 +140,10 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                         </a>
                         <a
                             className="md:flex items-center gap-1.5 text-slate-200 hover:text-brand-amber transition"
-                            href={`tel:${site?.contact_phone || '+265888596275'}`}
+                            href={`tel:${site?.contact_phone || '+265881089609'}`}
                         >
                             <Phone className="w-3.5 h-3.5 text-brand-amber" />
-                            <span className="hidden md:inline text-[11px] sm:text-xs">{site?.contact_phone || '+265 888 596 275'}</span>
+                            <span className="hidden md:inline text-[11px] sm:text-xs">{site?.contact_phone || '+265 881 089 609'}</span>
                         </a>
                     </div>
 
@@ -250,25 +254,47 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                                             const IconComp = child.icon || Shield;
                                                             return (
                                                                 <li key={child.label}>
-                                                                    <Link
-                                                                        href={child.href}
-                                                                        className="flex items-start p-2 rounded-lg group/item hover:bg-slate-50 transition"
-                                                                    >
-                                                                        {/* Icon: neutral by default, rust on hover */}
-                                                                        <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover/item:bg-brand-rust group-hover/item:text-white transition-colors mt-0.5">
-                                                                            <IconComp className="w-4 h-4" />
-                                                                        </div>
-                                                                        <div className="ml-2.5">
-                                                                            <p className="text-slate-800 font-semibold text-xs group-hover/item:text-brand-rust transition-colors leading-snug">
-                                                                                {child.label}
-                                                                            </p>
-                                                                            {child.desc && (
-                                                                                <p className="text-slate-400 text-[10px] mt-0.5 line-clamp-1">
-                                                                                    {child.desc}
+                                                                    {child.isAction ? (
+                                                                        <button
+                                                                            type="button"
+                                                                            onClick={() => setIsReportModalOpen(true)}
+                                                                            className="flex items-start p-2 rounded-lg group/item hover:bg-slate-50 transition w-full text-left"
+                                                                        >
+                                                                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover/item:bg-brand-rust group-hover/item:text-white transition-colors mt-0.5">
+                                                                                <IconComp className="w-4 h-4" />
+                                                                            </div>
+                                                                            <div className="ml-2.5">
+                                                                                <p className="text-slate-800 font-semibold text-xs group-hover/item:text-brand-rust transition-colors leading-snug">
+                                                                                    {child.label}
                                                                                 </p>
-                                                                            )}
-                                                                        </div>
-                                                                    </Link>
+                                                                                {child.desc && (
+                                                                                    <p className="text-slate-400 text-[10px] mt-0.5 line-clamp-1">
+                                                                                        {child.desc}
+                                                                                    </p>
+                                                                                )}
+                                                                            </div>
+                                                                        </button>
+                                                                    ) : (
+                                                                        <Link
+                                                                            href={child.href}
+                                                                            className="flex items-start p-2 rounded-lg group/item hover:bg-slate-50 transition"
+                                                                        >
+                                                                            {/* Icon: neutral by default, rust on hover */}
+                                                                            <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover/item:bg-brand-rust group-hover/item:text-white transition-colors mt-0.5">
+                                                                                <IconComp className="w-4 h-4" />
+                                                                            </div>
+                                                                            <div className="ml-2.5">
+                                                                                <p className="text-slate-800 font-semibold text-xs group-hover/item:text-brand-rust transition-colors leading-snug">
+                                                                                    {child.label}
+                                                                                </p>
+                                                                                {child.desc && (
+                                                                                    <p className="text-slate-400 text-[10px] mt-0.5 line-clamp-1">
+                                                                                        {child.desc}
+                                                                                    </p>
+                                                                                )}
+                                                                            </div>
+                                                                        </Link>
+                                                                    )}
                                                                 </li>
                                                             );
                                                         })}
@@ -324,13 +350,24 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                         {openDropdown === link.label && (
                                             <div className="pl-3 space-y-1.5 pt-1">
                                                 {link.children.map((child) => (
-                                                    <Link
-                                                        key={child.label}
-                                                        href={child.href}
-                                                        className="block py-1.5 text-xs text-slate-400 hover:text-brand-amber"
-                                                    >
-                                                        {child.label}
-                                                    </Link>
+                                                    child.isAction ? (
+                                                        <button
+                                                            key={child.label}
+                                                            type="button"
+                                                            onClick={() => setIsReportModalOpen(true)}
+                                                            className="block w-full text-left py-1.5 text-xs text-slate-400 hover:text-brand-amber"
+                                                        >
+                                                            {child.label}
+                                                        </button>
+                                                    ) : (
+                                                        <Link
+                                                            key={child.label}
+                                                            href={child.href}
+                                                            className="block py-1.5 text-xs text-slate-400 hover:text-brand-amber"
+                                                        >
+                                                            {child.label}
+                                                        </Link>
+                                                    )
                                                 ))}
                                             </div>
                                         )}
@@ -363,13 +400,14 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                 {children}
             </main>
 
-            {/* ─── FLOATING CTA BANNER ────────────────────────────────────────────── */}
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-20 -mb-28 mt-12">
+            {/* ─── FLOATING CTA BANNER (hidden on mobile) ─────────────────────── */}
+            <div className="hidden md:block max-w-6xl mx-auto px-4 sm:px-6 relative z-20 -mb-28 mt-12">
                 <div className="bg-[#d95b38] rounded-3xl overflow-hidden shadow-2xl relative grid grid-cols-1 md:grid-cols-12 items-center bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.1)_1px,_transparent_1px)]" style={{ backgroundSize: '16px 16px' }}>
                     {/* Left Side: Text and Subscribe Form */}
                     <div className="md:col-span-7 p-8 sm:p-12 space-y-6 text-white z-10">
                         <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight">
-                            Your Donation Empowers<br />Those In Need
+                            Partner With Us to Advance
+                            <br />Constitutional Rights
                         </h2>
                         <form
                             className="flex items-center bg-white/20 backdrop-blur-md rounded-full p-1.5 max-w-md border border-white/20"
@@ -404,7 +442,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
             </div>
 
             {/* ─── MAIN NGO FOOTER (Google Stitch replica) ───────────────────── */}
-            <footer className="bg-brand-dark text-slate-300 pt-36 pb-8 border-t border-brand-mahogany/40" data-purpose="site-footer">
+            <footer className="bg-brand-dark text-slate-300 pt-12 md:pt-36 pb-8 border-t border-brand-mahogany/40" data-purpose="site-footer">
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 pb-12 border-b border-white/10">
                     {/* Col 1: About Info & Address */}
                     <div className="lg:col-span-4">
@@ -417,11 +455,11 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                         <div className="space-y-2.5 text-xs sm:text-sm text-slate-300">
                             <div className="flex items-start gap-2.5">
                                 <MapPin className="w-4 h-4 text-brand-amber mt-0.5 shrink-0" />
-                                <span>{site?.office_address || 'P.O. Box 30384, Capital City, Lilongwe, Malawi'}</span>
+                                <span>{site?.office_address || 'Area 11, House No. 11/38/05, City Centre, Lilongwe, Malawi'}</span>
                             </div>
                             <div className="flex items-center gap-2.5">
                                 <Phone className="w-4 h-4 text-brand-amber shrink-0" />
-                                <a className="hover:text-white transition" href={`tel:${site?.contact_phone || '+265888596275'}`}>{site?.contact_phone || '+265 888 596 275'}</a>
+                                <a className="hover:text-white transition" href={`tel:${site?.contact_phone || '+265881089609'}`}>{site?.contact_phone || '+265 881 089 609 / +265 994 066 921'}</a>
                             </div>
                             <div className="flex items-center gap-2.5">
                                 <Mail className="w-4 h-4 text-brand-amber shrink-0" />
@@ -431,7 +469,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                     </div>
 
                     {/* Col 2: Quick Links */}
-                    <div className="lg:col-span-2">
+                    <div className="hidden md:block lg:col-span-2">
                         <h3 className="text-white text-xs font-bold uppercase tracking-wider mb-4 border-b border-brand-amber/30 pb-1">
                             Resources
                         </h3>
@@ -522,6 +560,13 @@ export default function PublicLayout({ children }: PropsWithChildren) {
 
             {/* Floating Back To Top Button */}
             <BackToTop />
+
+            <ContactModal
+                show={isReportModalOpen}
+                onClose={() => setIsReportModalOpen(false)}
+                initialInquiryType="Rights Violation Report"
+                initialMessage=""
+            />
         </div>
     );
 }

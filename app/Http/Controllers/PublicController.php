@@ -510,20 +510,24 @@ class PublicController extends Controller
     public function submitContact(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name'         => 'required|string|max:255',
-            'email'        => 'required|email|max:255',
+            'name'         => 'nullable|string|max:255',
+            'email'        => 'nullable|email|max:255',
             'phone'        => 'nullable|string|max:50',
             'inquiry_type' => 'required|string|max:100',
-            'subject'      => 'required|string|max:255',
+            'subject'      => 'nullable|string|max:255',
             'message'      => 'required|string|max:5000',
         ]);
 
+        $name = !empty($validated['name']) ? trim($validated['name']) : 'Anonymous';
+        $email = !empty($validated['email']) ? trim($validated['email']) : 'anonymous@chapterfourmw.org';
+        $subject = !empty($validated['subject']) ? trim($validated['subject']) : ($validated['inquiry_type'] . ' (Anonymous)');
+
         $inquiry = Inquiry::create([
-            'name'       => $validated['name'],
-            'email'      => $validated['email'],
+            'name'       => $name,
+            'email'      => $email,
             'phone'      => $validated['phone'] ?? null,
             'type'       => $validated['inquiry_type'],
-            'subject'    => $validated['subject'],
+            'subject'    => $subject,
             'message'    => $validated['message'],
             'status'     => InquiryStatus::New,
             'ip_address' => $request->ip(),

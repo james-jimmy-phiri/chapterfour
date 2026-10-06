@@ -1,11 +1,29 @@
 import { Head, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { CheckCircle2, Shield, Globe, Target } from 'lucide-react';
+import { CheckCircle2, Shield, Globe, Target, ArrowRight, Hand, Scale, Users, ShieldCheck } from 'lucide-react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { InteractiveBook } from '@/Components/ui/interactive-book';
 import ScrollMorphHero from '@/Components/ui/scroll-morph-hero';
 
 import { PageProps } from '@/types';
+
+const objectives = [
+    {
+        icon: Scale,
+        title: "Access to Justice",
+        desc: "Promote and protect human rights and access to justice by empowering citizens."
+    },
+    {
+        icon: ShieldCheck,
+        title: "Accountable Governance",
+        desc: "Strengthen accountable, transparent and democratic governance through monitoring and advocacy."
+    },
+    {
+        icon: Users,
+        title: "Community Protection",
+        desc: "Strengthen community-based human rights protection and collaboration."
+    }
+];
 
 export default function WhoWeAre() {
     const { site } = usePage<PageProps>().props;
@@ -445,8 +463,8 @@ export default function WhoWeAre() {
                 </div>
             </section>
 
-            {/* Organization Overview */}
-            <section className="py-20 bg-white">
+            {/* Organization Overview (Desktop Only) */}
+            <section className="hidden lg:block py-20 bg-white">
                 <div className="max-w-7xl mx-auto px-4 sm:px-8">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                         <motion.div
@@ -483,6 +501,71 @@ export default function WhoWeAre() {
                                     backCover={backCover}
                                     innerPages={innerPages}
                                 />
+                            </div>
+                        </motion.div>
+                    </div>
+                </div>
+            </section>
+
+            {/* 1. REFINED ORGANIZATIONAL OVERVIEW & BOOK SECTION (Mobile Only) */}
+            <section className="block lg:hidden py-20 bg-white overflow-hidden">
+                <div className="max-w-7xl mx-auto px-4 sm:px-8">
+                    <div className="grid grid-cols-1 gap-12 items-center">
+                        
+                        {/* Text Content */}
+                        <motion.div
+                            initial={{ opacity: 0, x: -30 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, margin: "-100px" }}
+                            transition={{ duration: 0.8 }}
+                        >
+                            <span className="text-sm font-bold uppercase tracking-widest text-brand-rust mb-3 flex items-center gap-2">
+                                <span className="w-8 h-0.5 bg-brand-rust"></span>
+                                Our Roots
+                            </span>
+                            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6 leading-tight">
+                                Organizational Overview
+                            </h2>
+                            <div className="space-y-5 text-slate-600 leading-relaxed font-medium">
+                                <p>
+                                    Chapter Four is a youth-led non-governmental organization established to promote, protect and advance human rights, constitutionalism, democracy, social-cohesion, good governance and social justice. The organization started as a human right movement of students in Malawi in 2016.
+                                </p>
+                                <p>
+                                    It derives its name from Chapter IV of the Constitution of the Republic of Malawi, which contains and domesticates the fundamental rights and freedoms from the international Bill of Rights. It is founded on the principle that human dignity, equality, freedom, justice and accountability are essential to a democratic society.
+                                </p>
+                                <p>
+                                    We work to ensure that constitutional rights and freedoms are not merely legal guarantees but are translated into practical realities for individuals and communities, particularly those who experience exclusion, discrimination, poverty, and marginalization.
+                                </p>
+                            </div>
+                        </motion.div>
+
+                        {/* Interactive Book */}
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            whileInView={{ opacity: 1, scale: 1 }}
+                            viewport={{ once: true, margin: "-50px" }}
+                            transition={{ duration: 0.8 }}
+                            className="relative flex flex-col justify-center items-center mt-8"
+                        >
+                            {/* Mobile-only swipe hint */}
+                            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-brand-rust mb-6 animate-pulse">
+                                <Hand className="w-4 h-4" />
+                                <span>Swipe to open book</span>
+                            </div>
+
+                            {/* Presentation Box for the Book */}
+                            <div className="w-full max-w-[340px] sm:max-w-[400px] bg-slate-50 rounded-2xl p-4 sm:p-8 shadow-inner border border-slate-200 flex justify-center items-center relative">
+                                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-200/50 rounded-2xl pointer-events-none"></div>
+                                
+                                <div className="h-[460px] sm:h-[520px] flex justify-center items-center relative z-10 w-full">
+                                    <InteractiveBook
+                                        width={320}
+                                        height={480}
+                                        frontCover={frontCover}
+                                        backCover={backCover}
+                                        innerPages={innerPages}
+                                    />
+                                </div>
                             </div>
                         </motion.div>
                     </div>
@@ -526,8 +609,53 @@ export default function WhoWeAre() {
                 </div>
             </section>
 
-            {/* Animated Objectives Section */}
-            <ScrollMorphHero />
+            {/* Animated Objectives Section (Desktop Only) */}
+            <div className="hidden lg:block">
+                <ScrollMorphHero />
+            </div>
+
+            {/* 2. NEW PROFESSIONAL CORE OBJECTIVES SECTION (Mobile Only) */}
+            <section className="block lg:hidden py-24 bg-white border-b border-slate-200">
+                <div className="max-w-7xl mx-auto px-4 sm:px-8">
+                    <div className="text-center max-w-2xl mx-auto mb-16">
+                        <span className="text-sm font-bold uppercase tracking-widest text-brand-rust mb-3 block">
+                            Our Pillars
+                        </span>
+                        <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight mb-4">
+                            Core Objectives
+                        </h2>
+                        <p className="text-slate-600 text-lg">
+                            The strategic foundations that guide our fieldwork, litigation, and community advocacy across Malawi.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {objectives.map((obj, index) => {
+                            const Icon = obj.icon;
+                            return (
+                                <motion.div
+                                    key={index}
+                                    initial={{ opacity: 0, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true, margin: "-50px" }}
+                                    transition={{ duration: 0.6, delay: index * 0.15 }}
+                                    className="bg-slate-50 border border-slate-100 rounded-2xl p-8 hover:shadow-xl hover:border-brand-rust/30 transition-all duration-300 group"
+                                >
+                                    <div className="w-14 h-14 bg-white rounded-xl shadow-sm flex items-center justify-center text-brand-rust mb-6 group-hover:bg-brand-rust group-hover:text-white transition-colors duration-300">
+                                        <Icon className="w-7 h-7" />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-slate-900 mb-3 leading-snug">
+                                        {obj.title}
+                                    </h3>
+                                    <p className="text-slate-600 leading-relaxed font-medium">
+                                        {obj.desc}
+                                    </p>
+                                </motion.div>
+                            );
+                        })}
+                    </div>
+                </div>
+            </section>
         </PublicLayout>
     );
 }

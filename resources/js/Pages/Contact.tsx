@@ -92,7 +92,7 @@ export default function Contact() {
                                     How Can We Help You?
                                 </h2>
                                 <p className="text-slate-600 leading-relaxed text-lg">
-                                    We operate in Lilongwe with continuous monitoring and mobile legal outreach across all 28 districts of Malawi.
+                                    We are headquartered in Lilongwe with implementation across all 28 districts of Malawi.
                                 </p>
                             </div>
 
@@ -104,10 +104,10 @@ export default function Contact() {
                                     <div>
                                         <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-1">Head Office</h3>
                                         <p className="text-lg font-bold text-slate-900 leading-tight">
-                                            {site?.office_address ? site.office_address.split(',')[0] : 'P.O. Box 30384, Capital City'}
+                                            {site?.office_address ? site.office_address.split(',')[0] : 'Area 11, House No. 11/38/05'}
                                         </p>
                                         <p className="text-slate-600 mt-1">
-                                            {site?.office_address ? site.office_address.split(',').slice(1).join(',').trim() : 'Lilongwe, Malawi'}
+                                            {site?.office_address ? site.office_address.split(',').slice(1).join(',').trim() : 'City Centre, Lilongwe, Malawi'}
                                         </p>
                                     </div>
                                 </div>
@@ -119,9 +119,12 @@ export default function Contact() {
                                     <div>
                                         <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-1">Telephone Hotline</h3>
                                         <p className="text-lg font-bold text-slate-900 leading-tight">
-                                            <a href={`tel:${site?.contact_phone || '+265888596275'}`} className="hover:text-brand-amber transition">
-                                                {site?.contact_phone || '+265 888 596 275'}
+                                            <a href={`tel:${site?.contact_phone || '+265881089609'}`} className="hover:text-brand-amber transition">
+                                                {site?.contact_phone || '+265 881 089 609'}
                                             </a>
+                                        </p>
+                                        <p className="text-slate-600 mt-1">
+                                            <a href="tel:+265994066921" className="hover:text-brand-amber transition">+265 994 066 921</a>
                                         </p>
                                         <p className="text-slate-600 mt-1 flex items-center gap-2">
                                             <Clock className="w-4 h-4" /> {site?.hours || '8:00 AM – 5:00 PM CAT'}
@@ -136,8 +139,8 @@ export default function Contact() {
                                     <div>
                                         <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-1">Email Address</h3>
                                         <p className="text-base font-bold text-slate-900 leading-tight">
-                                            <a href={`mailto:${site?.contact_email || 'communication@chapterfourmalawi.org'}`} className="hover:text-slate-600 transition break-all">
-                                                {site?.contact_email || 'communication@chapterfourmalawi.org'}
+                                            <a href={`mailto:${site?.contact_email || 'info@chapterfourmw.org'}`} className="hover:text-slate-600 transition break-all">
+                                                {site?.contact_email || 'info@chapterfourmw.org'}
                                             </a>
                                         </p>
                                         <p className="text-slate-600 mt-1">Inquiries typically answered within 24 hours</p>
@@ -191,14 +194,23 @@ export default function Contact() {
                                     )}
 
                                     <form onSubmit={handleSubmit} className="space-y-6">
+                                        {/* Anonymous complaint notice - cool, professional styling */}
+                                        <div className="flex items-center gap-3.5 bg-slate-50 border border-slate-200/90 rounded-2xl px-4 py-3 text-slate-600">
+                                            <div className="w-8 h-8 rounded-xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center shrink-0 text-slate-700">
+                                                <Shield className="w-4 h-4 text-slate-600" />
+                                            </div>
+                                            <p className="text-xs text-slate-600 leading-relaxed">
+                                                <span className="font-semibold text-slate-900">Anonymous Submission:</span> You can leave your name, email, and phone blank if you wish to remain anonymous. Your report will still be received and handled with strict confidentiality.
+                                            </p>
+                                        </div>
+
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                             <div>
                                                 <label className="block text-sm font-bold text-slate-700 mb-2">
-                                                    Full Name <span className="text-brand-rust">*</span>
+                                                    Full Name <span className="text-slate-400 font-normal text-xs">(optional for anonymous)</span>
                                                 </label>
                                                 <input
                                                     type="text"
-                                                    required
                                                     value={data.name}
                                                     onChange={(e) => setData('name', e.target.value)}
                                                     placeholder="Kondwani Phiri"
@@ -209,11 +221,10 @@ export default function Contact() {
 
                                             <div>
                                                 <label className="block text-sm font-bold text-slate-700 mb-2">
-                                                    Email Address <span className="text-brand-rust">*</span>
+                                                    Email Address <span className="text-slate-400 font-normal text-xs">(optional for anonymous)</span>
                                                 </label>
                                                 <input
                                                     type="email"
-                                                    required
                                                     value={data.email}
                                                     onChange={(e) => setData('email', e.target.value)}
                                                     placeholder="kondwani@example.com"
@@ -249,10 +260,12 @@ export default function Contact() {
                                                         className="w-full text-base px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-rust focus:ring-2 focus:ring-brand-rust/20 outline-none transition-all bg-slate-50 focus:bg-white appearance-none pr-10"
                                                     >
                                                         <option value="General Inquiry">General Inquiry</option>
-                                                        <option value="Legal Aid & Defense">Legal Aid & Defense</option>
+                                                        <option value="Legal Aid & Defense">Legal Aid &amp; Defense</option>
                                                         <option value="Rights Violation Report">Report Rights Violation</option>
-                                                        <option value="Media & Press">Media & Press</option>
-                                                        <option value="Partnership & Funding">Partnership & Funding</option>
+                                                        <option value="Safeguarding Issue">Safeguarding Issue</option>
+                                                        <option value="Anonymous Complaint">Anonymous Complaint</option>
+                                                        <option value="Media & Press">Media &amp; Press</option>
+                                                        <option value="Partnership & Funding">Partnership &amp; Funding</option>
                                                         <option value="Research Collaboration">Research Collaboration</option>
                                                     </select>
                                                     <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
@@ -264,11 +277,10 @@ export default function Contact() {
 
                                         <div>
                                             <label className="block text-sm font-bold text-slate-700 mb-2">
-                                                Subject <span className="text-brand-rust">*</span>
+                                                Subject <span className="text-slate-400 font-normal text-xs">(optional)</span>
                                             </label>
                                             <input
                                                 type="text"
-                                                required
                                                 value={data.subject}
                                                 onChange={(e) => setData('subject', e.target.value)}
                                                 placeholder="Brief description of the matter"
