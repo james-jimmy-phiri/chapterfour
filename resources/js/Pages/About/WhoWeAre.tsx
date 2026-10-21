@@ -1,13 +1,40 @@
 import { Head, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
-import { CheckCircle2, Shield, Globe, Target, ArrowRight, Hand, Scale, Users, ShieldCheck } from 'lucide-react';
+import { CheckCircle2, Shield, Globe, Target, Hand, Scale, Users, ShieldCheck } from 'lucide-react';
 import PublicLayout from '@/Layouts/PublicLayout';
 import { InteractiveBook } from '@/Components/ui/interactive-book';
 import ScrollMorphHero from '@/Components/ui/scroll-morph-hero';
+import PaperCurlCarousel, { type PaperCurlPageItem } from '@/Components/ui/paper-curl-carousel';
 
 import { PageProps } from '@/types';
 
-const objectives = [
+interface ThematicAreaSummary {
+    id: number;
+    title: string;
+    slug: string;
+    short_description: string | null;
+    icon: string | null;
+}
+
+interface ContentBlock {
+    title: string | null;
+    body: string | null;
+}
+
+interface PageQuote {
+    id: number;
+    quote_text: string;
+    attribution: string;
+    image: string | null;
+}
+
+interface Props {
+    thematicAreas?: ThematicAreaSummary[];
+    contentBlocks?: Record<string, ContentBlock>;
+    quotes?: PageQuote[];
+}
+
+const FALLBACK_OBJECTIVES = [
     {
         icon: Scale,
         title: "Access to Justice",
@@ -25,10 +52,29 @@ const objectives = [
     }
 ];
 
-export default function WhoWeAre() {
+export default function WhoWeAre({ thematicAreas = [], contentBlocks = {}, quotes = [] }: Props) {
     const { site } = usePage<PageProps>().props;
     const vision = site?.vision || 'A just, democratic and inclusive Malawi where the rights and freedoms guaranteed by the Constitution are respected, protected and enjoyed by all.';
     const mission = site?.mission || 'To promote and protect constitutional rights, strengthen access to justice, empower citizens, and contribute to accountable, democratic and rights-respecting governance.';
+
+    // Use CMS content blocks where available, fall back to hardcoded text
+    const orgOverview = contentBlocks?.['who_we_are.org_overview']?.body
+        ?? '"A youth-led non-governmental organization established to promote, protect and advance human rights, constitutionalism, democracy, social-cohesion, good governance and social justice."';
+
+    const partnershipsText = contentBlocks?.['who_we_are.partnerships']?.body
+        ?? 'We build strategic partnerships with government bodies, civil society, traditional leaders, media, academia and international development partners to amplify impact.';
+
+    const governanceText = contentBlocks?.['who_we_are.governance']?.body
+        ?? 'Chapter Four is governed by an independent Board of Trustees, guided by core principles of accountability, transparency, inclusion and participatory governance.';
+
+    // Use DB thematic areas if available, else fallback list
+    const displayThematicAreas = thematicAreas.length > 0 ? thematicAreas.map(a => a.title) : [
+        'Access to Constitutional Rights and Justice',
+        'Democratic Governance and Accountability',
+        'Human Rights Protection and Peacebuilding',
+        'Gender, Youth and Social Inclusion',
+    ];
+
     const frontCover = (
         <div className="w-full h-full relative flex flex-col justify-center items-center text-white p-8 text-center bg-slate-900 overflow-hidden">
             <img
@@ -55,9 +101,9 @@ export default function WhoWeAre() {
             {pageBorder}
             <div className="flex-1 flex flex-col justify-center items-center text-center px-2">
                 <h3 className="font-serif text-3xl text-brand-rust font-bold mb-4">Chapter<br />Four</h3>
-                <div className="w-12 h-0.5 bg-brand-amber mb-6"></div>
+                <div className="w-12 h-0.5 bg-brand-amber mb-6" />
                 <p className="text-sm font-serif leading-relaxed text-slate-700 italic">
-                    "A youth-led non-governmental organization established to promote, protect and advance human rights, constitutionalism, democracy, social-cohesion, good governance and social justice."
+                    {orgOverview}
                 </p>
             </div>
         </div>,
@@ -117,7 +163,6 @@ export default function WhoWeAre() {
             </div>
         </div>,
 
-        // Page 5: Image Top + Thematic Areas Bottom
         <div className={pageStyle} key="p5">
             {pageBorder}
             <div className="h-[40%] w-full relative">
@@ -126,12 +171,9 @@ export default function WhoWeAre() {
             <div className="h-[60%] p-6 flex flex-col justify-center bg-[#FDFBF7]">
                 <h3 className="font-serif text-xl text-center text-brand-rust font-bold mb-4">Thematic Areas</h3>
                 <div className="flex flex-col gap-0 text-[10px] font-sans uppercase tracking-wider text-slate-600 font-semibold px-2 text-center">
-                    <div className="py-2.5 border-b border-[#E8E1D5]">Human Rights & Constitutionalism</div>
-                    <div className="py-2.5 border-b border-[#E8E1D5]">Access to Justice</div>
-                    <div className="py-2.5 border-b border-[#E8E1D5]">Democracy & Good Governance</div>
-                    <div className="py-2.5 border-b border-[#E8E1D5]">Civic & Rights Education</div>
-                    <div className="py-2.5 border-b border-[#E8E1D5]">Policy & Legislative Advocacy</div>
-                    <div className="py-2.5">Protection of Vulnerable Groups</div>
+                    {displayThematicAreas.map((area, i) => (
+                        <div key={i} className={`py-2.5 ${i < displayThematicAreas.length - 1 ? 'border-b border-[#E8E1D5]' : ''}`}>{area}</div>
+                    ))}
                 </div>
             </div>
         </div>,
@@ -189,11 +231,8 @@ export default function WhoWeAre() {
             {pageBorder}
             <div className="flex-1 flex flex-col justify-center mt-4">
                 <h3 className="font-serif text-2xl text-center text-brand-rust font-bold mb-6">Partnerships</h3>
-                <p className="text-[13px] font-serif text-slate-700 text-center leading-relaxed px-2 mb-6">
-                    Sustainable human rights protection requires collaboration among multiple actors.
-                </p>
                 <p className="text-[13px] font-serif text-slate-700 text-center leading-relaxed px-2">
-                    We partner with government institutions, Parliament, local authorities, traditional leaders, CSOs, and international human rights bodies.
+                    {partnershipsText}
                 </p>
             </div>
         </div>,
@@ -217,9 +256,9 @@ export default function WhoWeAre() {
             <div className="flex-1 flex flex-col justify-center mt-4">
                 <h3 className="font-serif text-2xl text-center text-brand-rust font-bold mb-6">Governance</h3>
                 <p className="text-[13px] font-serif text-slate-700 text-center leading-relaxed px-2 mb-6">
-                    Our management systems promote transparency, financial accountability, and effective programme management.
+                    {governanceText}
                 </p>
-                <div className="w-12 h-px bg-slate-300 mx-auto mb-6"></div>
+                <div className="w-12 h-px bg-slate-300 mx-auto mb-6" />
                 <ul className="text-[12px] font-sans text-slate-600 space-y-3 text-center uppercase tracking-wider font-semibold">
                     <li>Accountability</li>
                     <li>Safeguarding</li>
@@ -422,6 +461,36 @@ export default function WhoWeAre() {
         </div>
     );
 
+    // Mobile carousel pages — same content as the book but shown one at a time
+    const mobilePages: PaperCurlPageItem[] = [
+        { title: "Cover", content: frontCover },
+        { title: "About", content: innerPages[0] },
+        { title: "Vision & Mission", content: innerPages[1] },
+        { title: "Justice", content: innerPages[2] },
+        { title: "Objectives", content: innerPages[3] },
+        { title: "Thematic Areas", content: innerPages[4] },
+        { title: "Our Impact", content: innerPages[5] },
+        { title: "Approach", content: innerPages[6] },
+        { title: "Silent No More", content: innerPages[7] },
+        { title: "Partnerships", content: innerPages[8] },
+        { title: "Stop Killing Us", content: innerPages[9] },
+        { title: "Governance", content: innerPages[10] },
+        { title: "Children", content: innerPages[11] },
+        { title: "Child", content: innerPages[12] },
+        { title: "Hands", content: innerPages[13] },
+        { title: "Tutu", content: innerPages[14] },
+        { title: "Inner", content: innerPages[15] },
+        { title: "Hands Up", content: innerPages[16] },
+        { title: "Human Rights Day", content: innerPages[17] },
+        { title: "Mandela", content: innerPages[18] },
+        { title: "Racism", content: innerPages[19] },
+        { title: "Vulnerable", content: innerPages[20] },
+        { title: "Freedom", content: innerPages[21] },
+        { title: "A Better Malawi", content: innerPages[22] },
+        { title: "End", content: innerPages[23] },
+        { title: "Back Cover", content: backCover },
+    ];
+
     return (
         <PublicLayout>
             <Head>
@@ -539,34 +608,41 @@ export default function WhoWeAre() {
                             </div>
                         </motion.div>
 
-                        {/* Interactive Book */}
+                        {/* Paper Curl Carousel — Mobile Page-by-Page View */}
                         <motion.div
-                            initial={{ opacity: 0, scale: 0.95 }}
+                            initial={{ opacity: 0, scale: 0.97 }}
                             whileInView={{ opacity: 1, scale: 1 }}
                             viewport={{ once: true, margin: "-50px" }}
                             transition={{ duration: 0.8 }}
-                            className="relative flex flex-col justify-center items-center mt-8"
+                            className="relative flex flex-col justify-center items-center mt-8 w-full"
                         >
-                            {/* Mobile-only swipe hint */}
-                            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-brand-rust mb-6 animate-pulse">
+                            {/* Swipe hint */}
+                            <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-brand-rust mb-5 animate-pulse">
                                 <Hand className="w-4 h-4" />
-                                <span>Swipe to open book</span>
+                                <span>Swipe to turn pages</span>
                             </div>
 
-                            {/* Presentation Box for the Book */}
-                            <div className="w-full max-w-[340px] sm:max-w-[400px] bg-slate-50 rounded-2xl p-4 sm:p-8 shadow-inner border border-slate-200 flex justify-center items-center relative">
-                                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-200/50 rounded-2xl pointer-events-none"></div>
-                                
-                                <div className="h-[460px] sm:h-[520px] flex justify-center items-center relative z-10 w-full">
-                                    <InteractiveBook
-                                        width={320}
-                                        height={480}
-                                        frontCover={frontCover}
-                                        backCover={backCover}
-                                        innerPages={innerPages}
-                                    />
-                                </div>
+                            {/* Carousel container — styled like a premium book page */}
+                            <div className="w-full max-w-[360px] sm:max-w-[400px] rounded-2xl overflow-hidden shadow-2xl border border-slate-200 relative">
+                                {/* Book spine shadow on the left edge */}
+                                <div className="absolute left-0 top-0 bottom-0 w-3 bg-gradient-to-r from-slate-900/10 to-transparent z-30 pointer-events-none rounded-l-2xl" />
+                                {/* Top paper edge sheen */}
+                                <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-b from-white/30 to-transparent z-30 pointer-events-none" />
+
+                                <PaperCurlCarousel
+                                    items={mobilePages}
+                                    height="520px"
+                                    loop={false}
+                                    paper="#EDEEE9"
+                                    rail={true}
+                                    autoplay={0}
+                                />
                             </div>
+
+                            {/* Page count context */}
+                            <p className="mt-4 text-xs text-slate-400 font-sans tracking-wide">
+                                {mobilePages.length} pages · swipe or use arrows
+                            </p>
                         </motion.div>
                     </div>
                 </div>
@@ -630,7 +706,7 @@ export default function WhoWeAre() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {objectives.map((obj, index) => {
+                        {FALLBACK_OBJECTIVES.map((obj, index) => {
                             const Icon = obj.icon;
                             return (
                                 <motion.div

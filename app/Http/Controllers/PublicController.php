@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\BeneficiaryGroup;
+use App\Models\CoreObjective;
+use App\Models\CrossCuttingActivity;
 use App\Models\HeroSlide;
 use App\Models\HrbaPrinciple;
 use App\Models\ImpactStatistic;
@@ -10,16 +12,21 @@ use App\Models\Inquiry;
 use App\Models\Intervention;
 use App\Models\NewsletterSubscriber;
 use App\Models\Partner;
+use App\Models\PageQuote;
 use App\Models\Project;
 use App\Models\Resource;
+use App\Models\SiteContentBlock;
 use App\Models\TeamMember;
 use App\Models\ThematicArea;
-use App\Models\TimelineEvent;
+use App\Models\Page;
+use App\Models\Testimonial;
 use App\Models\Vacancy;
 use App\Enums\InquiryStatus;
+use App\Mail\NewInquiryNotification;
 use App\Services\AuditLogger;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Mail;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -274,17 +281,60 @@ class PublicController extends Controller
 
     public function whoWeAre(): Response
     {
-        return Inertia::render('About/WhoWeAre');
+        $thematicAreas = $this->fetch(fn () =>
+            ThematicArea::where('status', 'published')->orderBy('sort_order')->get(['id', 'title', 'slug', 'short_description', 'icon'])->toArray()
+        );
+
+        $contentBlocks = $this->fetch(fn () =>
+            SiteContentBlock::where('page', 'who_we_are')
+                ->orderBy('sort_order')
+                ->get()
+                ->mapWithKeys(fn ($b) => [$b->key => ['title' => $b->title, 'body' => $b->body]])
+                ->toArray()
+        );
+
+        $quotes = $this->fetch(fn () =>
+            PageQuote::where('status', 'published')
+                ->where(fn ($q) => $q->where('page_key', 'who_we_are')->orWhereNull('page_key'))
+                ->orderBy('sort_order')
+                ->get()
+                ->toArray()
+        );
+
+        return Inertia::render('About/WhoWeAre', [
+            'thematicAreas' => $thematicAreas ?: [],
+            'contentBlocks' => $contentBlocks ?: [],
+            'quotes'        => $quotes ?: [],
+        ]);
     }
 
     public function coreActivities(): Response
     {
-        return Inertia::render('About/CoreActivities');
+        $objectives = $this->fetch(fn () =>
+            CoreObjective::where('status', 'published')
+                ->whereIn('page_scope', ['core_activities', 'both'])
+                ->orderBy('sort_order')
+                ->get()
+                ->toArray()
+        );
+
+        return Inertia::render('About/CoreActivities', [
+            'objectives' => $objectives ?: [],
+        ]);
     }
 
     public function crossCuttingActivities(): Response
     {
-        return Inertia::render('About/CrossCuttingActivities');
+        $activities = $this->fetch(fn () =>
+            CrossCuttingActivity::where('status', 'published')
+                ->orderBy('sort_order')
+                ->get()
+                ->toArray()
+        );
+
+        return Inertia::render('About/CrossCuttingActivities', [
+            'activities' => $activities ?: [],
+        ]);
     }
 
     public function approachToProgramming(): Response
@@ -307,7 +357,7 @@ class PublicController extends Controller
             Resource::where('status', 'published')
                 ->whereIn('type', ['report', 'publication'])
                 ->latest('published_at')
-                ->get(['id', 'title', 'slug', 'type', 'excerpt', 'published_at', 'featured_image', 'file_url'])
+                ->get(['id', 'title', 'slug', 'type', 'excerpt', 'published_at', 'featured_image', 'pdf_path'])
                 ->toArray()
         );
 
@@ -392,43 +442,44 @@ class PublicController extends Controller
 
         $resources = $query->paginate(12)->withQueryString();
 
-        // Compute filters
-        $all = Resource::where('status', 'published')->with('author')->get();
+        // Compute filters efficiently using aggregated queries
+        $typeCounts = Resource::where('status', 'published')
+            ->selectRaw('type, count(*) as count')
+            ->groupBy('type')
+            ->get()
+            ->map(function ($row) {
+                $val = $row->type instanceof \App\Enums\ResourceType ? $row->type->value : $row->type;
+                $label = $row->type instanceof \App\Enums\ResourceType
+                    ? $row->type->label()
+                    : (\App\Enums\ResourceType::tryFrom((string) $val)?->label() ?? ucfirst((string) $val));
+                return ['label' => $label, 'value' => $val, 'count' => $row->count];
+            })->values();
 
-        $types = $all->groupBy('type')->map->count()->map(function($count, $key) {
-            // $key might be an Enum if cast, or a string
-            $val = $key instanceof \App\Enums\ResourceType ? $key->value : $key;
-            $label = $key instanceof \App\Enums\ResourceType ? $key->label() : (\App\Enums\ResourceType::tryFrom($val)?->label() ?? ucfirst($val));
-            return ['label' => $label, 'value' => $val, 'count' => $count];
-        })->values();
+        $authorCounts = Resource::where('status', 'published')
+            ->whereNotNull('author_id')
+            ->selectRaw('author_id, count(*) as count')
+            ->groupBy('author_id')
+            ->with('author:id,name')
+            ->get()
+            ->map(fn ($row) => [
+                'label' => $row->author?->name ?? 'Unknown',
+                'value' => (string) $row->author_id,
+                'count' => $row->count,
+            ])->values();
 
-        $authors = $all->groupBy('author_id')->map->count()->map(function($count, $key) use ($all) {
-            $authorName = $all->where('author_id', $key)->first()->author?->name ?? 'Unknown';
-            return ['label' => $authorName, 'value' => (string)$key, 'count' => $count];
-        })->values();
-
-        $years = $all->groupBy(function($item) {
-            return $item->published_at ? $item->published_at->format('Y') : 'N/A';
-        })->map->count()->map(function($count, $key) {
-            return ['label' => $key, 'value' => $key, 'count' => $count];
-        })->filter(fn($i) => $i['label'] !== 'N/A')->sortByDesc('label')->values();
+        $yearCounts = Resource::where('status', 'published')
+            ->whereNotNull('published_at')
+            ->selectRaw("strftime('%Y', published_at) as year, count(*) as count")
+            ->groupBy('year')
+            ->orderByDesc('year')
+            ->get()
+            ->map(fn ($row) => ['label' => $row->year, 'value' => $row->year, 'count' => $row->count])
+            ->values();
 
         $filterCategories = [
-            [
-                'id' => 'type',
-                'title' => 'Resource Type',
-                'options' => $types
-            ],
-            [
-                'id' => 'author',
-                'title' => 'Author',
-                'options' => $authors
-            ],
-            [
-                'id' => 'year',
-                'title' => 'Date (Year)',
-                'options' => $years
-            ]
+            ['id' => 'type',   'title' => 'Resource Type', 'options' => $typeCounts],
+            ['id' => 'author', 'title' => 'Author',        'options' => $authorCounts],
+            ['id' => 'year',   'title' => 'Date (Year)',   'options' => $yearCounts],
         ];
 
         return Inertia::render('Resources', [
@@ -510,8 +561,8 @@ class PublicController extends Controller
     public function submitContact(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name'         => 'nullable|string|max:255',
-            'email'        => 'nullable|email|max:255',
+            'name'         => 'required_without:email|nullable|string|max:255',
+            'email'        => 'required_without:name|nullable|email|max:255',
             'phone'        => 'nullable|string|max:50',
             'inquiry_type' => 'required|string|max:100',
             'subject'      => 'nullable|string|max:255',
@@ -537,6 +588,16 @@ class PublicController extends Controller
             'subject' => $inquiry->subject,
             'email'   => $inquiry->email,
         ]);
+
+        // Notify admin — send in background so it never delays the response
+        $notifyEmail = config('mail.notify_admin', env('MAIL_NOTIFY_ADMIN'));
+        if ($notifyEmail) {
+            try {
+                Mail::to($notifyEmail)->later(now()->addSeconds(5), new NewInquiryNotification($inquiry));
+            } catch (\Throwable) {
+                // Swallow mail errors — inquiry is already saved
+            }
+        }
 
         return redirect()->back()->with('success', 'Thank you! Your message has been received. Our legal and advocacy team will review it promptly.');
     }
@@ -572,6 +633,161 @@ class PublicController extends Controller
     public function getInvolved(): Response
     {
         return Inertia::render('GetInvolved');
+    }
+
+    // ─── PUBLIC CUSTOM PAGE ───────────────────────────────────────────────────
+
+    public function page(string $slug): Response
+    {
+        $page = Page::with('author')
+            ->where('slug', $slug)
+            ->where('status', 'published')
+            ->firstOrFail();
+
+        return Inertia::render('Page', [
+            'page' => $page,
+        ]);
+    }
+
+    // ─── PUBLICATIONS ─────────────────────────────────────────────────────────
+
+    public function publications(Request $request): Response
+    {
+        $category = $request->query('category', 'all');
+        $search = $request->query('search');
+        $year = $request->query('year');
+
+        $query = Resource::where('status', 'published')
+            ->whereIn('type', ['publication', 'report', 'policy_brief', 'research', 'statement'])
+            ->latest('published_at');
+
+        if ($category && $category !== 'all') {
+            $query->where('type', $category);
+        }
+
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('excerpt', 'like', "%{$search}%");
+            });
+        }
+
+        if ($year) {
+            $query->whereYear('published_at', $year);
+        }
+
+        $publications = $query->paginate(9)->withQueryString();
+
+        $featuredPublications = Resource::where('status', 'published')
+            ->whereIn('type', ['publication', 'report', 'policy_brief', 'research'])
+            ->where('is_featured', true)
+            ->take(3)
+            ->get();
+
+        return Inertia::render('Publications', [
+            'publications'         => $publications,
+            'featuredPublications' => $featuredPublications,
+            'filters' => [
+                'category' => $category,
+                'search'   => $search ?? '',
+                'year'     => $year ?? '',
+            ],
+        ]);
+    }
+
+    // ─── GLOBAL SITE SEARCH ───────────────────────────────────────────────────
+
+    public function search(Request $request): Response
+    {
+        $queryStr = trim((string) $request->query('q', ''));
+        $tab = $request->query('tab', 'all');
+
+        $results = [
+            'resources'     => [],
+            'thematicAreas' => [],
+            'projects'      => [],
+            'team'          => [],
+            'vacancies'     => [],
+            'total'         => 0,
+        ];
+
+        if ($queryStr !== '') {
+            $resources = Resource::where('status', 'published')
+                ->where(function ($q) use ($queryStr) {
+                    $q->where('title', 'like', "%{$queryStr}%")
+                      ->orWhere('excerpt', 'like', "%{$queryStr}%")
+                      ->orWhere('body', 'like', "%{$queryStr}%");
+                })
+                ->take(15)
+                ->get(['id', 'title', 'slug', 'type', 'excerpt', 'published_at'])
+                ->toArray();
+
+            $thematicAreas = ThematicArea::where('status', 'published')
+                ->where(function ($q) use ($queryStr) {
+                    $q->where('title', 'like', "%{$queryStr}%")
+                      ->orWhere('short_description', 'like', "%{$queryStr}%");
+                })
+                ->take(8)
+                ->get(['id', 'title', 'slug', 'short_description', 'icon'])
+                ->toArray();
+
+            $projects = Project::where('status', 'published')
+                ->where(function ($q) use ($queryStr) {
+                    $q->where('title', 'like', "%{$queryStr}%")
+                      ->orWhere('summary', 'like', "%{$queryStr}%");
+                })
+                ->take(8)
+                ->get(['id', 'title', 'slug', 'summary'])
+                ->toArray();
+
+            $team = TeamMember::where('status', 'published')
+                ->where(function ($q) use ($queryStr) {
+                    $q->where('name', 'like', "%{$queryStr}%")
+                      ->orWhere('role', 'like', "%{$queryStr}%")
+                      ->orWhere('department', 'like', "%{$queryStr}%");
+                })
+                ->take(8)
+                ->get(['id', 'name', 'role', 'department', 'photo'])
+                ->toArray();
+
+            $vacancies = Vacancy::where('status', 'published')
+                ->where(function ($q) use ($queryStr) {
+                    $q->where('title', 'like', "%{$queryStr}%")
+                      ->orWhere('description', 'like', "%{$queryStr}%");
+                })
+                ->take(6)
+                ->get(['id', 'title', 'department', 'location', 'deadline'])
+                ->toArray();
+
+            $results = [
+                'resources'     => $resources,
+                'thematicAreas' => $thematicAreas,
+                'projects'      => $projects,
+                'team'          => $team,
+                'vacancies'     => $vacancies,
+                'total'         => count($resources) + count($thematicAreas) + count($projects) + count($team) + count($vacancies),
+            ];
+        }
+
+        return Inertia::render('Search', [
+            'query'   => $queryStr,
+            'tab'     => $tab,
+            'results' => $results,
+        ]);
+    }
+
+    // ─── NEWSLETTER PAGE ──────────────────────────────────────────────────────
+
+    public function newsletter(): Response
+    {
+        $recentUpdates = Resource::where('status', 'published')
+            ->latest('published_at')
+            ->take(6)
+            ->get(['id', 'title', 'slug', 'type', 'excerpt', 'published_at', 'featured_image']);
+
+        return Inertia::render('Newsletter', [
+            'recentUpdates' => $recentUpdates,
+        ]);
     }
 
     // ─── HELPER ───────────────────────────────────────────────────────────────

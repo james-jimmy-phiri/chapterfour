@@ -310,6 +310,18 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                         {/* Action Button & Mobile Toggle */}
                         <div className="flex items-center space-x-3">
                             <Link
+                                href="/search"
+                                title="Search Chapter Four"
+                                className={`p-2.5 rounded-full transition flex items-center justify-center ${
+                                    scrolled
+                                        ? 'text-slate-600 hover:text-brand-rust hover:bg-slate-100'
+                                        : 'text-white/80 hover:text-white hover:bg-white/10'
+                                }`}
+                            >
+                                <Search className="w-4 h-4" />
+                            </Link>
+
+                            <Link
                                 href="/contact"
                                 className="hidden sm:inline-flex bg-brand-rust hover:bg-brand-rust-dark text-white px-5 py-2.5 rounded-lg text-xs sm:text-sm font-semibold tracking-wide transition shadow-lg shadow-brand-rust/25 items-center gap-1.5"
                             >

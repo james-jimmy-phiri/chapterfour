@@ -31,6 +31,7 @@ export default function VacancyDetails({ id, vacancy }: VacancyDetailsProps) {
         email: '',
         phone: '',
         location: '',
+        cover_letter: '',
         document_file: null as File | null,
     });
     
@@ -375,6 +376,18 @@ export default function VacancyDetails({ id, vacancy }: VacancyDetailsProps) {
                                 {errors.location && <p className="text-red-500 text-xs mt-1">{errors.location}</p>}
                             </div>
                             <div>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">Cover Letter <span className="text-slate-400 font-normal">(optional)</span></label>
+                                <textarea
+                                    value={data.cover_letter}
+                                    onChange={e => setData('cover_letter', e.target.value)}
+                                    rows={4}
+                                    maxLength={3000}
+                                    className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-rust focus:border-transparent transition-shadow resize-none text-sm"
+                                    placeholder="Briefly explain why you are the right candidate for this role…"
+                                />
+                                {errors.cover_letter && <p className="text-red-500 text-xs mt-1">{errors.cover_letter}</p>}
+                            </div>
+                            <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Upload CV / Document *</label>
                                 <input
                                     type="file"
@@ -383,7 +396,7 @@ export default function VacancyDetails({ id, vacancy }: VacancyDetailsProps) {
                                     onChange={e => setData('document_file', e.target.files ? e.target.files[0] : null)}
                                     className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-brand-rust focus:border-transparent transition-shadow text-sm"
                                 />
-                                <p className="text-xs text-slate-500 mt-1">Accepted formats: PDF, DOC, DOCX. Max size 10MB.</p>
+                                <p className="text-xs text-slate-500 mt-1">Accepted formats: PDF, DOC, DOCX. Max size 5MB.</p>
                                 {errors.document_file && <p className="text-red-500 text-xs mt-1">{errors.document_file}</p>}
                             </div>
                             <div className="pt-4 mt-4 border-t border-slate-100 flex justify-end gap-3">

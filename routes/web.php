@@ -17,12 +17,30 @@ use App\Http\Controllers\Admin\BeneficiaryGroupController;
 use App\Http\Controllers\Admin\VacancyController;
 use App\Http\Controllers\Admin\TimelineEventController;
 use App\Http\Controllers\Admin\HrbaPrincipleController;
+use App\Http\Controllers\Admin\HeroSlideController;
+use App\Http\Controllers\Admin\AuditLogController;
+use App\Http\Controllers\Admin\CoreObjectiveController;
+use App\Http\Controllers\Admin\PageQuoteController;
+use App\Http\Controllers\Admin\CrossCuttingActivityController;
+use App\Http\Controllers\Admin\SiteContentBlockController;
+use App\Http\Controllers\Admin\PageController;
+use App\Http\Controllers\Admin\PublicationController;
+use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\MediaController;
+use App\Http\Controllers\Admin\SeoController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 // ─── PUBLIC WEBSITE ROUTES ────────────────────────────────────────────────────
+
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', function () {
+    $content = "User-agent: *\nDisallow: /admin\nDisallow: /login\nDisallow: /register\n\nSitemap: " . config('app.url') . "/sitemap.xml\n";
+    return response($content, 200, ['Content-Type' => 'text/plain']);
+})->name('robots');
 
 Route::get('/', [PublicController::class, 'home'])->name('home');
 Route::get('/about', [PublicController::class, 'about'])->name('about');
@@ -41,6 +59,10 @@ Route::get('/projects/{slug}', [PublicController::class, 'projectDetail'])->name
 Route::get('/contact', [PublicController::class, 'contact'])->name('contact');
 Route::post('/contact', [PublicController::class, 'submitContact'])->middleware('throttle:6,1')->name('contact.submit');
 Route::post('/newsletter/subscribe', [PublicController::class, 'subscribeNewsletter'])->middleware('throttle:10,1')->name('newsletter.subscribe');
+Route::get('/publications', [PublicController::class, 'publications'])->name('publications');
+Route::get('/search', [PublicController::class, 'search'])->name('search');
+Route::get('/newsletter', [PublicController::class, 'newsletter'])->name('newsletter');
+Route::get('/page/{slug}', [PublicController::class, 'page'])->name('page.show');
 Route::get('/get-involved', [PublicController::class, 'getInvolved'])->name('get-involved');
 
 // Static / legal pages (render Inertia pages as they're created)
@@ -66,7 +88,7 @@ Route::post('/vacancies/{id}/apply', [\App\Http\Controllers\VacancyApplicationCo
 
 // ─── ADMIN / CMS ROUTES ───────────────────────────────────────────────────────
 
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified', 'ensure.admin'])->group(function () {
 
     // Dashboard
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
@@ -164,28 +186,76 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'verified'])->group(
     Route::put('/timeline-events/{id}', [TimelineEventController::class, 'update'])->name('timeline-events.update');
     Route::delete('/timeline-events/{id}', [TimelineEventController::class, 'destroy'])->name('timeline-events.destroy');
 
+
     // HRBA Principles
     Route::get('/hrba-principles', [HrbaPrincipleController::class, 'index'])->name('hrba-principles');
     Route::post('/hrba-principles', [HrbaPrincipleController::class, 'store'])->name('hrba-principles.store');
     Route::put('/hrba-principles/{id}', [HrbaPrincipleController::class, 'update'])->name('hrba-principles.update');
     Route::delete('/hrba-principles/{id}', [HrbaPrincipleController::class, 'destroy'])->name('hrba-principles.destroy');
 
-    // Remaining stub routes for sidebar links
-    $adminStubs = [
-        'pages'          => 'Pages',
-        'publications'   => 'Publications',
-        'testimonials'   => 'Testimonials',
-        'media'          => 'Media',
-        'audit'          => 'Audit',
-    ];
+    // Hero Slides
+    Route::get('/hero-slides', [HeroSlideController::class, 'index'])->name('hero-slides');
+    Route::post('/hero-slides', [HeroSlideController::class, 'store'])->name('hero-slides.store');
+    Route::put('/hero-slides/{id}', [HeroSlideController::class, 'update'])->name('hero-slides.update');
+    Route::delete('/hero-slides/{id}', [HeroSlideController::class, 'destroy'])->name('hero-slides.destroy');
+    Route::post('/hero-slides/reorder', [HeroSlideController::class, 'reorder'])->name('hero-slides.reorder');
 
-    foreach ($adminStubs as $path => $component) {
-        Route::get($path, fn () => Inertia::render('Admin/Module', [
-            'title' => $component,
-            'slug' => $path,
-        ]))->name($path);
-    }
+    // Audit Log (read-only)
+    Route::get('/audit', [AuditLogController::class, 'index'])->name('audit');
+
+    // Core Objectives
+    Route::get('/core-objectives', [CoreObjectiveController::class, 'index'])->name('core-objectives');
+    Route::post('/core-objectives', [CoreObjectiveController::class, 'store'])->name('core-objectives.store');
+    Route::put('/core-objectives/{id}', [CoreObjectiveController::class, 'update'])->name('core-objectives.update');
+    Route::delete('/core-objectives/{id}', [CoreObjectiveController::class, 'destroy'])->name('core-objectives.destroy');
+
+    // Page Quotes
+    Route::get('/page-quotes', [PageQuoteController::class, 'index'])->name('page-quotes');
+    Route::post('/page-quotes', [PageQuoteController::class, 'store'])->name('page-quotes.store');
+    Route::put('/page-quotes/{id}', [PageQuoteController::class, 'update'])->name('page-quotes.update');
+    Route::delete('/page-quotes/{id}', [PageQuoteController::class, 'destroy'])->name('page-quotes.destroy');
+
+    // Cross-Cutting Activities
+    Route::get('/cross-cutting-activities', [CrossCuttingActivityController::class, 'index'])->name('cross-cutting-activities');
+    Route::post('/cross-cutting-activities', [CrossCuttingActivityController::class, 'store'])->name('cross-cutting-activities.store');
+    Route::put('/cross-cutting-activities/{id}', [CrossCuttingActivityController::class, 'update'])->name('cross-cutting-activities.update');
+    Route::delete('/cross-cutting-activities/{id}', [CrossCuttingActivityController::class, 'destroy'])->name('cross-cutting-activities.destroy');
+
+    // Site Content Blocks
+    Route::get('/content-blocks', [SiteContentBlockController::class, 'index'])->name('content-blocks');
+    Route::post('/content-blocks', [SiteContentBlockController::class, 'store'])->name('content-blocks.store');
+    Route::put('/content-blocks/{id}', [SiteContentBlockController::class, 'update'])->name('content-blocks.update');
+    Route::delete('/content-blocks/{id}', [SiteContentBlockController::class, 'destroy'])->name('content-blocks.destroy');
+
+    // Pages Management
+    Route::get('/pages', [PageController::class, 'index'])->name('pages');
+    Route::post('/pages', [PageController::class, 'store'])->name('pages.store');
+    Route::put('/pages/{id}', [PageController::class, 'update'])->name('pages.update');
+    Route::delete('/pages/{id}', [PageController::class, 'destroy'])->name('pages.destroy');
+
+    // Publications
+    Route::get('/publications', [PublicationController::class, 'index'])->name('publications');
+    Route::post('/publications', [PublicationController::class, 'store'])->name('publications.store');
+    Route::put('/publications/{id}', [PublicationController::class, 'update'])->name('publications.update');
+    Route::delete('/publications/{id}', [PublicationController::class, 'destroy'])->name('publications.destroy');
+
+    // Testimonials
+    Route::get('/testimonials', [TestimonialController::class, 'index'])->name('testimonials');
+    Route::post('/testimonials', [TestimonialController::class, 'store'])->name('testimonials.store');
+    Route::put('/testimonials/{id}', [TestimonialController::class, 'update'])->name('testimonials.update');
+    Route::delete('/testimonials/{id}', [TestimonialController::class, 'destroy'])->name('testimonials.destroy');
+
+    // Media Library
+    Route::get('/media', [MediaController::class, 'index'])->name('media');
+    Route::post('/media', [MediaController::class, 'store'])->name('media.store');
+    Route::delete('/media/delete', [MediaController::class, 'destroy'])->name('media.destroy');
+
+    // SEO Management
+    Route::get('/seo', [SeoController::class, 'index'])->name('seo.index');
+    Route::post('/seo/pages/{key}', [SeoController::class, 'updatePage'])->name('seo.page.update');
+    Route::post('/seo/global', [SeoController::class, 'updateGlobal'])->name('seo.global.update');
 });
+
 
 // Redirect /dashboard (Breeze default) to /admin
 Route::get('/dashboard', fn () => redirect()->route('admin.dashboard'))

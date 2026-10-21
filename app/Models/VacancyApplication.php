@@ -12,7 +12,8 @@ class VacancyApplication extends Model
         'email',
         'phone',
         'location',
-        'document_path'
+        'cover_letter',
+        'document_path',
     ];
 
     public function vacancy()

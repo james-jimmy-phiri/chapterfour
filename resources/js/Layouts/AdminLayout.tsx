@@ -5,7 +5,7 @@ import {
     Globe, Settings, Bell, Search, ChevronRight, LogOut, Menu, X,
     Shield, MessageSquare, Mail, Image, BarChart3, ChevronDown,
     Building2, Star, Sparkles, ExternalLink, Plus, CheckCircle2, UserCheck,
-    Sun, Moon, Target, History, HeartHandshake,
+    Sun, Moon, Target, History, HeartHandshake, Layers,
 } from 'lucide-react';
 import ChapterFourLogo from '@/Components/ChapterFourLogo';
 
@@ -80,6 +80,7 @@ export default function AdminLayout({ children, header, description, breadcrumbs
                 { label: 'Key Interventions', href: '/admin/interventions', icon: Target, id: 'admin-nav-interventions' },
                 { label: 'HRBA Principles', href: '/admin/hrba-principles', icon: Sparkles, id: 'admin-nav-hrba' },
                 { label: 'Field Projects', href: '/admin/projects', icon: Briefcase, id: 'admin-nav-projects' },
+                { label: 'Hero Slides', href: '/admin/hero-slides', icon: Image, id: 'admin-nav-hero-slides' },
                 { label: 'Publications', href: '/admin/publications', icon: BookOpen, id: 'admin-nav-publications' },
                 { label: 'Pages Management', href: '/admin/pages', icon: FileText, id: 'admin-nav-pages' },
             ],
@@ -91,6 +92,8 @@ export default function AdminLayout({ children, header, description, breadcrumbs
                 { label: 'Beneficiary Groups', href: '/admin/beneficiary-groups', icon: HeartHandshake, id: 'admin-nav-beneficiaries' },
                 { label: 'Allies & Partners', href: '/admin/partners', icon: Building2, id: 'admin-nav-partners' },
                 { label: 'Timeline Events', href: '/admin/timeline-events', icon: History, id: 'admin-nav-timeline' },
+                { label: 'Core Objectives', href: '/admin/core-objectives', icon: Target, id: 'admin-nav-objectives' },
+                { label: 'Cross-Cutting Activities', href: '/admin/cross-cutting-activities', icon: Layers, id: 'admin-nav-crosscutting' },
                 { label: 'Vacancies', href: '/admin/vacancies', icon: Briefcase, id: 'admin-nav-vacancies' },
                 { label: 'Applications', href: '/admin/vacancy-applications', icon: FileText, id: 'admin-nav-vacancy-applications' },
                 { label: 'Impact Metrics', href: '/admin/statistics', icon: BarChart3, id: 'admin-nav-stats' },
@@ -108,7 +111,9 @@ export default function AdminLayout({ children, header, description, breadcrumbs
                     badge: unreadInquiries > 0 ? unreadInquiries : null,
                 },
                 { label: 'Newsletter Subscribers', href: '/admin/newsletter', icon: Mail, id: 'admin-nav-newsletter' },
-                { label: 'Media Assets', href: '/admin/media', icon: Image, id: 'admin-nav-media' },
+                { label: 'Inspirational Quotes', href: '/admin/page-quotes', icon: Star, id: 'admin-nav-quotes' },
+                { label: 'Content Blocks', href: '/admin/content-blocks', icon: FileText, id: 'admin-nav-content-blocks' },
+                { label: 'Media Library', href: '/admin/media', icon: Image, id: 'admin-nav-media' },
             ],
         },
         {
@@ -116,6 +121,7 @@ export default function AdminLayout({ children, header, description, breadcrumbs
             items: [
                 { label: 'Users & Permissions', href: '/admin/users', icon: Shield, id: 'admin-nav-users' },
                 { label: 'Site Settings', href: '/admin/settings', icon: Settings, id: 'admin-nav-settings' },
+                { label: 'SEO & Discovery', href: '/admin/seo', icon: Globe, id: 'admin-nav-seo' },
                 { label: 'Security Audit Log', href: '/admin/audit', icon: FileText, id: 'admin-nav-audit' },
             ],
         },
@@ -228,6 +234,11 @@ export default function AdminLayout({ children, header, description, breadcrumbs
                                                         : 'bg-red-500/20 text-red-600 border border-red-500/30 animate-pulse'
                                                 }`}>
                                                     {item.badge}
+                                                </span>
+                                            )}
+                                            {(item as any).soon && (
+                                                <span className="ml-auto px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider bg-slate-200 text-slate-500 border border-slate-300">
+                                                    Soon
                                                 </span>
                                             )}
                                         </Link>

@@ -115,4 +115,10 @@ return [
         'name' => env('MAIL_FROM_NAME', env('APP_NAME', 'Laravel')),
     ],
 
+    /*
+    | Admin notification address — receives a copy of every new contact inquiry.
+    | Set MAIL_NOTIFY_ADMIN in your .env file to enable. Leave blank to disable.
+    */
+    'notify_admin' => env('MAIL_NOTIFY_ADMIN', null),
+
 ];

@@ -28,7 +28,7 @@ class DashboardController extends Controller
         // Engagement stats
         $inquiries = Inquiry::where('status', 'new')->count();
         $subscribers = NewsletterSubscriber::where('status', 'subscribed')->count();
-        $mediaItems = 12;
+        $mediaItems = \Spatie\MediaLibrary\MediaCollections\Models\Media::count();
 
         // Recent inquiries needing triage
         $recentInquiries = Inquiry::latest()
