@@ -29,7 +29,7 @@
     }
 
     body {
-        @apply bg-white text-slate-800 font-sans antialiased selection:bg-brand-rust selection:text-white;
+        @apply bg-white text-slate-800 font-sans text-base leading-relaxed antialiased selection:bg-brand-rust selection:text-white;
         overflow-x: hidden;
         font-family: 'League Spartan', 'Spartan', -apple-system, BlinkMacSystemFont, sans-serif;
     }
@@ -115,19 +115,19 @@
     .btn-primary {
         @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-rust text-white font-semibold rounded-md
                hover:bg-brand-rust-dark transition-all duration-200 shadow-sm hover:shadow-md
-               focus:outline-none focus:ring-2 focus:ring-brand-rust/50 text-sm;
+               focus:outline-none focus:ring-2 focus:ring-brand-rust/50 text-sm sm:text-base;
     }
 
     /* Secondary button */
     .btn-secondary {
         @apply inline-flex items-center justify-center gap-2 px-6 py-3 border border-slate-300 bg-white text-slate-800 font-semibold rounded-md
-               hover:bg-slate-50 hover:border-slate-400 transition-all duration-200 text-sm shadow-sm;
+               hover:bg-slate-50 hover:border-slate-400 transition-all duration-200 text-sm sm:text-base shadow-sm;
     }
 
     /* Amber action button */
     .btn-amber {
         @apply inline-flex items-center justify-center gap-2 px-6 py-3 bg-brand-amber text-brand-dark font-bold rounded-md
-               hover:bg-brand-amber-dark hover:text-white transition-all duration-200 shadow-sm text-sm;
+               hover:bg-brand-amber-dark hover:text-white transition-all duration-200 shadow-sm text-sm sm:text-base;
     }
 
     /* Card styling */
@@ -137,7 +137,7 @@
 
     /* Section label */
     .section-label {
-        @apply inline-flex items-center gap-2 text-brand-rust text-xs font-bold uppercase tracking-wider;
+        @apply inline-flex items-center gap-2 text-brand-rust text-sm font-bold uppercase tracking-wider;
     }
 
     .section-label::before {

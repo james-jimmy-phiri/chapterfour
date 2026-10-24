@@ -12,43 +12,37 @@ interface OurTeamProps {
 export default function OurTeam({ teamMembers = [] }: OurTeamProps) {
     const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
 
+    const DEFAULT_AVATAR = "/images/default-avatar.jpg";
+
     const defaultTeamMembers: TeamMember[] = [
         {
             name: "Placeholder Name",
             role: "Executive Director",
-            image: "/images/animate-img-4.jpg",
+            image: DEFAULT_AVATAR,
             bio: "Leading Chapter Four's mission to protect constitutional rights.",
             location: "Lilongwe, Malawi"
         },
         {
             name: "Placeholder Name",
             role: "Head of Legal & Advocacy",
-            image: "/images/animate-img-5.jpg",
+            image: DEFAULT_AVATAR,
             bio: "Championing public interest litigation and legal empowerment.",
             location: "Blantyre, Malawi"
         },
         {
             name: "Placeholder Name",
             role: "Programs Manager",
-            image: "/images/animate-img-6.jpg",
+            image: DEFAULT_AVATAR,
             bio: "Overseeing community outreach and civic education initiatives.",
             location: "Mzuzu, Malawi"
         }
     ];
 
-    const fallbackPhotos = [
-        "/images/animate-img-4.jpg",
-        "/images/animate-img-5.jpg",
-        "/images/animate-img-6.jpg",
-        "/images/animate-img-1.jpg",
-        "/images/animate-img-2.jpg",
-    ];
-
     const displayMembers: TeamMember[] = (teamMembers && teamMembers.length > 0)
-        ? teamMembers.map((m: any, idx: number) => ({
+        ? teamMembers.map((m: any) => ({
             name: m.name,
             role: m.role || "Team Member",
-            image: m.photo || m.image || fallbackPhotos[idx % fallbackPhotos.length],
+            image: m.photo || m.image || DEFAULT_AVATAR,
             bio: m.biography || m.bio || "Advancing human rights and constitutional freedoms at Chapter Four.",
             location: m.department || m.location || "Lilongwe, Malawi",
             linkedin: m.social_links?.linkedin || m.linkedin,
@@ -60,10 +54,16 @@ export default function OurTeam({ teamMembers = [] }: OurTeamProps) {
     return (
         <PublicLayout>
             <Head>
-                <title>Our Team — Chapter Four Malawi</title>
+                <title>Our Team | Chapter Four Malawi</title>
                 <meta
+                    head-key="description"
                     name="description"
-                    content="Meet the dedicated team at Chapter Four Malawi working to advance human rights and constitutionalism."
+                    content="Meet the dedicated leadership, human rights advocates, legal researchers, and civic champions at Chapter Four Malawi working to protect constitutionalism and access to justice."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
                 />
             </Head>
 
@@ -116,9 +116,12 @@ export default function OurTeam({ teamMembers = [] }: OurTeamProps) {
                     {/* Fixed Image Container using Aspect Ratio */}
                     <div className="relative w-full aspect-square overflow-hidden shrink-0">
                         <img
-                            src={member.image}
+                            src={member.image || DEFAULT_AVATAR}
                             alt={member.name}
                             className="w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-105"
+                            onError={(e) => {
+                                e.currentTarget.src = DEFAULT_AVATAR;
+                            }}
                         />
                         
                         {/* Dark overlay on hover */}
@@ -144,10 +147,10 @@ export default function OurTeam({ teamMembers = [] }: OurTeamProps) {
                     {/* Card Content — Added items-center and text-center */}
                     <div className="p-6 flex flex-col items-center text-center flex-grow relative bg-white">
                         <h3 className="text-xl font-bold text-slate-900 mb-1 group-hover:text-brand-rust transition-colors">{member.name}</h3>
-                        <p className="text-brand-amber font-semibold text-xs tracking-wider uppercase mb-4">{member.role}</p>
+                        <p className="text-brand-rust font-bold text-sm tracking-wider uppercase mb-4">{member.role}</p>
 
                         {/* Added w-full and justify-center to center the View Profile button */}
-                        <div className="mt-auto pt-4 border-t border-slate-100 w-full flex justify-center items-center text-xs font-bold text-slate-500 group-hover:text-brand-rust transition-colors uppercase tracking-widest">
+                        <div className="mt-auto pt-4 border-t border-slate-100 w-full flex justify-center items-center text-sm font-bold text-slate-600 group-hover:text-brand-rust transition-colors uppercase tracking-wider">
                             <span>View Profile</span>
                             <ArrowRight className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" />
                         </div>

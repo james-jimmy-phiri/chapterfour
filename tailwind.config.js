@@ -18,6 +18,11 @@ export default {
                 display: ['"League Spartan"', '"Spartan"', '"Plus Jakarta Sans"', ...defaultTheme.fontFamily.sans],
                 serif: ['"DM Serif Display"', ...defaultTheme.fontFamily.serif],
             },
+            fontSize: {
+                'xs': ['0.8125rem', { lineHeight: '1.25rem' }], // 13px — elevated from 12px for mobile readability
+                'sm': ['0.9375rem', { lineHeight: '1.375rem' }], // 15px — elevated from 14px for clear labels/subtext
+                'base': ['1.0625rem', { lineHeight: '1.625rem' }], // 17px — elevated from 16px for comfortable reading
+            },
             boxShadow: {
                 'xs': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
             },

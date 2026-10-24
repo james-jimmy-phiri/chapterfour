@@ -26,10 +26,16 @@ export default function Vacancies({ vacancies }: VacanciesProps) {
     return (
         <PublicLayout>
             <Head>
-                <title>Vacancies & Opportunities — Chapter Four Malawi</title>
+                <title>Vacancies & Opportunities | Chapter Four Malawi</title>
                 <meta
+                    head-key="description"
                     name="description"
-                    content="Explore open positions and volunteer opportunities at Chapter Four Malawi. Join our team of advocates, researchers, and community organizers."
+                    content="Explore open careers, internships, and volunteer opportunities at Chapter Four Malawi. Join our team of human rights advocates and legal researchers."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
                 />
             </Head>
 
@@ -46,7 +52,7 @@ export default function Vacancies({ vacancies }: VacanciesProps) {
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
                     {/* Breadcrumbs */}
-                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-400 mb-8 font-bold uppercase tracking-wider">
+                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs sm:text-sm text-slate-400 mb-8 font-bold uppercase tracking-wider">
                         <Link href="/" className="hover:text-brand-amber transition">Home</Link>
                         <span>/</span>
                         <Link href="/about" className="hover:text-brand-amber transition">About</Link>
@@ -142,16 +148,16 @@ export default function Vacancies({ vacancies }: VacanciesProps) {
                                     <div className="flex-1">
                                         {/* Badges */}
                                         <div className="flex flex-wrap items-center gap-2 mb-3">
-                                            <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-slate-100 text-slate-600">
+                                            <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-slate-100 text-slate-700">
                                                 {vacancy.type}
                                             </span>
                                             {vacancy.isUrgent && (
-                                                <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-brand-rust/10 text-brand-rust">
+                                                <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-brand-rust/10 text-brand-rust">
                                                     Urgent
                                                 </span>
                                             )}
                                             {isClosingSoon(vacancy.closingDate) && (
-                                                <span className="text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full bg-amber-50 text-amber-700">
+                                                <span className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-amber-50 text-amber-700">
                                                     Closing Soon
                                                 </span>
                                             )}

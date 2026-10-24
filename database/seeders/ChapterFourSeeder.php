@@ -16,10 +16,10 @@ class ChapterFourSeeder extends Seeder
     {
         // 1. Admin User
         $admin = User::firstOrCreate(
-            ['email' => 'admin@chapterfour.mw'],
+            ['email' => 'admin@chapterfourmw.org'],
             [
                 'name' => 'Chapter Four Admin',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('chapter4@2026'),
                 'email_verified_at' => now(),
             ]
         );
@@ -154,38 +154,42 @@ class ChapterFourSeeder extends Seeder
 
         // 4. Sample Resources
         $resources = [
+            
             [
-                'title' => 'State of Constitutional Rights in Malawi: 2024 Youth Barometer',
-                'slug' => 'state-of-constitutional-rights-2024',
-                'type' => 'report',
-                'excerpt' => 'A comprehensive national assessment of civil liberties, youth civic participation, and access to justice across all 28 districts.',
-                'body' => 'Full report content assessing the implementation of Chapter IV rights in Malawi.',
+                'title' => 'Chapter Four Launches Nationwide Grassroots Legal Aid Caravan',
+                'slug' => 'chapter-four-launches-nationwide-legal-aid-caravan',
+                'type' => 'news',
+                'excerpt' => 'Mobile legal empowerment clinics will traverse rural trading centers to deliver free bail counseling and fundamental rights literacy to vulnerable youth.',
+                'body' => 'Chapter Four has officially rolled out its 2026 Nationwide Legal Aid Caravan, bringing pro-bono defense counsel and civic education directly to underserved rural communities.',
                 'status' => 'published',
                 'is_featured' => true,
+                'featured_image' => '/images/new/news_placeholder.webp',
                 'author_id' => $admin->id,
-                'published_at' => now()->subDays(5),
+                'published_at' => now()->subDays(2),
             ],
             [
-                'title' => 'Joint Statement on Proposed Amendments to the NGO Act',
-                'slug' => 'joint-statement-ngo-act',
-                'type' => 'press_release',
-                'excerpt' => 'Chapter Four alongside civil society partners urge parliament to uphold freedom of association and civic space.',
-                'body' => 'Official press release on civic space protection.',
+                'title' => 'Civil Society Coalition Urges Fast-Tracking of Judicial Reforms',
+                'slug' => 'civil-society-coalition-judicial-reforms',
+                'type' => 'news',
+                'excerpt' => 'Chapter Four convenes national consultative dialogue pressing for enhanced institutional funding for rural magistrate courts and legal aid bureaus.',
+                'body' => 'At a joint press briefing in Lilongwe, Chapter Four and allied legal advocacy groups called upon duty bearers to address systemic remand delays and guarantee expedited trials under Section 42 of the Constitution.',
                 'status' => 'published',
                 'is_featured' => false,
+                'featured_image' => '/images/new/news_placeholder.webp',
                 'author_id' => $admin->id,
-                'published_at' => now()->subDays(12),
+                'published_at' => now()->subDays(7),
             ],
             [
-                'title' => 'Community Paralegal Handbook: Navigating Bail and Police Custody',
-                'slug' => 'community-paralegal-handbook',
-                'type' => 'publication',
-                'excerpt' => 'A practical, simplified guide for grassroots paralegals and human rights defenders defending accused youth.',
-                'body' => 'Handbook guide for paralegals.',
+                'title' => 'Youth Human Rights Defenders Conclude Constitutional Literacy Summit',
+                'slug' => 'youth-defenders-constitutional-literacy-summit',
+                'type' => 'news',
+                'excerpt' => 'Over 120 community youth paralegals graduate from an intensive training retreat on human rights monitoring and freedom of assembly protections.',
+                'body' => 'Community leaders and grassroots paralegals from 14 districts completed the 5-day summit focusing on public interest litigation, peaceful assembly monitoring, and customary dispute arbitration.',
                 'status' => 'published',
                 'is_featured' => false,
+                'featured_image' => '/images/new/news_placeholder.webp',
                 'author_id' => $admin->id,
-                'published_at' => now()->subDays(20),
+                'published_at' => now()->subDays(15),
             ],
         ];
 
@@ -243,31 +247,8 @@ class ChapterFourSeeder extends Seeder
                 'status' => \App\Enums\InquiryStatus::New,
                 'ip_address' => '127.0.0.1',
                 'created_at' => now()->subHours(3),
-            ],
-            [
-                'name' => 'Grace Mwale',
-                'email' => 'grace.mwale@civic-mw.org',
-                'phone' => '+265 888 654 321',
-                'type' => 'Partnership & Funding',
-                'subject' => 'Joint submission on Electoral Law Reforms',
-                'message' => 'Our civil society coalition is organizing a parliamentary position paper on youth voter participation. We would like Chapter Four to co-author the section on Chapter IV rights.',
-                'status' => \App\Enums\InquiryStatus::InProgress,
-                'internal_notes' => 'Executive Director contacted Grace on WhatsApp. Drafting scheduled for next Monday.',
-                'ip_address' => '127.0.0.1',
-                'created_at' => now()->subDays(1),
-            ],
-            [
-                'name' => 'Tiwonge Banda',
-                'email' => 'tiwonge@unima.ac.mw',
-                'phone' => '+265 991 112 233',
-                'type' => 'Youth Volunteering',
-                'subject' => 'Paralegal volunteering application - UNIMA Law Faculty',
-                'message' => 'I am a final year law student at the University of Malawi interested in joining the weekend mobile legal aid clinics.',
-                'status' => \App\Enums\InquiryStatus::Resolved,
-                'internal_notes' => 'Approved. Connected with Lead Counsel for orientation.',
-                'ip_address' => '127.0.0.1',
-                'created_at' => now()->subDays(3),
-            ],
+            ]
+            
         ];
 
         foreach ($inquiries as $inq) {
@@ -362,30 +343,15 @@ class ChapterFourSeeder extends Seeder
         // 11. Team Members
         $team = [
             [
-                'name' => 'Kondwani Nkhoma',
+                'name' => 'Tuntufye Simwimba',
                 'role' => 'Executive Director & Lead Advocate',
                 'department' => 'Secretariat Leadership',
                 'category' => 'staff',
-                'biography' => 'Constitutional lawyer and youth civil society leader with over 8 years of public interest litigation and grassroots human rights defense experience across Malawi.',
+                'biography' => 'Constitutional lawyer and youth civil society leader with over 8 years of public interest litigation and grassroots human rights defense experience across MProfile
+Tuntufye Simwimba, the Programs Coordinator for Chisankho Watch, responsible for coordinating all programmes and projects under the initiative, holds a Master’s in Business Administration (Management Strategy) and a Bachelor of Laws (Hons) obtained from the Catholic University of Malawi. He is currently pursuing a Doctorate in Business Administration at the University of Malawi and an MA in Refugee Protection and Migration Studies at the University of London. Tuntufye is a Commonwealth Scholar with a bias in human rights, management strategy and governance. Since July 2019, he has played a pivotal role in leading effective electoral governance and human rights interventions to address pressing national issues.                 
+
+His responsibilities in electoral justice include monitoring and observing elections through Processes and Results Verification for Transparency (PRVT) and Election Situation Room (ESR). As a member of the National Taskforce on Electoral Law Reforms he has been key in legal reform for increased electoral integrity. He has also been pivotal in advocating for legal and policy reforms to enhance fairness and transparency of the electoral process and facilitating the resolution of electoral disputes through mediation and arbitration. He has coordinated multiple voter education projects funded by United Nations Development Programme (UNDP), National Democratic Institute (NDI) and Misereor to inform citizens of their electoral rights, ensure comprehensive documentation and reporting of electoral processes, and provide capacity building for electoral stakeholders. Additionally, he is passionate about ensuring inclusivity in electoral processes, particularly for marginalized groups such as people with disabilities, women, and minority communities, working to eliminate barriers to their full participation in development processes.alawi.',
                 'sort_order' => 1,
-                'status' => 'published',
-            ],
-            [
-                'name' => 'Chikondi Banda, LLB',
-                'role' => 'Head of Legal Aid & Constitutional Defense',
-                'department' => 'Legal Defense',
-                'category' => 'staff',
-                'biography' => 'Specializes in criminal justice reform, unlawful detention response, and managing Chapter Four traveling paralegal legal defense units.',
-                'sort_order' => 2,
-                'status' => 'published',
-            ],
-            [
-                'name' => 'Thokozani Phiri',
-                'role' => 'Director of Research & Civic Education',
-                'department' => 'Research & Policy',
-                'category' => 'staff',
-                'biography' => 'Policy analyst dedicated to authoring the annual Youth Barometer on Chapter IV rights and coordinating citizen scorecards in rural district councils.',
-                'sort_order' => 3,
                 'status' => 'published',
             ],
             [
@@ -407,10 +373,10 @@ class ChapterFourSeeder extends Seeder
         $settings = [
             'org_name' => 'Chapter Four Malawi',
             'tagline' => 'Rights. Justice. Dignity. For Everyone.',
-            'contact_email' => 'info@chapterfour.mw',
-            'contact_phone' => '+265 (0) 1 770 000',
+            'contact_email' => 'info@chapterfourmw.org',
+            'contact_phone' => '+265 (0) 994 066 921',
             'office_address' => 'City Centre / Area 10, Lilongwe, Malawi',
-            'emergency_helpline' => '+265 999 000 111',
+            'emergency_helpline' => '+265 881 089 609',
             'hours' => 'Monday – Friday: 08:00 – 17:00 CAT',
             'twitter_url' => 'https://twitter.com/chapterfour_mw',
             'facebook_url' => 'https://facebook.com/chapterfourmw',

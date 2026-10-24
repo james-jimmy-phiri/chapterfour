@@ -208,8 +208,17 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
     return (
         <PublicLayout>
             <Head>
-                <title>{`${project.title} — Chapter Four Projects`}</title>
-                <meta name="description" content={project.summary || project.title} />
+                <title>{`${project.title} | Chapter Four Malawi`}</title>
+                <meta
+                    head-key="description"
+                    name="description"
+                    content={project.summary || project.title}
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
+                />
             </Head>
 
             {/* ─── HERO BANNER ─────────────────────────────────────────────── */}
@@ -225,7 +234,7 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
                     {/* Breadcrumbs */}
-                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-400 mb-8 font-semibold uppercase tracking-wider">
+                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs sm:text-sm text-slate-400 mb-8 font-semibold uppercase tracking-wider">
                         <Link href="/" className="hover:text-white transition-colors">Home</Link>
                         <span>/</span>
                         <Link href="/projects" className="hover:text-white transition-colors">Projects</Link>

@@ -4,7 +4,19 @@ import { Head, Link } from '@inertiajs/react';
 export default function Privacy() {
     return (
         <PublicLayout>
-            <Head title="Privacy Policy — Chapter Four Malawi" />
+            <Head>
+                <title>Privacy Policy | Chapter Four Malawi</title>
+                <meta
+                    head-key="description"
+                    name="description"
+                    content="Privacy Policy and data protection protocols of Chapter Four Malawi. Safeguarding user confidentiality, rights reports, and personal data."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
+                />
+            </Head>
             <section className="hero-pattern text-white py-14 px-4 sm:px-8 border-b border-white/10">
                 <div className="max-w-4xl mx-auto">
                     <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-300 mb-4 font-semibold">

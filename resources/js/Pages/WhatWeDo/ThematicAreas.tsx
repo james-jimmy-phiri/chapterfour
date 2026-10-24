@@ -283,10 +283,16 @@ export default function ThematicAreas({ thematicAreas: dbThematicAreas = [] }: {
     return (
         <PublicLayout>
             <Head>
-                <title>Thematic Areas of Work — Chapter Four Malawi</title>
+                <title>Thematic Areas of Work | Chapter Four Malawi</title>
                 <meta
+                    head-key="description"
                     name="description"
                     content="Explore the eight key thematic areas where Chapter Four Malawi implements its human rights and governance programmes — from constitutional education to accountability monitoring."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
                 />
             </Head>
 
@@ -303,7 +309,7 @@ export default function ThematicAreas({ thematicAreas: dbThematicAreas = [] }: {
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
                     {/* Breadcrumbs */}
-                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-400 mb-8 font-bold uppercase tracking-wider">
+                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs sm:text-sm text-slate-400 mb-8 font-bold uppercase tracking-wider">
                         <Link href="/" className="hover:text-brand-amber transition">Home</Link>
                         <span>/</span>
                         <Link href="/what-we-do" className="hover:text-brand-amber transition">What We Do</Link>
@@ -353,14 +359,14 @@ export default function ThematicAreas({ thematicAreas: dbThematicAreas = [] }: {
                             viewport={{ once: true }}
                             transition={{ duration: 0.8 }}
                         >
-                            <span className="text-xs font-bold uppercase tracking-widest text-brand-rust block mb-3">Our Programme Framework</span>
+                            <span className="text-sm font-bold uppercase tracking-wider text-brand-rust block mb-3">Our Programme Framework</span>
                             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 leading-tight mb-6">
                                 Eight Pillars of<br />Constitutional Justice
                             </h2>
-                            <p className="text-slate-500 leading-relaxed text-base mb-5">
+                            <p className="text-slate-600 leading-relaxed text-base mb-5">
                                 Chapter Four's work is grounded in the recognition that constitutional rights must be translated from legal text into lived reality. Each thematic pillar is an interconnected dimension of our commitment to ensuring that no Malawian is left behind.
                             </p>
-                            <p className="text-slate-500 leading-relaxed text-base mb-8">
+                            <p className="text-slate-600 leading-relaxed text-base mb-8">
                                 Our eight pillars are mutually reinforcing — legal empowerment informs accountability monitoring; civic education drives democratic participation; policy advocacy is grounded in field research. Together they constitute a holistic framework for systemic change.
                             </p>
                             <div className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
@@ -391,11 +397,11 @@ export default function ThematicAreas({ thematicAreas: dbThematicAreas = [] }: {
             <section className="py-20 bg-slate-50">
                 <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-8">
                     <div className="text-center max-w-2xl mx-auto mb-16">
-                        <span className="text-xs font-bold uppercase tracking-widest text-brand-rust block mb-3">All Eight Pillars</span>
+                        <span className="text-sm font-bold uppercase tracking-wider text-brand-rust block mb-3">All Eight Pillars</span>
                         <h2 className="text-3xl sm:text-4xl font-black text-slate-900 leading-tight">
                             Our Areas of Work
                         </h2>
-                        <p className="text-slate-500 mt-4 leading-relaxed">
+                        <p className="text-slate-600 mt-4 text-base leading-relaxed">
                             Each pillar represents a critical dimension of our work — interconnected and mutually reinforcing in building a rights-respecting Malawi.
                         </p>
                     </div>
@@ -456,7 +462,7 @@ export default function ThematicAreas({ thematicAreas: dbThematicAreas = [] }: {
                                             {item.title}
                                         </h3>
 
-                                        <div className="mt-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/90 hover:text-white transition-colors">
+                                        <div className="mt-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-white/90 hover:text-white transition-colors">
                                             View Details <ArrowUpRight className="h-4 w-4" />
                                         </div>
                                     </div>

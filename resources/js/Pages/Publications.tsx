@@ -58,15 +58,27 @@ export default function Publications({ publications, featuredPublications = [], 
 
     return (
         <PublicLayout>
-            <Head title="Publications, Research & Reports — Chapter Four" />
+            <Head>
+                <title>Publications & Research | Chapter Four Malawi</title>
+                <meta
+                    head-key="description"
+                    name="description"
+                    content="Access official Chapter Four publications, constitutional monitors, policy submissions, and evidence-based human rights field research in Malawi."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
+                />
+            </Head>
 
             {/* Hero Header */}
             <div className="relative bg-gradient-to-br from-[#1a0e08] via-[#2d150b] to-[#120904] text-white pt-36 pb-20 overflow-hidden">
                 <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#d95b38_1px,transparent_1px)] [background-size:16px_16px]" />
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-brand-amber border border-white/15 text-xs font-bold uppercase tracking-wider mb-4">
-                        <BookOpen className="w-3.5 h-3.5" />
+                    <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 text-brand-amber border border-white/15 text-sm font-bold uppercase tracking-wider mb-4">
+                        <BookOpen className="w-4 h-4" />
                         <span>Constitutional Research & Knowledge Repository</span>
                     </div>
 
@@ -79,18 +91,18 @@ export default function Publications({ publications, featuredPublications = [], 
                     </p>
 
                     {/* Quick Search */}
-                    <form onSubmit={handleSearch} className="mt-8 max-w-xl flex items-center bg-white/10 backdrop-blur-md rounded-2xl p-1.5 border border-white/20">
+                    <form onSubmit={handleSearch} className="mt-8 max-w-xl flex items-center bg-white/10 backdrop-blur-md rounded-2xl p-2 border border-white/20">
                         <Search className="w-5 h-5 text-slate-400 ml-3" />
                         <input
                             type="text"
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             placeholder="Search publications by title or topic..."
-                            className="bg-transparent border-none text-white placeholder-slate-400 text-sm px-3 py-2 w-full focus:ring-0 focus:outline-none"
+                            className="bg-transparent border-none text-white placeholder-slate-400 text-base px-3 py-2 w-full focus:ring-0 focus:outline-none"
                         />
                         <button
                             type="submit"
-                            className="bg-brand-rust hover:bg-brand-rust-dark text-white text-xs font-bold py-2.5 px-5 rounded-xl transition shrink-0"
+                            className="bg-brand-rust hover:bg-brand-rust-dark text-white text-sm font-bold py-2.5 px-6 rounded-xl transition shrink-0"
                         >
                             Search
                         </button>
@@ -102,12 +114,12 @@ export default function Publications({ publications, featuredPublications = [], 
             <div className="py-16 bg-slate-50 min-h-screen">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 space-y-12">
                     {/* Category Tabs */}
-                    <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-4">
+                    <div className="flex flex-wrap items-center gap-2.5 border-b border-slate-200 pb-4">
                         {CATEGORIES.map((cat) => (
                             <button
                                 key={cat.value}
                                 onClick={() => handleCategoryClick(cat.value)}
-                                className={`px-4 py-2 rounded-xl text-xs font-semibold transition cursor-pointer ${
+                                className={`px-4 py-2 rounded-xl text-sm font-semibold transition cursor-pointer ${
                                     category === cat.value
                                         ? 'bg-brand-rust text-white shadow-md shadow-brand-rust/20'
                                         : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'

@@ -85,8 +85,14 @@ return new class extends Migration
         Schema::dropIfExists('page_quotes');
         Schema::dropIfExists('core_objectives');
 
-        Schema::table('beneficiary_groups', fn (Blueprint $t) => $t->dropColumnIfExists('published_at'));
-        Schema::table('team_members', fn (Blueprint $t) => $t->dropColumnIfExists('published_at'));
-        Schema::table('interventions', fn (Blueprint $t) => $t->dropColumnIfExists('published_at'));
+        if (Schema::hasColumn('beneficiary_groups', 'published_at')) {
+            Schema::table('beneficiary_groups', fn (Blueprint $t) => $t->dropColumn('published_at'));
+        }
+        if (Schema::hasColumn('team_members', 'published_at')) {
+            Schema::table('team_members', fn (Blueprint $t) => $t->dropColumn('published_at'));
+        }
+        if (Schema::hasColumn('interventions', 'published_at')) {
+            Schema::table('interventions', fn (Blueprint $t) => $t->dropColumn('published_at'));
+        }
     }
 };

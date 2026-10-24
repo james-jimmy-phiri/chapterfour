@@ -146,6 +146,9 @@ export default function TeamIndex({ teamMembers = [] }: TeamProps) {
                                         src={member.photo}
                                         alt={member.name}
                                         className="w-14 h-14 rounded-full object-cover border-2 border-brand-rust/20 shrink-0 shadow-sm"
+                                        onError={(e) => {
+                                            e.currentTarget.src = "/images/default-avatar.jpg";
+                                        }}
                                     />
                                 ) : (
                                     <div className="w-14 h-14 rounded-full bg-brand-rust/10 border border-brand-rust/20 flex items-center justify-center text-brand-rust dark:text-brand-amber font-serif font-bold text-lg shrink-0">

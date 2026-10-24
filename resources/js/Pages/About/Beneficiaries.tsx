@@ -28,10 +28,16 @@ export default function Beneficiaries({ beneficiaryGroups = [] }: BeneficiariesP
     return (
         <PublicLayout>
             <Head>
-                <title>Target Beneficiaries — Chapter Four Malawi</title>
+                <title>Target Beneficiaries | Chapter Four Malawi</title>
                 <meta
+                    head-key="description"
                     name="description"
-                    content="Chapter Four works with a broad range of rights holders, focusing on people and communities facing vulnerability or barriers to accessing justice."
+                    content="Chapter Four works with a broad range of rights holders, focusing on people and communities facing vulnerability or barriers to accessing justice in Malawi."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
                 />
             </Head>
 

@@ -28,10 +28,16 @@ export default function Contact() {
     return (
         <PublicLayout>
             <Head>
-                <title>Contact Us — Chapter Four Malawi</title>
+                <title>Contact Chapter Four Malawi</title>
                 <meta
+                    head-key="description"
                     name="description"
                     content="Get in touch with Chapter Four Malawi. Submit a confidential human rights inquiry, request legal guidance, or explore partnership opportunities."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
                 />
             </Head>
 
@@ -47,7 +53,7 @@ export default function Contact() {
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
-                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-300 mb-6 font-semibold uppercase tracking-wider">
+                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs sm:text-sm text-slate-300 mb-6 font-semibold uppercase tracking-wider">
                         <Link href="/" className="hover:text-brand-amber transition">Home</Link>
                         <span className="text-slate-500">›</span>
                         <span className="text-brand-amber">Contact Us</span>
@@ -97,8 +103,8 @@ export default function Contact() {
                             </div>
 
                             <div className="space-y-6">
-                                <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-md flex items-start gap-5 group hover:border-brand-rust/30 transition-colors">
-                                    <div className="w-14 h-14 rounded-xl bg-brand-rust/10 text-brand-rust flex items-center justify-center shrink-0 group-hover:bg-brand-rust group-hover:text-white transition-colors duration-300">
+                                <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-md flex items-start gap-5 group hover:border-slate-300 transition-colors">
+                                    <div className="w-14 h-14 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center shrink-0 group-hover:bg-slate-800 group-hover:text-white transition-colors duration-300">
                                         <MapPin className="w-6 h-6" />
                                     </div>
                                     <div>
@@ -112,19 +118,19 @@ export default function Contact() {
                                     </div>
                                 </div>
 
-                                <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-md flex items-start gap-5 group hover:border-brand-amber/30 transition-colors">
-                                    <div className="w-14 h-14 rounded-xl bg-brand-amber/10 text-brand-amber flex items-center justify-center shrink-0 group-hover:bg-brand-amber group-hover:text-white transition-colors duration-300">
+                                <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-md flex items-start gap-5 group hover:border-slate-300 transition-colors">
+                                    <div className="w-14 h-14 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center shrink-0 group-hover:bg-slate-800 group-hover:text-white transition-colors duration-300">
                                         <Phone className="w-6 h-6" />
                                     </div>
                                     <div>
                                         <h3 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-1">Telephone Hotline</h3>
                                         <p className="text-lg font-bold text-slate-900 leading-tight">
-                                            <a href={`tel:${site?.contact_phone || '+265881089609'}`} className="hover:text-brand-amber transition">
+                                            <a href={`tel:${site?.contact_phone || '+265881089609'}`} className="hover:text-slate-600 transition">
                                                 {site?.contact_phone || '+265 881 089 609'}
                                             </a>
                                         </p>
                                         <p className="text-slate-600 mt-1">
-                                            <a href="tel:+265994066921" className="hover:text-brand-amber transition">+265 994 066 921</a>
+                                            <a href="tel:+265994066921" className="hover:text-slate-600 transition">+265 994 066 921</a>
                                         </p>
                                         <p className="text-slate-600 mt-1 flex items-center gap-2">
                                             <Clock className="w-4 h-4" /> {site?.hours || '8:00 AM – 5:00 PM CAT'}
@@ -199,7 +205,7 @@ export default function Contact() {
                                             <div className="w-8 h-8 rounded-xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center shrink-0 text-slate-700">
                                                 <Shield className="w-4 h-4 text-slate-600" />
                                             </div>
-                                            <p className="text-xs text-slate-600 leading-relaxed">
+                                            <p className="text-sm text-slate-600 leading-relaxed">
                                                 <span className="font-semibold text-slate-900">Anonymous Submission:</span> You can leave your name, email, and phone blank if you wish to remain anonymous. Your report will still be received and handled with strict confidentiality.
                                             </p>
                                         </div>
@@ -207,7 +213,7 @@ export default function Contact() {
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                             <div>
                                                 <label className="block text-sm font-bold text-slate-700 mb-2">
-                                                    Full Name <span className="text-slate-400 font-normal text-xs">(optional for anonymous)</span>
+                                                    Full Name <span className="text-slate-500 font-normal text-xs sm:text-sm">(optional for anonymous)</span>
                                                 </label>
                                                 <input
                                                     type="text"
@@ -216,12 +222,12 @@ export default function Contact() {
                                                     placeholder="Kondwani Phiri"
                                                     className="w-full text-base px-4 py-3 rounded-xl border border-slate-200 focus:border-brand-rust focus:ring-2 focus:ring-brand-rust/20 outline-none transition-all bg-slate-50 focus:bg-white"
                                                 />
-                                                {errors.name && <p className="text-xs text-red-600 mt-2 font-medium">{errors.name}</p>}
+                                                {errors.name && <p className="text-xs sm:text-sm text-red-600 mt-2 font-medium">{errors.name}</p>}
                                             </div>
 
                                             <div>
                                                 <label className="block text-sm font-bold text-slate-700 mb-2">
-                                                    Email Address <span className="text-slate-400 font-normal text-xs">(optional for anonymous)</span>
+                                                    Email Address <span className="text-slate-500 font-normal text-xs sm:text-sm">(optional for anonymous)</span>
                                                 </label>
                                                 <input
                                                     type="email"

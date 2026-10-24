@@ -3,7 +3,7 @@ import { Head, Link } from '@inertiajs/react';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import {
-    ArrowLeft, Calendar, User, Download, Share2,
+    ArrowLeft, ArrowRight, Calendar, User, Download, Share2,
     Check, FileText, ChevronRight
 } from 'lucide-react';
 
@@ -39,7 +39,7 @@ const formatDate = (dateString?: string) => {
     }
 };
 
-const PLACEHOLDER_IMAGE = "/images/hero-bg.jpg";
+const PLACEHOLDER_IMAGE = "/images/new/news_placeholder.webp";
 
 // Animation Variants
 const fadeInUp = {
@@ -63,8 +63,17 @@ export default function ResourceDetail({ resource, relatedResources = [] }: Reso
     return (
         <PublicLayout>
             <Head>
-                <title>{`${resource.title} — Chapter Four Malawi`}</title>
-                <meta name="description" content={resource.excerpt || resource.title} />
+                <title>{`${resource.title} | Chapter Four Malawi`}</title>
+                <meta
+                    head-key="description"
+                    name="description"
+                    content={resource.excerpt || resource.title}
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
+                />
             </Head>
 
             {/* ─── EDITORIAL HEADER ─────────────────────────────────────────────── */}
@@ -72,12 +81,12 @@ export default function ResourceDetail({ resource, relatedResources = [] }: Reso
                 <div className="max-w-5xl mx-auto px-4 sm:px-8">
                     
                     {/* Breadcrumbs */}
-                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-8">
+                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-500 uppercase tracking-wider mb-8">
                         <Link href="/" className="hover:text-slate-900 transition-colors">Home</Link>
-                        <ChevronRight className="w-3 h-3" />
+                        <ChevronRight className="w-3.5 h-3.5" />
                         <Link href="/resources" className="hover:text-slate-900 transition-colors">Resources</Link>
-                        <ChevronRight className="w-3 h-3" />
-                        <span className="text-slate-900">{resource.type || 'Publication'}</span>
+                        <ChevronRight className="w-3.5 h-3.5" />
+                        <span className="text-slate-900 font-bold">{resource.type || 'Publication'}</span>
                     </nav>
 
                     {/* Title Area */}
@@ -87,7 +96,7 @@ export default function ResourceDetail({ resource, relatedResources = [] }: Reso
                         variants={fadeInUp}
                         className="mb-10"
                     >
-                        <div className="inline-block bg-slate-100 text-slate-700 border border-slate-200 px-3 py-1 rounded text-[11px] font-bold uppercase tracking-wider mb-5">
+                        <div className="inline-block bg-slate-100 text-slate-700 border border-slate-200 px-3.5 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider mb-5">
                             {resource.type || 'Publication'}
                         </div>
                         
@@ -252,40 +261,47 @@ export default function ResourceDetail({ resource, relatedResources = [] }: Reso
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ duration: 0.4, delay: idx * 0.1 }}
-                                    className="group relative bg-white rounded-lg border border-slate-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full"
+                                    whileHover={{ y: -5, transition: { duration: 0.25 } }}
+                                    className="group relative bg-white rounded-xl border border-slate-200/90 hover:border-brand-rust/40 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full cursor-pointer"
                                 >
-                                    <Link href={`/resources/${item.slug}`} className="relative h-40 block overflow-hidden shrink-0 bg-slate-100 border-b border-slate-100">
-                                        <img
-                                            src={item.featured_image || PLACEHOLDER_IMAGE}
-                                            alt={item.title}
-                                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                                            onError={(e) => { e.currentTarget.src = PLACEHOLDER_IMAGE; }}
-                                        />
-                                    </Link>
-
-                                    <div className="p-4 flex flex-col flex-grow">
-                                        <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-400 mb-2 tracking-wider">
-                                            <Calendar className="w-3 h-3" />
-                                            <span>{formatDate(item.published_at)}</span>
+                                    <Link href={`/resources/${item.slug}`} className="flex flex-col h-full focus:outline-none">
+                                        <div className="relative h-44 block overflow-hidden shrink-0 bg-slate-100 border-b border-slate-100">
+                                            <img
+                                                src={item.featured_image || PLACEHOLDER_IMAGE}
+                                                alt={item.title}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                                                onError={(e) => { e.currentTarget.src = PLACEHOLDER_IMAGE; }}
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                                            <div className="absolute top-2.5 left-2.5">
+                                                <span className="inline-block bg-white/95 backdrop-blur-sm text-slate-800 text-[10px] font-bold tracking-wider uppercase px-2 py-0.5 rounded shadow-sm border border-slate-200/50">
+                                                    {item.type || 'Publication'}
+                                                </span>
+                                            </div>
                                         </div>
 
-                                        <h3 className="text-[14px] font-bold text-slate-900 mb-1.5 group-hover:text-slate-600 transition-colors leading-snug line-clamp-2">
-                                            <Link href={`/resources/${item.slug}`} className="focus:outline-none">
-                                                <span className="absolute inset-0" aria-hidden="true" />
+                                        <div className="h-1 w-full bg-gradient-to-r from-brand-rust via-brand-amber to-brand-rust scale-x-0 group-hover:scale-x-100 opacity-0 group-hover:opacity-100 transition-all duration-500 origin-left" />
+
+                                        <div className="p-4 flex flex-col flex-grow">
+                                            <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 mb-2 tracking-wider">
+                                                <Calendar className="w-3.5 h-3.5 text-brand-rust" />
+                                                <span>{formatDate(item.published_at)}</span>
+                                            </div>
+
+                                            <h3 className="text-sm font-bold text-slate-900 mb-2 group-hover:text-brand-rust transition-colors leading-snug line-clamp-2">
                                                 {item.title}
-                                            </Link>
-                                        </h3>
+                                            </h3>
 
-                                        <p className="text-[13px] text-slate-500 leading-relaxed mb-4 line-clamp-2 flex-grow">
-                                            {item.excerpt || "Click to view more details about this publication."}
-                                        </p>
+                                            <p className="text-xs text-slate-600 leading-relaxed mb-4 line-clamp-2 flex-grow">
+                                                {item.excerpt || "Click to view more details about this publication."}
+                                            </p>
 
-                                        <div className="mt-auto pt-3 border-t border-slate-100">
-                                            <span className="inline-block bg-indigo-50/50 text-indigo-700 px-2 py-1 rounded text-[10px] font-semibold tracking-wide">
-                                                {item.type || 'Publication'}
-                                            </span>
+                                            <div className="mt-auto pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-brand-rust group-hover:text-brand-rust-dark">
+                                                <span>View details</span>
+                                                <ArrowRight className="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform duration-300" />
+                                            </div>
                                         </div>
-                                    </div>
+                                    </Link>
                                 </motion.article>
                             ))}
                         </div>

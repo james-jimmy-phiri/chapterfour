@@ -38,8 +38,17 @@ export default function CrossCuttingActivities({ activities = [] }: Props) {
     return (
         <PublicLayout>
             <Head>
-                <title>Cross-Cutting Activities — Chapter Four Malawi</title>
-                <meta name="description" content="Activities that span across all thematic areas of Chapter Four Malawi's work." />
+                <title>Cross-Cutting Activities | Chapter Four Malawi</title>
+                <meta
+                    head-key="description"
+                    name="description"
+                    content="Integrated strategic operations embedded across all thematic pillars of Chapter Four Malawi's human rights and constitutional defense work."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
+                />
             </Head>
 
             {/* Hero Section */}

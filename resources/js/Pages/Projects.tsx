@@ -111,10 +111,16 @@ export default function Projects({ projects = [] }: ProjectsProps) {
     return (
         <PublicLayout>
             <Head>
-                <title>Field Projects & Interventions — Chapter Four Malawi</title>
+                <title>Field Projects & Interventions | Chapter Four Malawi</title>
                 <meta
+                    head-key="description"
                     name="description"
                     content="Explore Chapter Four's active human rights field interventions, legal clinics, and community accountability projects across Malawi."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
                 />
             </Head>
 
@@ -130,7 +136,7 @@ export default function Projects({ projects = [] }: ProjectsProps) {
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
-                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-400 mb-8 font-bold uppercase tracking-wider">
+                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs sm:text-sm text-slate-400 mb-8 font-bold uppercase tracking-wider">
                         <Link href="/" className="hover:text-brand-amber transition">Home</Link>
                         <span>/</span>
                         <span className="text-brand-amber">Projects</span>
@@ -270,7 +276,7 @@ export default function Projects({ projects = [] }: ProjectsProps) {
                                         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 to-transparent" />
                                         {/* Status badge */}
                                         <div className="absolute top-3 left-3">
-                                            <span className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-md backdrop-blur-sm flex items-center gap-1.5 ${item.status === 'Completed'
+                                            <span className={`text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full shadow-md backdrop-blur-sm flex items-center gap-1.5 ${item.status === 'Completed'
                                                 ? 'bg-slate-700/90 text-white'
                                                 : 'bg-emerald-500/90 text-white'
                                                 }`}>
@@ -285,12 +291,12 @@ export default function Projects({ projects = [] }: ProjectsProps) {
 
                                     {/* Content */}
                                     <div className="p-6 flex flex-col flex-grow">
-                                        <h2 className="text-lg font-bold text-slate-900 leading-tight mb-3 group-hover:text-brand-rust transition-colors line-clamp-2">
+                                        <h2 className="text-lg sm:text-xl font-bold text-slate-900 leading-tight mb-3 group-hover:text-brand-rust transition-colors line-clamp-2">
                                             <Link href={`/projects/${item.slug}`}>{item.title}</Link>
                                         </h2>
 
                                         {item.summary && (
-                                            <p className="text-sm text-slate-600 leading-relaxed line-clamp-3 mb-4 flex-grow">
+                                            <p className="text-sm sm:text-base text-slate-600 leading-relaxed line-clamp-3 mb-4 flex-grow">
                                                 {item.summary}
                                             </p>
                                         )}
@@ -298,16 +304,16 @@ export default function Projects({ projects = [] }: ProjectsProps) {
                                         {/* Tags */}
                                         <div className="space-y-2 mt-auto">
                                             {item.locations && item.locations.length > 0 && (
-                                                <div className="flex items-start gap-2 text-xs text-slate-500">
-                                                    <MapPin className="w-3.5 h-3.5 text-brand-rust shrink-0 mt-0.5" />
+                                                <div className="flex items-start gap-2 text-xs sm:text-sm text-slate-600">
+                                                    <MapPin className="w-4 h-4 text-brand-rust shrink-0 mt-0.5" />
                                                     <span className="font-medium line-clamp-1">
                                                         {Array.isArray(item.locations) ? item.locations.join(', ') : item.locations}
                                                     </span>
                                                 </div>
                                             )}
                                             {item.beneficiaries && item.beneficiaries.length > 0 && (
-                                                <div className="flex items-start gap-2 text-xs text-slate-500">
-                                                    <Users className="w-3.5 h-3.5 text-brand-amber shrink-0 mt-0.5" />
+                                                <div className="flex items-start gap-2 text-xs sm:text-sm text-slate-600">
+                                                    <Users className="w-4 h-4 text-brand-amber shrink-0 mt-0.5" />
                                                     <span className="font-medium line-clamp-1">
                                                         {Array.isArray(item.beneficiaries) ? item.beneficiaries.join(', ') : item.beneficiaries}
                                                     </span>
@@ -318,7 +324,7 @@ export default function Projects({ projects = [] }: ProjectsProps) {
                                         <div className="mt-4 pt-4 border-t border-slate-100">
                                             <Link
                                                 href={`/projects/${item.slug}`}
-                                                className="inline-flex items-center gap-2 text-sm font-bold text-brand-rust hover:text-brand-rust-dark transition-colors group/link"
+                                                className="inline-flex items-center gap-2 text-sm sm:text-base font-bold text-brand-rust hover:text-brand-rust-dark transition-colors group/link"
                                             >
                                                 <span>View Details</span>
                                                 <ArrowUpRight className="w-4 h-4 transform group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5 transition-transform" />

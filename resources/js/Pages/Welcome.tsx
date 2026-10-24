@@ -98,25 +98,25 @@ function getThematicIcon(slug: string, index: number) {
 
 const defaultHeroSlides = [
     {
-        word: 'human rights,',
+        word: 'Human Rights Protection',
         bgImage: '/images/hero-bg.jpg',
         rightImage: '/images/child-hero.png',
         rightAlt: 'Child supported by Chapter Four public interest legal aid and child protection',
         accentLabel: 'Human Rights & Constitutionalism',
     },
     {
-        word: 'constitutionalism,',
+        word: 'Peace Building',
         bgImage: '/images/hero/pexels-akoonie-10875242.jpg',
         rightImage: '/images/hero/smiling-african-mother-with-child-in-traditional-attire-on-transparent-background-png.png',
         rightAlt: 'Families and communities empowered by constitutional rights advocacy',
-        accentLabel: 'Constitutional Supremacy',
+        accentLabel: 'Human Rights Protection',
     },
     {
-        word: 'access to justice,',
-        bgImage: '/images/hero/pexels-dsd-143941-1502311.jpg',
+        word: 'Climate & Environmental Justice',
+        bgImage: '/images/hero/climate.jpg',
         rightImage: '/images/child-hero.png',
         rightAlt: 'Grassroots citizens gaining access to pro-bono legal defense',
-        accentLabel: 'Access to Justice & Legal Aid',
+        accentLabel: 'Climate & Environmental Justice',
     },
     {
         word: 'accountable democracy,',
@@ -281,7 +281,7 @@ export default function Welcome({
     const articlesData = displayResources.map((item) => ({
         category: item.type || 'Resource',
         description: item.excerpt || '',
-        image: (item as any).featured_image || "/images/child-hero.png",
+        image: (item as any).featured_image || "/images/new/news_placeholder.webp",
         publishDate: item.published_at || 'Recent',
         readMoreLink: `/resources/${item.slug}`,
         title: item.title,
@@ -290,10 +290,16 @@ export default function Welcome({
     return (
         <PublicLayout>
             <Head>
-                <title>Chapter Four Malawi — Defending Constitutionalism, Human Rights & Justice</title>
+                <title>Chapter Four Malawi | Human Rights & Constitutionalism</title>
                 <meta
+                    head-key="description"
                     name="description"
-                    content="Chapter Four is a premier, non-partisan legal and civic organization in Malawi dedicated to safeguarding human rights, constitutional freedoms, and access to justice."
+                    content="Chapter Four is a non-partisan legal and civic organization in Malawi promoting human rights, constitutionalism, access to justice and accountable governance."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
                 />
             </Head>
 
@@ -308,20 +314,31 @@ export default function Welcome({
                 {/* Background Image Carousel with Pure Black Overlay & High Photo Visibility */}
                 <div className="absolute inset-0 z-0 bg-black overflow-hidden">
                     <AnimatePresence mode="sync">
-                        <motion.img
-                            key={activeHeroSlides[slideIndex % activeHeroSlides.length].bgImage}
-                            src={activeHeroSlides[slideIndex % activeHeroSlides.length].bgImage}
-                            alt="Chapter Four Malawi Community"
-                            initial={{ opacity: 0, scale: 1.05 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 1.1, ease: 'easeInOut' }}
-                            className="absolute inset-0 w-full h-full object-cover object-center"
-                        />
+                        {(() => {
+                            const idx = slideIndex % activeHeroSlides.length;
+                            const slide = activeHeroSlides[idx];
+                            const isFirst = idx === 0;
+                            return (
+                                <motion.img
+                                    key={slide.bgImage}
+                                    src={slide.bgImage}
+                                    alt="Chapter Four Malawi Community"
+                                    fetchPriority={isFirst ? 'high' : 'low'}
+                                    loading={isFirst ? 'eager' : 'lazy'}
+                                    decoding={isFirst ? 'sync' : 'async'}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 1.1, ease: 'easeInOut' }}
+                                    className="absolute inset-0 w-full h-full object-cover object-center"
+                                />
+                            );
+                        })()}
                     </AnimatePresence>
 
-                    {/* Pure Black Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-black/40 sm:from-black/85 sm:via-black/55 sm:to-black/40 z-1" />
+                    {/* Dark Overlay - enhanced for richer contrast and improved readability */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-black/92 via-black/72 to-black/55 sm:from-black/90 sm:via-black/65 sm:to-black/45 z-1" />
+                    <div className="absolute inset-0 bg-black/20 z-1 pointer-events-none" />
 
                     {/* Subtle ambient glow accents */}
                     <div className="absolute top-1/4 -left-20 w-96 h-96 bg-brand-amber/10 rounded-full blur-3xl pointer-events-none z-1" />
@@ -374,21 +391,29 @@ export default function Welcome({
                         {/* Fixed massive mobile height: changed to h-[250px] for mobile, restoring large height for lg screens */}
                         <div className="relative w-full flex justify-center h-[250px] sm:h-[350px] lg:min-h-[540px] items-end lg:items-center">
                             <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={activeHeroSlides[slideIndex % activeHeroSlides.length].rightImage + (slideIndex % activeHeroSlides.length)}
-                                    initial={{ opacity: 0, y: 25, scale: 0.95 }}
-                                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                                    exit={{ opacity: 0, y: -20, scale: 0.97 }}
-                                    transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-                                    className="relative flex justify-center w-full h-full"
-                                >
-                                    <img
-                                        src={activeHeroSlides[slideIndex % activeHeroSlides.length].rightImage}
-                                        alt={activeHeroSlides[slideIndex % activeHeroSlides.length].rightAlt}
-                                        // Tightly controlled mobile max-height so it doesn't push the next section away
-                                        className="relative z-10 w-auto h-full max-h-[250px] sm:max-h-[350px] lg:max-h-[560px] object-contain drop-shadow-[0_25px_35px_rgba(0,0,0,0.8)] select-none pointer-events-none"
-                                    />
-                                </motion.div>
+                                {(() => {
+                                    const idx = slideIndex % activeHeroSlides.length;
+                                    const slide = activeHeroSlides[idx];
+                                    return (
+                                        <motion.div
+                                            key={slide.rightImage + idx}
+                                            initial={{ opacity: 0, y: 25, scale: 0.95 }}
+                                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                                            exit={{ opacity: 0, y: -20, scale: 0.97 }}
+                                            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                                            className="relative flex justify-center w-full h-full"
+                                        >
+                                            <img
+                                                src={slide.rightImage}
+                                                alt={slide.rightAlt}
+                                                loading={idx === 0 ? 'eager' : 'lazy'}
+                                                decoding={idx === 0 ? 'sync' : 'async'}
+                                                // Tightly controlled mobile max-height so it doesn't push the next section away
+                                                className="relative z-10 w-auto h-full max-h-[250px] sm:max-h-[350px] lg:max-h-[560px] object-contain drop-shadow-[0_25px_35px_rgba(0,0,0,0.8)] select-none pointer-events-none"
+                                            />
+                                        </motion.div>
+                                    );
+                                })()}
                             </AnimatePresence>
                         </div>
                     </div>
@@ -403,26 +428,26 @@ export default function Welcome({
                 <div className="bg-white items-center rounded-2xl shadow-2xl border border-slate-200/90 p-5 sm:p-7">
                     <div className=" items-center">
                         <div className="lg:col-span-7">
-                            <div className="mb-2 flex items-center justify-between">
-                                <span className="text-xs font-bold uppercase tracking-wider text-brand-rust flex items-center gap-1.5">
-                                    <Shield className="w-3.5 h-3.5" />
-                                    <span>rights been violated or You have any Concern? Send Us a  Message</span>
+                            <div className="mb-2.5 flex items-center justify-between">
+                                <span className="text-sm font-bold uppercase tracking-wider text-black flex items-center gap-2">
+                                    <Shield className="w-4 h-4" />
+                                    <span>You have any Concern? Send Us a Message</span>
                                 </span>
-                                <span className="text-[11px] text-slate-400 font-medium">Chapter Four</span>
+                                <span className="text-xs text-slate-500 font-semibold tracking-wide">Chapter Four</span>
                             </div>
 
                             <form
                                 onSubmit={(e) => { e.preventDefault(); setIsMessageModalOpen(true); }}
-                                className="bg-slate-50 rounded-xl p-2 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 border border-slate-200 focus-within:border-brand-rust focus-within:ring-2 focus-within:ring-brand-rust/20 transition"
+                                className="bg-slate-50 rounded-xl p-2.5 flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 border border-slate-200 focus-within:border-brand-rust focus-within:ring-2 focus-within:ring-brand-rust/20 transition"
                                 data-purpose="repositioned-search"
                             >
                                 {/* Inquiry Type Dropdown */}
-                                <div className="flex items-center border-b sm:border-b-0 sm:border-r border-slate-200 px-3 py-1.5">
-                                    <FileText className="w-4 h-4 text-slate-400 mr-2 shrink-0" />
+                                <div className="flex items-center border-b sm:border-b-0 sm:border-r border-slate-200 px-3 py-2">
+                                    <FileText className="w-4 h-4 text-slate-500 mr-2 shrink-0" />
                                     <select
                                         value={floatingInquiryType}
                                         onChange={(e) => setFloatingInquiryType(e.target.value)}
-                                        className="text-xs font-semibold text-slate-700 bg-transparent border-none focus:ring-0 cursor-pointer pr-6 py-0 focus:outline-none"
+                                        className="text-sm font-semibold text-slate-800 bg-transparent border-none focus:ring-0 cursor-pointer pr-6 py-0.5 focus:outline-none"
                                     >
                                         <option value="General Inquiry">General Inquiry</option>
                                         <option value="Legal Aid & Defense">Legal Aid & Defense</option>
@@ -441,15 +466,15 @@ export default function Welcome({
                                     value={floatingMessage}
                                     onChange={(e) => setFloatingMessage(e.target.value)}
                                     placeholder="Briefly describe your inquiry or report a concern..."
-                                    className="w-full text-xs sm:text-sm px-3 py-2 text-slate-800 placeholder-slate-400 bg-transparent border-none focus:ring-0 focus:outline-none"
+                                    className="w-full text-sm sm:text-base px-3 py-2 text-slate-800 placeholder-slate-400 bg-transparent border-none focus:ring-0 focus:outline-none"
                                 />
 
                                 {/* Submit Button */}
                                 <button
                                     type="submit"
-                                    className="bg-brand-rust hover:bg-brand-rust-dark text-white text-xs sm:text-sm font-semibold px-6 py-2.5 rounded-lg transition shrink-0 flex items-center justify-center gap-1.5 shadow-sm"
+                                    className="bg-brand-rust hover:bg-brand-rust-dark text-white text-sm sm:text-base font-semibold px-6 py-3 rounded-lg transition shrink-0 flex items-center justify-center gap-2 shadow-sm"
                                 >
-                                    <ArrowRight className="w-3.5 h-3.5" />
+                                    <ArrowRight className="w-4 h-4" />
                                     <span>Continue</span>
                                 </button>
                             </form>
@@ -483,7 +508,7 @@ export default function Welcome({
                             {/* Main Image */}
                             <div className="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/3]">
                                 <img
-                                    src="/images/speaktoservice.jpg"
+                                    src="/images/new/humanrightsadvocacy.jpg"
                                     alt="Community engagement"
                                     className="w-full h-full object-cover"
                                 />
@@ -544,8 +569,8 @@ export default function Welcome({
             {/* 4. WHO WE ARE (Parallax Fixed Background)                          */}
 
             <section
-                className="relative bg-fixed bg-cover bg-center py-24"
-                style={{ backgroundImage: 'url("/images/animate-img-1.jpg")' }}
+                className="relative bg-cover bg-center py-24"
+                style={{ backgroundImage: 'url("/images/animate-img-4.jpg")' }}
             >
                 {/* Gradient overlay for better text readability */}
                 <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/80 to-slate-900/70"></div>
@@ -582,10 +607,10 @@ export default function Welcome({
                             className="lg:w-1/2 relative h-[350px] sm:h-[450px] w-full"
                         >
                             <div className="absolute top-0 left-0 w-3/4 h-56 sm:h-72 border-[6px] border-black/40 rounded-2xl overflow-hidden shadow-2xl z-10 transform -rotate-2">
-                                <img src="/images/crying_boychild.jpg" alt="Child" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
+                                <img src="/images/woman.jpg" alt="Woman" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
                             </div>
                             <div className="absolute bottom-0 right-0 w-3/4 h-56 sm:h-72 border-[6px] border-brand-rust rounded-2xl overflow-hidden shadow-2xl z-20 transform rotate-2">
-                                <img src="/images/no_justice.jpg" alt="No Justice" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
+                                <img src="/images/new/police_advice.jpg" alt="No Justice" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
                             </div>
 
                             {/* Accent graphics */}
@@ -639,7 +664,7 @@ export default function Welcome({
             {/* ═══════════════════════════════════════════════════════════════════ */}
             <section className="py-14 bg-slate-50 border-t border-slate-200/60" aria-label="Partners">
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 text-center">
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-500 block mb-6">
+                    <span className="text-sm font-bold uppercase tracking-wider text-slate-600 block mb-6">
                         Allies, Donors & Institutional Partners
                     </span>
                     <LogosSlider partners={partners} />

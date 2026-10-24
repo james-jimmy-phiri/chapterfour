@@ -93,25 +93,26 @@ export default function About({
     partners = [],
 }: AboutProps) {
     const { site } = usePage<any>().props;
-    const localPlaceholderPhotos = [
-        '/images/animate-img-4.jpg',
-        '/images/animate-img-5.jpg',
-        '/images/animate-img-6.jpg',
-        '/images/animate-img-1.jpg',
-    ];
+    const DEFAULT_AVATAR = '/images/default-avatar.jpg';
     const rawTeam = teamMembers.length > 0 ? teamMembers : defaultTeam;
-    const displayTeam = rawTeam.map((member, idx) => ({
+    const displayTeam = rawTeam.map((member) => ({
         ...member,
-        photo: member.photo || localPlaceholderPhotos[idx % localPlaceholderPhotos.length],
+        photo: member.photo || DEFAULT_AVATAR,
     }));
 
     return (
         <PublicLayout>
             <Head>
-                <title>About Us — Chapter Four Malawi</title>
+                <title>About Us | Chapter Four Malawi</title>
                 <meta
+                    head-key="description"
                     name="description"
-                    content="Learn about Chapter Four Malawi: our mission, values, leadership team, and our commitment to constitutional rights."
+                    content="Learn about Chapter Four Malawi: our mission, values, leadership team, and our commitment to constitutional rights, access to justice, and rule of law."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
                 />
             </Head>
 
@@ -127,7 +128,7 @@ export default function About({
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
-                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-300 mb-6 font-semibold uppercase tracking-wider">
+                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs sm:text-sm text-slate-300 mb-6 font-semibold uppercase tracking-wider">
                         <Link href="/" className="hover:text-brand-amber transition">Home</Link>
                         <span className="text-slate-500">›</span>
                         <span className="text-brand-amber">About Us</span>
@@ -162,9 +163,9 @@ export default function About({
                         >
                             <div className="absolute top-0 right-0 w-32 h-32 bg-brand-amber/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
                             <Globe className="w-12 h-12 text-brand-amber mb-6 relative z-10" />
-                            <span className="text-xs font-bold uppercase tracking-wider text-brand-amber block mb-2 relative z-10">Our Vision</span>
-                            <h2 className="text-2xl font-bold text-slate-900 mb-4 relative z-10">A Just, Accountable & Democratic Malawi</h2>
-                            <p className="text-lg text-slate-600 leading-relaxed relative z-10 font-medium">
+                            <span className="text-sm font-bold uppercase tracking-wider text-brand-amber block mb-2 relative z-10">Our Vision</span>
+                            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4 relative z-10">A Just, Accountable & Democratic Malawi</h2>
+                            <p className="text-base sm:text-lg text-slate-600 leading-relaxed relative z-10 font-medium">
                                 {site?.vision || 'A just, democratic and inclusive Malawi where the rights and freedoms guaranteed by the Constitution are respected, protected and enjoyed by all.'}
                             </p>
                         </motion.div>
@@ -178,9 +179,9 @@ export default function About({
                         >
                             <div className="absolute top-0 right-0 w-32 h-32 bg-brand-rust/10 rounded-bl-full -mr-8 -mt-8 transition-transform group-hover:scale-110"></div>
                             <Target className="w-12 h-12 text-brand-rust mb-6 relative z-10" />
-                            <span className="text-xs font-bold uppercase tracking-wider text-brand-rust block mb-2 relative z-10">Our Mission</span>
-                            <h2 className="text-2xl font-bold text-slate-900 mb-4 relative z-10">Protecting Rights Through Law & Empowerment</h2>
-                            <p className="text-lg text-slate-600 leading-relaxed relative z-10 font-medium">
+                            <span className="text-sm font-bold uppercase tracking-wider text-brand-rust block mb-2 relative z-10">Our Mission</span>
+                            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4 relative z-10">Protecting Rights Through Law & Empowerment</h2>
+                            <p className="text-base sm:text-lg text-slate-600 leading-relaxed relative z-10 font-medium">
                                 {site?.mission || 'To promote and protect constitutional rights, strengthen access to justice, empower citizens, and contribute to accountable, democratic and rights-respecting governance in Malawi.'}
                             </p>
                         </motion.div>
@@ -192,9 +193,9 @@ export default function About({
             <section className="py-20 bg-white" aria-label="Core Values">
                 <div className="max-w-7xl mx-auto px-4 sm:px-8">
                     <div className="text-center max-w-2xl mx-auto mb-16">
-                        <span className="text-xs font-bold uppercase tracking-wider text-brand-rust block mb-2">Guiding Principles</span>
+                        <span className="text-sm font-bold uppercase tracking-wider text-brand-rust block mb-2">Guiding Principles</span>
                         <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">Our Core Values</h2>
-                        <p className="text-slate-600 mt-4 text-lg">
+                        <p className="text-slate-600 mt-4 text-base sm:text-lg leading-relaxed">
                             The ethical foundations that guide our public interest litigation, research, and civic engagement.
                         </p>
                     </div>
@@ -215,7 +216,7 @@ export default function About({
                                         <IconComp className="w-6 h-6" />
                                     </div>
                                     <h3 className="font-bold text-slate-900 text-lg mb-3">{val.title}</h3>
-                                    <p className="text-slate-600 leading-relaxed">{val.desc}</p>
+                                    <p className="text-sm sm:text-base text-slate-600 leading-relaxed">{val.desc}</p>
                                 </motion.div>
                             );
                         })}
@@ -234,7 +235,7 @@ export default function About({
                             transition={{ duration: 0.6 }}
                             className="max-w-2xl"
                         >
-                            <span className="text-xs font-bold uppercase tracking-widest text-slate-500 block mb-3">Leadership & Experts</span>
+                            <span className="text-sm font-bold uppercase tracking-widest text-slate-500 block mb-3">Leadership & Experts</span>
                             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
                                 The Team Behind Chapter Four
                             </h2>
@@ -266,20 +267,14 @@ export default function About({
                                 className="group cursor-pointer"
                             >
                                 <div className="relative w-full aspect-[4/5] bg-slate-200 rounded-2xl overflow-hidden mb-6 shadow-sm border border-slate-200 transition-all duration-500 group-hover:shadow-xl group-hover:shadow-slate-300/50">
-                                    {member.photo ? (
-                                        <img
-                                            src={member.photo}
-                                            alt={member.name}
-                                            className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
-                                        />
-                                    ) : (
-                                        <div className="flex flex-col items-center justify-center h-full p-6 text-slate-400 text-center bg-slate-100">
-                                            <div className="w-16 h-16 rounded-full bg-slate-300 flex items-center justify-center text-slate-600 font-black text-xl mb-3">
-                                                {member.name.split(' ').map((n) => n[0]).join('').slice(0, 2)}
-                                            </div>
-                                            <span className="text-xs font-bold tracking-wider uppercase">Advocate</span>
-                                        </div>
-                                    )}
+                                    <img
+                                        src={member.photo || DEFAULT_AVATAR}
+                                        alt={member.name}
+                                        className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                                        onError={(e) => {
+                                            e.currentTarget.src = DEFAULT_AVATAR;
+                                        }}
+                                    />
                                     <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                                 </div>
                                 <div className="px-2">

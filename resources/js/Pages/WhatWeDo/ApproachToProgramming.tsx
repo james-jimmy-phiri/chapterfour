@@ -96,10 +96,16 @@ export default function ApproachToProgramming() {
     return (
         <PublicLayout>
             <Head>
-                <title>Approach to Programming — Chapter Four Malawi</title>
+                <title>Approach to Programming | Chapter Four Malawi</title>
                 <meta
+                    head-key="description"
                     name="description"
                     content="Chapter Four applies a Human Rights-Based Approach (HRBA) that recognizes communities as rights holders and public institutions as duty bearers, combining community interventions with research, advocacy, and litigation support."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
                 />
             </Head>
 
@@ -116,7 +122,7 @@ export default function ApproachToProgramming() {
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
                     {/* Breadcrumbs */}
-                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-400 mb-8 font-bold uppercase tracking-wider">
+                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs sm:text-sm text-slate-400 mb-8 font-bold uppercase tracking-wider">
                         <Link href="/" className="hover:text-brand-amber transition">Home</Link>
                         <span>/</span>
                         <Link href="/what-we-do" className="hover:text-brand-amber transition">What We Do</Link>
@@ -163,17 +169,17 @@ export default function ApproachToProgramming() {
                             viewport={{ once: true }}
                             transition={{ duration: 0.8 }}
                         >
-                            <span className="text-xs font-bold uppercase tracking-widest text-brand-rust block mb-3">The HRBA Framework</span>
+                            <span className="text-sm font-bold uppercase tracking-wider text-brand-rust block mb-3">The HRBA Framework</span>
                             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 leading-tight mb-6">
                                 Human Rights-Based<br />Approach (HRBA)
                             </h2>
-                            <p className="text-slate-500 leading-relaxed text-base mb-5">
-                                Chapter Four applies a Human Rights-Based Approach (HRBA) to all its interventions. The organization recognizes individuals and communities as <span className="font-semibold text-slate-700">rights holders</span> — entitled to protections guaranteed by the Constitution and international instruments — and public institutions and other relevant actors as <span className="font-semibold text-slate-700">duty bearers</span> with corresponding obligations to respect, protect, and fulfill those rights.
+                            <p className="text-slate-600 leading-relaxed text-base mb-5">
+                                Chapter Four applies a Human Rights-Based Approach (HRBA) to all its interventions. The organization recognizes individuals and communities as <span className="font-semibold text-slate-800">rights holders</span> — entitled to protections guaranteed by the Constitution and international instruments — and public institutions and other relevant actors as <span className="font-semibold text-slate-800">duty bearers</span> with corresponding obligations to respect, protect, and fulfill those rights.
                             </p>
-                            <p className="text-slate-500 leading-relaxed text-base mb-6">
+                            <p className="text-slate-600 leading-relaxed text-base mb-6">
                                 This approach ensures that all programming is grounded in constitutional and international legal standards, addresses root causes rather than symptoms, and builds lasting capacity within communities and institutions alike.
                             </p>
-                            <p className="text-slate-500 leading-relaxed text-base">
+                            <p className="text-slate-600 leading-relaxed text-base">
                                 Chapter Four combines community-level interventions with research, advocacy, litigation support where appropriate, policy engagement and institutional dialogue to address both immediate human rights concerns and their underlying structural causes.
                             </p>
                         </motion.div>
@@ -207,11 +213,11 @@ export default function ApproachToProgramming() {
             <section className="py-20 bg-slate-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-8">
                     <div className="text-center max-w-2xl mx-auto mb-16">
-                        <span className="text-xs font-bold uppercase tracking-widest text-brand-rust block mb-3">How We Work</span>
+                        <span className="text-sm font-bold uppercase tracking-wider text-brand-rust block mb-3">How We Work</span>
                         <h2 className="text-3xl sm:text-4xl font-black text-slate-900 leading-tight">
                             Four Dimensions of Our Approach
                         </h2>
-                        <p className="text-slate-500 mt-4 leading-relaxed">
+                        <p className="text-slate-600 mt-4 text-base leading-relaxed">
                             Our methodology integrates multiple complementary strategies to achieve durable, systemic change for rights holders.
                         </p>
                     </div>
@@ -239,7 +245,7 @@ export default function ApproachToProgramming() {
                                 </div>
                                 <div className="p-8">
                                     <h3 className="text-xl font-black text-slate-900 mb-3 group-hover:text-brand-rust transition-colors">{pillar.title}</h3>
-                                    <p className="text-slate-500 leading-relaxed text-sm">{pillar.description}</p>
+                                    <p className="text-slate-600 leading-relaxed text-sm sm:text-base">{pillar.description}</p>
                                 </div>
                             </motion.div>
                         ))}
@@ -251,9 +257,9 @@ export default function ApproachToProgramming() {
             <section className="py-24 bg-white border-t border-slate-100">
                 <div className="max-w-7xl mx-auto px-4 sm:px-8">
                     <div className="text-center max-w-3xl mx-auto mb-16">
-                        <span className="text-xs font-bold uppercase tracking-widest text-brand-rust block mb-3">Core Values in Practice</span>
+                        <span className="text-sm font-bold uppercase tracking-wider text-brand-rust block mb-3">Core Values in Practice</span>
                         <h2 className="text-3xl sm:text-4xl font-black text-slate-900 mb-4">Our Programming Emphasizes</h2>
-                        <p className="text-slate-500 leading-relaxed">
+                        <p className="text-slate-600 leading-relaxed text-base">
                             These eleven principles are embedded across all Chapter Four programme areas, ensuring that our interventions are grounded, inclusive, and sustainable.
                         </p>
                     </div>
@@ -273,8 +279,8 @@ export default function ApproachToProgramming() {
                                     <div className="w-11 h-11 bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm group-hover:bg-brand-amber/10 transition-colors border border-slate-100">
                                         <Icon className="w-5 h-5 text-slate-600 group-hover:text-brand-amber transition-colors" />
                                     </div>
-                                    <p className="font-bold text-slate-800 text-sm mb-2">{item.label}</p>
-                                    <p className="text-slate-500 text-xs leading-relaxed">{item.description}</p>
+                                    <p className="font-bold text-slate-900 text-base mb-2">{item.label}</p>
+                                    <p className="text-slate-600 text-sm leading-relaxed">{item.description}</p>
                                 </motion.div>
                             );
                         })}

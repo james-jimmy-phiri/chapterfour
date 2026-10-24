@@ -9,10 +9,16 @@ export default function GetInvolved() {
     return (
         <PublicLayout>
             <Head>
-                <title>Get Involved — Chapter Four Malawi</title>
+                <title>Get Involved | Chapter Four Malawi</title>
                 <meta
+                    head-key="description"
                     name="description"
                     content="Stand with Chapter Four Malawi in defending human rights. Volunteer as a community paralegal, partner with our legal clinic, or support public interest litigation."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
                 />
             </Head>
 
@@ -26,7 +32,7 @@ export default function GetInvolved() {
                         <span className="text-brand-amber">Get Involved</span>
                     </div>
 
-                    <h1 className="text-4xl sm:text-5xl font-black tracking-tight text-white mb-4">
+                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white mb-4">
                         Stand with Us for Constitutional Justice
                     </h1>
                     <p className="text-base sm:text-lg text-slate-200 max-w-2xl font-normal leading-relaxed">
@@ -46,24 +52,24 @@ export default function GetInvolved() {
                                     <Scale className="w-6 h-6" />
                                 </div>
                                 <h2 className="text-xl font-bold text-slate-900 mb-3">Volunteer / Paralegal</h2>
-                                <p className="text-slate-600 text-sm leading-relaxed mb-6">
+                                <p className="text-slate-700 text-sm sm:text-base leading-relaxed mb-6">
                                     Are you a law student, legal practitioner, or community activist? Join our mobile legal clinics to provide immediate legal triage and pro-bono defense in subordinate courts.
                                 </p>
-                                <ul className="space-y-2 text-xs text-slate-600 mb-6">
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-brand-rust" /> Mobile legal clinic assistance
+                                <ul className="space-y-2.5 text-sm text-slate-700 mb-8">
+                                    <li className="flex items-center gap-2.5">
+                                        <CheckCircle2 className="w-4 h-4 text-brand-rust shrink-0" /> Mobile legal clinic assistance
                                     </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-brand-rust" /> Court monitoring & bail advocacy
+                                    <li className="flex items-center gap-2.5">
+                                        <CheckCircle2 className="w-4 h-4 text-brand-rust shrink-0" /> Court monitoring & bail advocacy
                                     </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-brand-rust" /> Community human rights education
+                                    <li className="flex items-center gap-2.5">
+                                        <CheckCircle2 className="w-4 h-4 text-brand-rust shrink-0" /> Community human rights education
                                     </li>
                                 </ul>
                             </div>
                             <Link
                                 href="/contact?type=Volunteer"
-                                className="btn-primary w-full text-center text-xs py-2.5"
+                                className="btn-primary w-full text-center text-sm font-semibold py-3"
                             >
                                 Join Volunteer Network
                             </Link>
@@ -76,24 +82,24 @@ export default function GetInvolved() {
                                     <Building2 className="w-6 h-6" />
                                 </div>
                                 <h2 className="text-xl font-bold text-slate-900 mb-3">Institutional Partnerships</h2>
-                                <p className="text-slate-600 text-sm leading-relaxed mb-6">
+                                <p className="text-slate-700 text-sm sm:text-base leading-relaxed mb-6">
                                     We collaborate with civil society organizations, donor agencies, universities, and international human rights bodies to scale systemic advocacy and judicial monitoring.
                                 </p>
-                                <ul className="space-y-2 text-xs text-slate-600 mb-6">
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-brand-amber" /> Joint empirical research & surveys
+                                <ul className="space-y-2.5 text-sm text-slate-700 mb-8">
+                                    <li className="flex items-center gap-2.5">
+                                        <CheckCircle2 className="w-4 h-4 text-brand-amber-dark shrink-0" /> Joint empirical research & surveys
                                     </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-brand-amber" /> Strategic public interest litigation
+                                    <li className="flex items-center gap-2.5">
+                                        <CheckCircle2 className="w-4 h-4 text-brand-amber-dark shrink-0" /> Strategic public interest litigation
                                     </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-brand-amber" /> Capacity building for duty-bearers
+                                    <li className="flex items-center gap-2.5">
+                                        <CheckCircle2 className="w-4 h-4 text-brand-amber-dark shrink-0" /> Capacity building for duty-bearers
                                     </li>
                                 </ul>
                             </div>
                             <Link
                                 href="/contact?type=Partnership"
-                                className="btn-secondary w-full text-center text-xs py-2.5"
+                                className="btn-secondary w-full text-center text-sm font-semibold py-3"
                             >
                                 Explore Partnership
                             </Link>
@@ -106,24 +112,24 @@ export default function GetInvolved() {
                                     <Shield className="w-6 h-6" />
                                 </div>
                                 <h2 className="text-xl font-bold text-white mb-3">Report Rights Violation</h2>
-                                <p className="text-slate-300 text-sm leading-relaxed mb-6">
+                                <p className="text-slate-200 text-sm sm:text-base leading-relaxed mb-6">
                                     Have you or your community witnessed an arbitrary arrest, civic space restriction, or administrative rights abuse? File a report securely with our advocacy unit.
                                 </p>
-                                <ul className="space-y-2 text-xs text-slate-300 mb-6">
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-brand-amber" /> 100% Confidential & Secure
+                                <ul className="space-y-2.5 text-sm text-slate-200 mb-8">
+                                    <li className="flex items-center gap-2.5">
+                                        <CheckCircle2 className="w-4 h-4 text-brand-amber shrink-0" /> 100% Confidential & Secure
                                     </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-brand-amber" /> Direct review by legal counsel
+                                    <li className="flex items-center gap-2.5">
+                                        <CheckCircle2 className="w-4 h-4 text-brand-amber shrink-0" /> Direct review by legal counsel
                                     </li>
-                                    <li className="flex items-center gap-2">
-                                        <CheckCircle2 className="w-4 h-4 text-brand-amber" /> Rapid legal aid referral
+                                    <li className="flex items-center gap-2.5">
+                                        <CheckCircle2 className="w-4 h-4 text-brand-amber shrink-0" /> Rapid legal aid referral
                                     </li>
                                 </ul>
                             </div>
                             <Link
                                 href="/contact?type=Violation"
-                                className="bg-brand-amber hover:bg-brand-amber-dark text-brand-dark font-bold text-xs py-2.5 rounded text-center block transition"
+                                className="bg-brand-amber hover:bg-brand-amber-dark text-brand-dark font-bold text-sm py-3 rounded-lg text-center block transition shadow-sm"
                             >
                                 Submit Violation Report
                             </Link>

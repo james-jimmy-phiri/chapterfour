@@ -96,10 +96,16 @@ export default function WhatWeDo({ thematicAreas = [] }: WhatWeDoProps) {
     return (
         <PublicLayout>
             <Head>
-                <title>What We Do — Chapter Four Malawi</title>
+                <title>What We Do | Chapter Four Malawi</title>
                 <meta
+                    head-key="description"
                     name="description"
-                    content="Discover our key thematic focus areas: Human Rights, Access to Justice, Constitutionalism, Civic Education, and Public Interest Advocacy."
+                    content="Discover our key thematic focus areas: Human Rights, Access to Justice, Constitutionalism, Civic Education, and Public Interest Advocacy across Malawi."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
                 />
             </Head>
 
@@ -115,7 +121,7 @@ export default function WhatWeDo({ thematicAreas = [] }: WhatWeDoProps) {
                 </div>
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
-                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-300 mb-6 font-semibold uppercase tracking-wider">
+                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs sm:text-sm text-slate-300 mb-6 font-semibold uppercase tracking-wider">
                         <Link href="/" className="hover:text-brand-amber transition">Home</Link>
                         <span className="text-slate-500">›</span>
                         <span className="text-brand-amber">What We Do</span>
@@ -144,9 +150,9 @@ export default function WhatWeDo({ thematicAreas = [] }: WhatWeDoProps) {
             <section className="py-20 bg-slate-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-8">
                     <div className="text-center max-w-3xl mx-auto mb-16">
-                        <span className="text-brand-rust font-bold tracking-widest uppercase mb-4 block">Core Programs</span>
+                        <span className="text-brand-rust font-bold tracking-wider uppercase mb-3 block text-sm">Core Programs</span>
                         <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6">Strategic Thematic Focus Areas</h2>
-                        <p className="text-slate-600 text-lg">
+                        <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
                             Explore our specific interventions, grassroots legal clinics, and public interest litigation programs designed to transform constitutional promises into lived realities.
                         </p>
                     </div>
@@ -179,12 +185,12 @@ export default function WhatWeDo({ thematicAreas = [] }: WhatWeDoProps) {
                                         <h3 className="font-bold text-slate-900 text-xl mb-3 group-hover:text-brand-rust transition-colors">
                                             {area.title}
                                         </h3>
-                                        <p className="text-slate-600 text-sm leading-relaxed mb-6 flex-1">
+                                        <p className="text-slate-600 text-sm sm:text-base leading-relaxed mb-6 flex-1">
                                             {area.short_description || area.description}
                                         </p>
                                         <Link
                                             href={`/what-we-do/${area.slug}`}
-                                            className="inline-flex items-center gap-2 text-sm font-bold text-brand-rust hover:text-brand-rust-dark transition-colors mt-auto"
+                                            className="inline-flex items-center gap-2 text-sm sm:text-base font-bold text-brand-rust hover:text-brand-rust-dark transition-colors mt-auto"
                                         >
                                             <span>Learn more</span>
                                             <ArrowUpRight className="w-4 h-4" />
@@ -207,14 +213,14 @@ export default function WhatWeDo({ thematicAreas = [] }: WhatWeDoProps) {
                             viewport={{ once: true }}
                             transition={{ duration: 0.8 }}
                         >
-                            <span className="text-brand-rust font-bold tracking-widest uppercase mb-4 block">Methodology</span>
+                            <span className="text-brand-rust font-bold tracking-wider uppercase mb-3 block text-sm">Methodology</span>
                             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6">
                                 Approach to Programming
                             </h2>
-                            <p className="text-slate-600 leading-relaxed mb-6 text-lg">
+                            <p className="text-slate-600 leading-relaxed mb-6 text-base sm:text-lg">
                                 We utilize a Human Rights-Based Approach (HRBA) to programming, which places human rights principles at the center of all interventions.
                             </p>
-                            <p className="text-slate-600 leading-relaxed mb-8">
+                            <p className="text-slate-600 leading-relaxed mb-8 text-base">
                                 This approach focuses on empowering rights-holders to claim their rights and ensuring that duty-bearers (state actors) meet their obligations under national and international law. Our methodology is rooted in:
                             </p>
 
@@ -225,8 +231,8 @@ export default function WhatWeDo({ thematicAreas = [] }: WhatWeDoProps) {
                                             <Activity className="w-5 h-5" />
                                         </div>
                                         <div>
-                                            <h4 className="font-bold text-slate-900 mb-1">{principle.title}</h4>
-                                            <p className="text-sm text-slate-600">{principle.desc}</p>
+                                            <h4 className="font-bold text-slate-900 mb-1 text-base sm:text-lg">{principle.title}</h4>
+                                            <p className="text-sm sm:text-base text-slate-600 leading-relaxed">{principle.desc}</p>
                                         </div>
                                     </div>
                                 ))}

@@ -395,10 +395,17 @@ class PublicController extends Controller
 
         $search = $request->query('search');
 
+        $isNews = $request->routeIs('news');
+
         $query = Resource::where('status', 'published')->latest('published_at');
 
-        if ($request->routeIs('news')) {
+        if ($isNews) {
+            // News page shows news only
+            $query->where('type', 'news');
             $type = ['news'];
+        } else {
+            // Resources page shows all resources except news
+            $query->where('type', '!=', 'news');
         }
 
         // Map friendly slugs/plurals from links to actual database enum values
@@ -420,9 +427,14 @@ class PublicController extends Controller
             return $typeMap[$trimmed] ?? $trimmed;
         }, $type)));
 
-        if (!empty($normalizedType)) {
-            $query->whereIn('type', $normalizedType);
+        if (!$isNews) {
+            // Strictly exclude 'news' from resource filtering
+            $normalizedType = array_values(array_diff($normalizedType, ['news']));
+            if (!empty($normalizedType)) {
+                $query->whereIn('type', $normalizedType);
+            }
         }
+
         if (!empty($author)) {
             $query->whereIn('author_id', array_values($author));
         }
@@ -442,8 +454,15 @@ class PublicController extends Controller
 
         $resources = $query->paginate(12)->withQueryString();
 
-        // Compute filters efficiently using aggregated queries
-        $typeCounts = Resource::where('status', 'published')
+        // Base query for computing filters corresponding to page scope
+        $baseScopeQuery = Resource::where('status', 'published');
+        if ($isNews) {
+            $baseScopeQuery->where('type', 'news');
+        } else {
+            $baseScopeQuery->where('type', '!=', 'news');
+        }
+
+        $typeCounts = (clone $baseScopeQuery)
             ->selectRaw('type, count(*) as count')
             ->groupBy('type')
             ->get()
@@ -455,7 +474,7 @@ class PublicController extends Controller
                 return ['label' => $label, 'value' => $val, 'count' => $row->count];
             })->values();
 
-        $authorCounts = Resource::where('status', 'published')
+        $authorCounts = (clone $baseScopeQuery)
             ->whereNotNull('author_id')
             ->selectRaw('author_id, count(*) as count')
             ->groupBy('author_id')
@@ -467,7 +486,7 @@ class PublicController extends Controller
                 'count' => $row->count,
             ])->values();
 
-        $yearCounts = Resource::where('status', 'published')
+        $yearCounts = (clone $baseScopeQuery)
             ->whereNotNull('published_at')
             ->selectRaw("strftime('%Y', published_at) as year, count(*) as count")
             ->groupBy('year')
@@ -476,17 +495,19 @@ class PublicController extends Controller
             ->map(fn ($row) => ['label' => $row->year, 'value' => $row->year, 'count' => $row->count])
             ->values();
 
-        $filterCategories = [
-            ['id' => 'type',   'title' => 'Resource Type', 'options' => $typeCounts],
-            ['id' => 'author', 'title' => 'Author',        'options' => $authorCounts],
-            ['id' => 'year',   'title' => 'Date (Year)',   'options' => $yearCounts],
-        ];
+        $filterCategories = [];
+        if (!$isNews) {
+            $filterCategories[] = ['id' => 'type', 'title' => 'Resource Type', 'options' => $typeCounts];
+        }
+        $filterCategories[] = ['id' => 'author', 'title' => 'Author',        'options' => $authorCounts];
+        $filterCategories[] = ['id' => 'year',   'title' => 'Date (Year)',   'options' => $yearCounts];
 
         return Inertia::render('Resources', [
-            'resources' => $resources,
+            'resources'        => $resources,
             'filterCategories' => $filterCategories,
-            'filters'   => [
-                'type'   => $normalizedType,
+            'isNews'           => $isNews,
+            'filters'          => [
+                'type'   => $isNews ? ['news'] : $normalizedType,
                 'author' => array_values($author),
                 'year'   => array_values($year),
                 'search' => $search ?? '',

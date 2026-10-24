@@ -81,10 +81,16 @@ export default function OurReports({ reports }: { reports: Report[] }) {
     return (
         <PublicLayout>
             <Head>
-                <title>Research, Reports & Publications — Chapter Four Malawi</title>
+                <title>Our Reports & Research | Chapter Four Malawi</title>
                 <meta
+                    head-key="description"
                     name="description"
                     content="Access Chapter Four Malawi's research reports, policy briefs, legal handbooks, and annual human rights publications. Evidence-based knowledge for rights protection, advocacy and reform."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
                 />
             </Head>
 
@@ -101,7 +107,7 @@ export default function OurReports({ reports }: { reports: Report[] }) {
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
                     {/* Breadcrumbs */}
-                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-400 mb-8 font-bold uppercase tracking-wider">
+                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs sm:text-sm text-slate-400 mb-8 font-bold uppercase tracking-wider">
                         <Link href="/" className="hover:text-brand-amber transition">Home</Link>
                         <span>/</span>
                         <Link href="/what-we-do" className="hover:text-brand-amber transition">What We Do</Link>
@@ -277,17 +283,17 @@ export default function OurReports({ reports }: { reports: Report[] }) {
                                     {/* Content */}
                                     <div className="p-6 flex flex-col flex-1">
                                         <div className="flex items-center justify-between mb-3">
-                                            <span className={`text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border ${typeColors[report.type] || typeColors['other']}`}>
+                                            <span className={`text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full border ${typeColors[report.type] || typeColors['other']}`}>
                                                 {report.type.replace('_', ' ')}
                                             </span>
-                                            <span className="text-xs font-medium text-slate-400">{new Date(report.published_at).toLocaleDateString()}</span>
+                                            <span className="text-xs sm:text-sm font-medium text-slate-500">{new Date(report.published_at).toLocaleDateString()}</span>
                                         </div>
 
-                                        <h3 className="text-base font-bold text-slate-900 mb-3 group-hover:text-brand-rust transition-colors leading-snug line-clamp-2">
+                                        <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-3 group-hover:text-brand-rust transition-colors leading-snug line-clamp-2">
                                             {report.title}
                                         </h3>
 
-                                        <p className="text-slate-500 leading-relaxed text-sm mb-6 line-clamp-3 flex-1">
+                                        <p className="text-slate-600 leading-relaxed text-sm sm:text-base mb-6 line-clamp-3 flex-1">
                                             {report.excerpt}
                                         </p>
 
@@ -296,13 +302,13 @@ export default function OurReports({ reports }: { reports: Report[] }) {
                                                 <a
                                                     href={report.file_url}
                                                     download
-                                                    className="text-brand-rust hover:text-brand-rust-dark font-semibold text-xs flex items-center gap-1.5 transition-colors"
+                                                    className="text-brand-rust hover:text-brand-rust-dark font-semibold text-sm flex items-center gap-1.5 transition-colors"
                                                 >
-                                                    <Download className="w-3.5 h-3.5" />
+                                                    <Download className="w-4 h-4" />
                                                     <span>Download File</span>
                                                 </a>
                                             ) : (
-                                                <span className="text-slate-300 font-semibold text-xs flex items-center gap-1.5 transition-colors">
+                                                <span className="text-slate-400 font-semibold text-sm flex items-center gap-1.5 transition-colors">
                                                     No file attached
                                                 </span>
                                             )}

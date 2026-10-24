@@ -67,9 +67,12 @@ export default function TeamMemberModal({ isOpen, onClose, member }: TeamMemberM
                         {/* Image Section (Left side on desktop, top on mobile) */}
                         <div className="w-full md:w-2/5 h-64 md:h-auto relative shrink-0">
                             <img
-                                src={member.image}
+                                src={member.image || "/images/default-avatar.jpg"}
                                 alt={member.name}
                                 className="w-full h-full object-cover"
+                                onError={(e) => {
+                                    e.currentTarget.src = "/images/default-avatar.jpg";
+                                }}
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent md:bg-gradient-to-r md:from-transparent md:to-slate-900/10"></div>
                             

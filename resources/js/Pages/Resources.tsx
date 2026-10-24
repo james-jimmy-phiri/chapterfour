@@ -3,7 +3,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Calendar, Search, ChevronLeft, ChevronRight, X, ExternalLink
+    Calendar, Search, ChevronLeft, ChevronRight, X, ExternalLink, ArrowRight
 } from 'lucide-react';
 
 // Extended Interface to support new filters
@@ -48,12 +48,50 @@ interface ResourcesProps {
         title: string;
         options: { label: string; value: string; count: number }[];
     }[];
+    isNews?: boolean;
 }
 
 // Single Placeholder image to use when an image is missing or broken
-const PLACEHOLDER_IMAGE = "/images/hero-bg.jpg";
+const PLACEHOLDER_IMAGE = "/images/new/news_placeholder.webp";
 
-// Dummy data
+// Default fallback data for News
+const defaultNewsList: ResourceItem[] = [
+    {
+        id: 101,
+        title: 'Chapter Four Launches Nationwide Grassroots Legal Aid Caravan',
+        slug: 'chapter-four-launches-nationwide-legal-aid-caravan',
+        type: 'News',
+        author: 'Chapter Four Media Desk',
+        year: '2026',
+        excerpt: 'Mobile legal empowerment clinics will traverse rural trading centers to deliver free bail counseling and fundamental rights literacy to vulnerable youth.',
+        published_at: '2026-02-18',
+        featured_image: PLACEHOLDER_IMAGE,
+    },
+    {
+        id: 102,
+        title: 'Civil Society Coalition Urges Fast-Tracking of Judicial Reforms',
+        slug: 'civil-society-coalition-judicial-reforms',
+        type: 'News',
+        author: 'Legal Advocacy Unit',
+        year: '2026',
+        excerpt: 'Chapter Four convenes national consultative dialogue pressing for enhanced institutional funding for rural magistrate courts and legal aid bureaus.',
+        published_at: '2026-02-12',
+        featured_image: PLACEHOLDER_IMAGE,
+    },
+    {
+        id: 103,
+        title: 'Youth Human Rights Defenders Conclude Constitutional Literacy Summit',
+        slug: 'youth-defenders-constitutional-literacy-summit',
+        type: 'News',
+        author: 'Civic Education Desk',
+        year: '2026',
+        excerpt: 'Over 120 community youth paralegals graduate from an intensive training retreat on human rights monitoring and freedom of assembly protections.',
+        published_at: '2026-01-29',
+        featured_image: PLACEHOLDER_IMAGE,
+    },
+];
+
+// Dummy data for Resources
 const defaultResourcesList: ResourceItem[] = [
     {
         id: 1,
@@ -149,18 +187,20 @@ const itemVariants = {
     show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } }
 };
 
-export default function Resources({ resources, filters = {}, filterCategories = [] }: ResourcesProps) {
+export default function Resources({ resources, filters = {}, filterCategories = [], isNews = false }: ResourcesProps) {
     const isPaginator = resources && !Array.isArray(resources) && 'data' in resources;
+    const fallbackList = isNews ? defaultNewsList : defaultResourcesList;
     const items: ResourceItem[] = isPaginator
         ? (resources as any).data || []
         : Array.isArray(resources)
         ? resources
-        : defaultResourcesList;
+        : fallbackList;
 
-    const displayItems = items.length > 0 ? items : defaultResourcesList;
+    const displayItems = items.length > 0 ? items : fallbackList;
     const paginationLinks = isPaginator ? (resources as any).links || [] : [];
     const totalCount = isPaginator ? (resources as any).total || displayItems.length : displayItems.length;
 
+    const basePath = isNews ? '/news' : '/resources';
     const [searchInput, setSearchInput] = useState(filters.search || '');
     
     const toArray = (val: any): string[] => {
@@ -193,7 +233,7 @@ export default function Resources({ resources, filters = {}, filterCategories = 
     };
 
     const applyFilters = () => {
-        router.visit('/resources', {
+        router.visit(basePath, {
             data: {
                 search: searchInput,
                 ...selectedFilters
@@ -205,8 +245,8 @@ export default function Resources({ resources, filters = {}, filterCategories = 
 
     const clearFilters = () => {
         setSearchInput('');
-        setSelectedFilters({ type: [], author: [], tags: [], year: [] });
-        router.visit('/resources', { replace: true });
+        setSelectedFilters({ type: isNews ? ['news'] : [], author: [], tags: [], year: [] });
+        router.visit(basePath, { replace: true });
     };
 
     const hasActiveFilters = searchInput || Object.values(selectedFilters).some(arr => arr.length > 0);
@@ -214,8 +254,19 @@ export default function Resources({ resources, filters = {}, filterCategories = 
     return (
         <PublicLayout>
             <Head>
-                <title>Resources & Publications — Chapter Four Malawi</title>
-                <meta name="description" content="Browse Chapter Four's comprehensive repository of constitutional legal briefs, research reports, field statements, and civic education publications." />
+                <title>{isNews ? 'News & Updates | Chapter Four Malawi' : 'Publications & Resources | Chapter Four Malawi'}</title>
+                <meta
+                    head-key="description"
+                    name="description"
+                    content={isNews
+                        ? "Stay informed with the latest organizational news, human rights press briefings, and community legal updates from Chapter Four in Malawi."
+                        : "Browse Chapter Four's comprehensive repository of constitutional legal briefs, research reports, field statements, and civic education publications in Malawi."}
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
+                />
             </Head>
 
             {/* Hero Section */}
@@ -225,18 +276,22 @@ export default function Resources({ resources, filters = {}, filterCategories = 
                     <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent"></div>
                 </div>
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
-                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-300 mb-6 font-semibold uppercase tracking-wider">
+                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs sm:text-sm text-slate-300 mb-6 font-semibold uppercase tracking-wider">
                         <Link href="/" className="hover:text-brand-amber transition">Home</Link>
                         <span className="text-slate-500">›</span>
-                        <span className="text-brand-amber">Resources</span>
+                        <span className="text-brand-amber">{isNews ? 'News' : 'Resources'}</span>
                     </nav>
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }} className="max-w-3xl">
-                        <span className="text-brand-amber font-bold tracking-widest uppercase mb-4 block flex items-center gap-2">
-                            <span className="w-8 h-0.5 bg-brand-amber"></span> Publications
+                        <span className="text-brand-amber font-bold tracking-widest uppercase mb-4 block flex items-center gap-2 text-sm">
+                            <span className="w-8 h-0.5 bg-brand-amber"></span> {isNews ? 'Press & Media' : 'Publications'}
                         </span>
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 leading-tight">Resources & Reports</h1>
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 leading-tight">
+                            {isNews ? 'News & Press Updates' : 'Resources & Reports'}
+                        </h1>
                         <p className="text-lg sm:text-xl text-slate-300 leading-relaxed">
-                            Chapter Four advances credible, evidence-based human rights protections through independent monitoring, legal research, and public reports.
+                            {isNews
+                                ? 'Stay informed with recent organizational announcements, press briefings, civic statements, and community legal updates from Chapter Four.'
+                                : 'Chapter Four advances credible, evidence-based human rights protections through independent monitoring, legal research, and public reports.'}
                         </p>
                     </motion.div>
                 </div>
@@ -253,17 +308,17 @@ export default function Resources({ resources, filters = {}, filterCategories = 
                                 
                                 {/* Search */}
                                 <div className="mb-6">
-                                    <h3 className="text-[13px] font-bold text-slate-900 mb-3">Search</h3>
+                                    <h3 className="text-sm font-bold text-slate-900 mb-3">Search</h3>
                                     <form onSubmit={handleSearch} className="relative group">
                                         <input
                                             type="text"
                                             placeholder="Search Resources..."
                                             value={searchInput}
                                             onChange={(e) => setSearchInput(e.target.value)}
-                                            className="w-full pl-3 pr-8 py-2 text-[13px] bg-slate-50 rounded border border-slate-200 focus:border-slate-400 focus:bg-white focus:ring-0 outline-none transition-all placeholder:text-slate-400"
+                                            className="w-full pl-3 pr-8 py-2.5 text-sm bg-slate-50 rounded border border-slate-200 focus:border-slate-400 focus:bg-white focus:ring-0 outline-none transition-all placeholder:text-slate-400"
                                         />
                                         <button type="submit" className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1">
-                                            <Search className="w-3.5 h-3.5" />
+                                            <Search className="w-4 h-4" />
                                         </button>
                                     </form>
                                 </div>
@@ -272,7 +327,7 @@ export default function Resources({ resources, filters = {}, filterCategories = 
                                 <div className="space-y-6">
                                     {filterCategories.map((category) => (
                                         <div key={category.id}>
-                                            <h3 className="text-[13px] font-bold text-slate-900 mb-3">{category.title}</h3>
+                                            <h3 className="text-sm font-bold text-slate-900 mb-3">{category.title}</h3>
                                             <ul className="space-y-2.5">
                                                 {category.options.map((opt) => {
                                                     const isChecked = selectedFilters[category.id]?.includes(opt.value);
@@ -284,18 +339,18 @@ export default function Resources({ resources, filters = {}, filterCategories = 
                                                                     type="checkbox"
                                                                     checked={isChecked}
                                                                     onChange={() => toggleFilter(category.id, opt.value)}
-                                                                    className="w-3.5 h-3.5 rounded-sm border-slate-300 text-slate-800 focus:ring-slate-800 cursor-pointer"
+                                                                    className="w-4 h-4 rounded-sm border-slate-300 text-slate-800 focus:ring-slate-800 cursor-pointer"
                                                                 />
                                                             </div>
                                                             <div className="flex-1 min-w-0 flex justify-between gap-2 items-start">
                                                                 <label 
                                                                     htmlFor={`filter-${category.id}-${opt.value}`}
-                                                                    className="text-[13px] text-slate-600 hover:text-slate-900 cursor-pointer leading-tight truncate"
+                                                                    className="text-sm text-slate-700 hover:text-slate-900 cursor-pointer leading-tight truncate"
                                                                     title={opt.label}
                                                                 >
                                                                     {opt.label}
                                                                 </label>
-                                                                <span className="text-[12px] text-slate-400 shrink-0">({opt.count})</span>
+                                                                <span className="text-xs font-semibold text-slate-400 shrink-0">({opt.count})</span>
                                                             </div>
                                                         </li>
                                                     );
@@ -310,7 +365,7 @@ export default function Resources({ resources, filters = {}, filterCategories = 
                                     <button
                                         type="button"
                                         onClick={applyFilters}
-                                        className="w-full py-2.5 text-[13px] font-bold text-white bg-slate-900 hover:bg-slate-800 border border-transparent rounded flex items-center justify-center transition-colors shadow-sm"
+                                        className="w-full py-2.5 text-sm font-bold text-white bg-slate-900 hover:bg-slate-800 border border-transparent rounded flex items-center justify-center transition-colors shadow-sm"
                                     >
                                         Apply Filters
                                     </button>
@@ -322,9 +377,9 @@ export default function Resources({ resources, filters = {}, filterCategories = 
                                                 exit={{ opacity: 0, height: 0 }}
                                                 type="button"
                                                 onClick={clearFilters}
-                                                className="w-full py-2 text-[13px] font-semibold text-slate-600 hover:text-slate-900 border border-slate-200 hover:bg-slate-50 rounded flex items-center justify-center gap-2 transition-colors"
+                                                className="w-full py-2 text-sm font-semibold text-slate-600 hover:text-slate-900 border border-slate-200 hover:bg-slate-50 rounded flex items-center justify-center gap-2 transition-colors"
                                             >
-                                                <X className="w-3.5 h-3.5" />
+                                                <X className="w-4 h-4" />
                                                 <span>Clear All Filters</span>
                                             </motion.button>
                                         )}
@@ -338,15 +393,15 @@ export default function Resources({ resources, filters = {}, filterCategories = 
                             
                             {/* Top Bar: Sort & Count */}
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 pb-2">
-                                <div className="flex items-center gap-3 text-[13px] text-slate-600 mb-2 sm:mb-0">
-                                    <span>Sort By</span>
-                                    <select className="border-none bg-transparent py-1 pl-0 pr-6 focus:ring-0 text-slate-900 font-semibold cursor-pointer text-[13px]">
+                                <div className="flex items-center gap-3 text-sm text-slate-700 mb-2 sm:mb-0">
+                                    <span className="font-medium">Sort By:</span>
+                                    <select className="border-none bg-transparent py-1 pl-0 pr-6 focus:ring-0 text-slate-900 font-bold cursor-pointer text-sm">
                                         <option>Newest</option>
                                         <option>Oldest</option>
                                         <option>A-Z</option>
                                     </select>
                                 </div>
-                                <div className="text-[13px] text-slate-600">
+                                <div className="text-sm font-medium text-slate-600">
                                     1-{displayItems.length} of {totalCount} results
                                 </div>
                             </div>
@@ -356,57 +411,68 @@ export default function Resources({ resources, filters = {}, filterCategories = 
                                 variants={containerVariants}
                                 initial="hidden"
                                 animate="show"
-                                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+                                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
                             >
                                 {displayItems.map((item, idx) => {
                                     return (
                                         <motion.article
                                             variants={itemVariants}
                                             key={item.slug || idx}
-                                            className="group relative bg-white rounded-lg border border-slate-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col h-full"
+                                            whileHover={{ y: -5, transition: { duration: 0.25 } }}
+                                            className="group relative bg-white rounded-xl border border-slate-200/90 hover:border-brand-rust/40 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full cursor-pointer"
                                         >
-                                            {/* Image container */}
-                                            <Link href={`/resources/${item.slug}`} className="relative h-44 block overflow-hidden shrink-0 bg-slate-100 border-b border-slate-100">
-                                                <img
-                                                    src={item.featured_image || PLACEHOLDER_IMAGE}
-                                                    alt={item.title}
-                                                    className="w-full h-full object-cover"
-                                                    onError={(e) => {
-                                                        // Swap to placeholder if the provided link is broken
-                                                        e.currentTarget.src = PLACEHOLDER_IMAGE;
-                                                    }}
-                                                />
-                                            </Link>
+                                            <Link href={`/resources/${item.slug}`} className="flex flex-col h-full focus:outline-none">
+                                                {/* Image container */}
+                                                <div className="relative h-48 block overflow-hidden shrink-0 bg-slate-100 border-b border-slate-100">
+                                                    <img
+                                                        src={item.featured_image || PLACEHOLDER_IMAGE}
+                                                        alt={item.title}
+                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                                                        onError={(e) => {
+                                                            // Swap to placeholder if the provided link is broken
+                                                            e.currentTarget.src = PLACEHOLDER_IMAGE;
+                                                        }}
+                                                    />
+                                                    {/* Hover subtle dark gradient overlay */}
+                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-                                            {/* Content (Reduced Padding) */}
-                                            <div className="p-4 flex flex-col flex-grow">
-                                                
-                                                {/* Date */}
-                                                <div className="flex items-center gap-1.5 text-[11px] font-medium text-slate-400 mb-2 tracking-wider">
-                                                    <Calendar className="w-3 h-3" />
-                                                    <span>{formatDate(item.published_at)}</span>
+                                                    {/* Type Badge */}
+                                                    <div className="absolute top-3 left-3">
+                                                        <span className="inline-block bg-white/95 backdrop-blur-sm text-slate-800 text-[11px] font-bold tracking-wider uppercase px-2.5 py-1 rounded shadow-sm border border-slate-200/50">
+                                                            {item.type || (isNews ? 'News' : 'Publication')}
+                                                        </span>
+                                                    </div>
                                                 </div>
 
-                                                {/* Title (Max 2 Lines) */}
-                                                <h2 className="text-[14px] font-bold text-slate-900 mb-1.5 group-hover:text-slate-600 transition-colors leading-snug line-clamp-2">
-                                                    <Link href={`/resources/${item.slug}`} className="focus:outline-none">
-                                                        <span className="absolute inset-0" aria-hidden="true" />
+                                                {/* Dynamic accent line on hover */}
+                                                <div className="h-1 w-full bg-gradient-to-r from-brand-rust via-brand-amber to-brand-rust scale-x-0 group-hover:scale-x-100 opacity-0 group-hover:opacity-100 transition-all duration-500 origin-left" />
+
+                                                {/* Content */}
+                                                <div className="p-5 flex flex-col flex-grow">
+                                                    
+                                                    {/* Date */}
+                                                    <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 mb-2.5 tracking-wider">
+                                                        <Calendar className="w-3.5 h-3.5 text-brand-rust" />
+                                                        <span>{formatDate(item.published_at)}</span>
+                                                    </div>
+
+                                                    {/* Title */}
+                                                    <h2 className="text-base sm:text-lg font-bold text-slate-900 mb-2 group-hover:text-brand-rust transition-colors leading-snug line-clamp-2">
                                                         {item.title}
-                                                    </Link>
-                                                </h2>
+                                                    </h2>
 
-                                                {/* Description/Excerpt (Max 3 Lines) */}
-                                                <p className="text-[13px] text-slate-500 leading-relaxed mb-4 line-clamp-3 flex-grow">
-                                                    {item.excerpt || "Click to view more details about this resource publication."}
-                                                </p>
+                                                    {/* Description/Excerpt */}
+                                                    <p className="text-sm text-slate-600 leading-relaxed mb-4 line-clamp-3 flex-grow">
+                                                        {item.excerpt || "Click to view more details about this publication."}
+                                                    </p>
 
-                                                {/* Type Badge */}
-                                                <div className="mt-auto pt-3 border-t border-slate-100">
-                                                    <span className="inline-block bg-indigo-50/50 text-indigo-700 px-2 py-1 rounded text-[10px] font-semibold tracking-wide">
-                                                        {item.type || 'Publication'}
-                                                    </span>
+                                                    {/* Read more footer with animated arrow */}
+                                                    <div className="mt-auto pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-brand-rust group-hover:text-brand-rust-dark">
+                                                        <span>Read full details</span>
+                                                        <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1.5 transition-transform duration-300" />
+                                                    </div>
                                                 </div>
-                                            </div>
+                                            </Link>
                                         </motion.article>
                                     );
                                 })}

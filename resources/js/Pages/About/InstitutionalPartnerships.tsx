@@ -40,10 +40,16 @@ export default function InstitutionalPartnerships({ partners = [] }: Institution
     return (
         <PublicLayout>
             <Head>
-                <title>Institutional Partnerships & Governance — Chapter Four Malawi</title>
+                <title>Institutional Partnerships & Governance | Chapter Four Malawi</title>
                 <meta
+                    head-key="description"
                     name="description"
-                    content="Chapter Four collaborates with multiple actors for sustainable human rights protection and maintains robust governance structures."
+                    content="Chapter Four collaborates with multiple state and civil society actors for sustainable human rights protection and maintains robust governance structures."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
                 />
             </Head>
 

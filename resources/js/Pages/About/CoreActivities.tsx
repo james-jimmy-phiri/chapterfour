@@ -72,8 +72,17 @@ export default function CoreActivities({ objectives = [] }: Props) {
     return (
         <PublicLayout>
             <Head>
-                <title>Core Activities — Chapter Four Malawi</title>
-                <meta name="description" content="Profile of core activities, planned activities, and expected outputs of Chapter Four Malawi." />
+                <title>Human Rights & Civic Activities | Chapter Four Malawi</title>
+                <meta
+                    head-key="description"
+                    name="description"
+                    content="Profile of core activities, strategic interventions, legal aid programs, and expected human rights outputs of Chapter Four Malawi."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
+                />
             </Head>
 
             {/* Hero Section */}

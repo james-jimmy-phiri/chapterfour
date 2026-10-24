@@ -62,40 +62,64 @@ function FlipCard({
                 >
                     <img
                         src={src}
-                        alt={`hero-${index}`}
+                        alt={`core-objective-${index}`}
                         className="h-full w-full object-cover grayscale-[20%]"
+                        onError={(e) => {
+                            e.currentTarget.src = "/images/new/news_placeholder.webp";
+                        }}
                     />
                     <div className="absolute inset-0 bg-brand-rust/20 mix-blend-multiply transition-colors group-hover:bg-transparent" />
                 </div>
 
                 {/* Back Face */}
                 <div
-                    className="absolute inset-0 h-full w-full overflow-hidden rounded-xl shadow-lg bg-slate-900 flex flex-col items-center justify-center p-4 border border-brand-amber/30"
+                    className="absolute inset-0 h-full w-full overflow-hidden rounded-xl shadow-lg bg-slate-900 flex flex-col items-center justify-center p-3 text-center border border-brand-amber/30"
                     style={{ backfaceVisibility: "hidden", transform: "rotateY(180deg)" }}
                 >
-                    <div className="text-center">
-                        <p className="text-[10px] font-bold text-brand-amber uppercase tracking-widest mb-1">Goal {index + 1}</p>
-                    </div>
+                    <p className="text-[9px] font-bold text-brand-amber uppercase tracking-widest mb-1">Theme</p>
+                    <p className="text-[11px] font-semibold text-white leading-tight">
+                        {THEMES[index % THEMES.length]}
+                    </p>
                 </div>
             </motion.div>
         </motion.div>
     );
 }
 
-// --- Local Images ---
+// --- Local Images representing the 3 themes: Rights Protection, Climate Justice, Peace Building ---
+const THEMES = [
+    "Rights Protection",
+    "Rights Protection",
+    "Rights Protection",
+    "Rights Protection",
+    "Climate Justice",
+    "Climate Justice",
+    "Climate Justice",
+    "Climate Justice",
+    "Peace Building",
+    "Peace Building",
+    "Peace Building",
+    "Peace Building",
+];
+
 const IMAGES = [
-    "/images/book/child.jpg",
-    "/images/book/children.jpg",
-    "/images/book/childrenfaces.png",
-    "/images/book/hands.webp",
-    "/images/book/handsup.webp",
-    "/images/book/human-rights-day.jpg",
-    "/images/book/inner_1.jpg",
-    "/images/book/no_silent.jpg",
-    "/images/book/racism.jpg",
-    "/images/book/rights_for_all.jpg",
-    "/images/book/stop_killing_us.jpg",
-    "/images/book/vulnurable.jpg",
+    // 1. Rights Protection
+    "/images/new/humanrightsadvocacy.jpg",
+    "/images/new/police_advice.jpg",
+    "/images/new/AwarenessRaising.jpg",
+    "/images/new/girls.jpg",
+
+    // 2. Climate Justice
+    "/images/new/climate_resilience.jpg",
+    "/images/new/planting_trees.jpg",
+    "/images/new/woman_tree.jpg",
+    "/images/new/farm.avif",
+
+    // 3. Peace Building
+    "/images/new/peacebuildimg.jpg",
+    "/images/new/communitypolice.webp",
+    "/images/new/studentsengagement.webp",
+    "/images/new/community_engagement.jpg",
 ];
 const TOTAL_IMAGES = IMAGES.length;
 
@@ -203,7 +227,7 @@ export default function ScrollMorphHero() {
                         transition={{ duration: 1 }}
                         className="text-4xl font-bold tracking-tight text-slate-800 md:text-5xl font-serif"
                     >
-                        Our Core Objectives
+                        Core Objectives
                     </motion.h1>
                     <motion.p
                         initial={{ opacity: 0 }}

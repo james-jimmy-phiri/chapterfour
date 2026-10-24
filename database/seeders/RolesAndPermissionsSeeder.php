@@ -151,7 +151,7 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // ── 3. ENSURE ROOT ADMIN EXISTS AND HAS SUPER-ADMIN ROLE ───────────────
         $defaultAdmin = User::firstOrCreate(
-            ['email' => 'admin@chapterfour.mw'],
+            ['email' => 'admin@chapterfourmw.org'],
             [
                 'first_name' => 'Chapter Four',
                 'last_name' => 'Executive',
@@ -161,7 +161,7 @@ class RolesAndPermissionsSeeder extends Seeder
                 'employee_id' => 'C4-EXEC-001',
                 'phone' => '+265 999 000 111',
                 'status' => 'active',
-                'password' => Hash::make('password'),
+                'password' => Hash::make('chapter4@2026'),
                 'email_verified_at' => now(),
             ]
         );
@@ -173,65 +173,17 @@ class RolesAndPermissionsSeeder extends Seeder
         // Seed sample users with different roles for demonstration
         $sampleUsers = [
             [
-                'first_name' => 'Chisomo',
-                'last_name' => 'Banda',
-                'name' => 'Chisomo Banda',
-                'email' => 'chisomo.banda@chapterfour.mw',
-                'job_title' => 'Head of Legal & Litigation',
-                'department' => 'Legal & Advocacy',
-                'employee_id' => 'C4-LEG-002',
+                'first_name' => 'Tuntufye ',
+                'last_name' => 'Simwimba',
+                'name' => 'Tuntufye Simwimba',
+                'email' => 't.simwimba@chapterfour.mw',
+                'job_title' => 'Director of Programs',
+                'department' => 'Programs',
+                'employee_id' => 'C4-DP-001',
                 'phone' => '+265 888 123 456',
                 'status' => 'active',
                 'role' => 'admin',
-            ],
-            [
-                'first_name' => 'Tiwonge',
-                'last_name' => 'Phiri',
-                'name' => 'Tiwonge Phiri',
-                'email' => 'tiwonge.phiri@chapterfour.mw',
-                'job_title' => 'Senior Content & Publications Lead',
-                'department' => 'Communications',
-                'employee_id' => 'C4-COM-003',
-                'phone' => '+265 991 234 567',
-                'status' => 'active',
-                'role' => 'content-manager',
-            ],
-            [
-                'first_name' => 'Blessings',
-                'last_name' => 'Msiska',
-                'name' => 'Blessings Msiska',
-                'email' => 'blessings.msiska@chapterfour.mw',
-                'job_title' => 'Strategic Communications Officer',
-                'department' => 'Communications',
-                'employee_id' => 'C4-COM-004',
-                'phone' => '+265 882 345 678',
-                'status' => 'active',
-                'role' => 'communications-officer',
-            ],
-            [
-                'first_name' => 'Limbani',
-                'last_name' => 'Chirwa',
-                'name' => 'Limbani Chirwa',
-                'email' => 'limbani.chirwa@chapterfour.mw',
-                'job_title' => 'Civic Education Editor',
-                'department' => 'Programs',
-                'employee_id' => 'C4-PRO-005',
-                'phone' => '+265 993 456 789',
-                'status' => 'active',
-                'role' => 'editor',
-            ],
-            [
-                'first_name' => 'Madalitso',
-                'last_name' => 'Kaunda',
-                'name' => 'Madalitso Kaunda',
-                'email' => 'madalitso.kaunda@chapterfour.mw',
-                'job_title' => 'Community Paralegal Fellow',
-                'department' => 'Legal & Advocacy',
-                'employee_id' => 'C4-LEG-006',
-                'phone' => '+265 884 567 890',
-                'status' => 'pending',
-                'role' => 'contributor',
-            ],
+            ]
         ];
 
         foreach ($sampleUsers as $data) {

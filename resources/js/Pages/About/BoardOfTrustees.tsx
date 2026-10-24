@@ -12,40 +12,34 @@ interface BoardOfTrusteesProps {
 export default function BoardOfTrustees({ trustees = [] }: BoardOfTrusteesProps) {
     const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
 
+    const DEFAULT_AVATAR = "/images/default-avatar.jpg";
+
     const defaultTrustees: TeamMember[] = [
         {
             name: "Placeholder Trustee 1",
             role: "Chairperson",
-            image: "/images/animate-img-4.jpg",
+            image: DEFAULT_AVATAR,
             bio: "Experienced legal professional guiding the strategic direction of Chapter Four."
         },
         {
             name: "Placeholder Trustee 2",
             role: "Vice Chairperson",
-            image: "/images/animate-img-5.jpg",
+            image: DEFAULT_AVATAR,
             bio: "Advocate for human rights and constitutionalism with over 20 years of experience."
         },
         {
             name: "Placeholder Trustee 3",
             role: "Treasurer",
-            image: "/images/animate-img-6.jpg",
+            image: DEFAULT_AVATAR,
             bio: "Ensuring financial accountability and transparency in all our operations."
         }
     ];
 
-    const fallbackPhotos = [
-        "/images/animate-img-4.jpg",
-        "/images/animate-img-5.jpg",
-        "/images/animate-img-6.jpg",
-        "/images/animate-img-1.jpg",
-        "/images/animate-img-2.jpg",
-    ];
-
     const displayTrustees: TeamMember[] = (trustees && trustees.length > 0)
-        ? trustees.map((t: any, idx: number) => ({
+        ? trustees.map((t: any) => ({
             name: t.name,
             role: t.role || "Trustee",
-            image: t.photo || t.image || fallbackPhotos[idx % fallbackPhotos.length],
+            image: t.photo || t.image || DEFAULT_AVATAR,
             bio: t.biography || t.bio || "Member of the Board of Trustees providing strategic oversight and governance.",
             location: t.department || t.location || "Malawi",
             linkedin: t.social_links?.linkedin || t.linkedin,
@@ -57,10 +51,16 @@ export default function BoardOfTrustees({ trustees = [] }: BoardOfTrusteesProps)
     return (
         <PublicLayout>
             <Head>
-                <title>Board of Trustees — Chapter Four Malawi</title>
+                <title>Board of Trustees | Chapter Four Malawi</title>
                 <meta
+                    head-key="description"
                     name="description"
-                    content="The Board of Trustees provides strategic direction, oversight and accountability for Chapter Four Malawi."
+                    content="The Board of Trustees provides fiduciary oversight, constitutional stewardship, and strategic direction for Chapter Four Malawi."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
                 />
             </Head>
 
@@ -126,9 +126,12 @@ export default function BoardOfTrustees({ trustees = [] }: BoardOfTrusteesProps)
                                 {/* Main Image Container - Removed rounded-2xl for sharp corners[cite: 3] */}
                                 <div className="w-full aspect-[3/4] bg-slate-200 overflow-hidden relative shadow-sm group-hover:shadow-lg transition-shadow duration-500">
                                     <img
-                                        src={member.image}
+                                        src={member.image || DEFAULT_AVATAR}
                                         alt={member.name}
                                         className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700 ease-in-out"
+                                        onError={(e) => {
+                                            e.currentTarget.src = DEFAULT_AVATAR;
+                                        }}
                                     />
                                     {/* Subtle dark gradient overlay that appears on hover for better contrast */}
                                     <div className="absolute inset-0 bg-slate-900/0 group-hover:bg-slate-900/10 transition-colors duration-500"></div>
@@ -155,19 +158,19 @@ export default function BoardOfTrustees({ trustees = [] }: BoardOfTrusteesProps)
 
                                 {/* Floating Nameplate Overlay - Removed rounded-xl for sharp corners[cite: 3] */}
                                 <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 w-[85%] bg-white shadow-[0_8px_30px_rgb(0,0,0,0.06)] group-hover:shadow-[0_15px_40px_rgb(0,0,0,0.12)] transition-all duration-500 py-6 px-4 text-center z-10 group-hover:-translate-y-2">
-                                    <h3 className="text-md font-extrabold text-slate-900 tracking-widest uppercase mb-1">
+                                    <h3 className="text-base sm:text-lg font-extrabold text-slate-900 tracking-wider uppercase mb-1">
                                         {member.name}
                                     </h3>
-                                    <p className="text-slate-500 text-sm font-medium italic">
+                                    <p className="text-slate-600 text-sm font-semibold italic">
                                         {member.role}
                                     </p>
 
                                     {/* Hidden 'Read Profile' action that expands on hover */}
                                     <div className="grid grid-rows-[0fr] group-hover:grid-rows-[1fr] transition-all duration-300 ease-in-out">
                                         <div className="overflow-hidden">
-                                            <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-center text-xs font-bold text-brand-rust uppercase tracking-widest">
+                                            <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-center text-sm font-bold text-brand-rust uppercase tracking-wider">
                                                 <span>Read Profile</span>
-                                                <ArrowRight className="w-3 h-3 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
+                                                <ArrowRight className="w-3.5 h-3.5 ml-2 transform group-hover:translate-x-1 transition-transform duration-300" />
                                             </div>
                                         </div>
                                     </div>

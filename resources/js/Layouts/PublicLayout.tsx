@@ -38,7 +38,7 @@ const navLinks: NavLinkItem[] = [
     {
         label: 'About',
         href: '/about',
-        modalImage: '/images/animate-img-1.jpg',
+        modalImage: '/images/new/advocancy.jpg',
         modalImageAlt: 'Chapter Four team and community advocates',
 
         modalHeading: 'Our People, Purpose & Governance',
@@ -136,20 +136,20 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                             href={`mailto:${site?.contact_email || 'info@chapterfourmw.org'}`}
                         >
                             <Mail className="w-3.5 h-3.5 text-brand-amber" />
-                            <span className="text-[11px] sm:text-xs">{site?.contact_email || 'info@chapterfourmw.org'}</span>
+                            <span className="text-xs sm:text-sm">{site?.contact_email || 'info@chapterfourmw.org'}</span>
                         </a>
                         <a
                             className="md:flex items-center gap-1.5 text-slate-200 hover:text-brand-amber transition"
                             href={`tel:${site?.contact_phone || '+265881089609'}`}
                         >
                             <Phone className="w-3.5 h-3.5 text-brand-amber" />
-                            <span className="hidden md:inline text-[11px] sm:text-xs">{site?.contact_phone || '+265 881 089 609'}</span>
+                            <span className="hidden md:inline text-xs sm:text-sm">{site?.contact_phone || '+265 881 089 609'}</span>
                         </a>
                     </div>
 
                     {/* Social Media & Tagline */}
                     <div className="flex items-center space-x-5">
-                        <span className="hidden md:inline text-[11px] text-slate-300 font-medium border-r border-white/20 pr-4">
+                        <span className="hidden md:inline text-xs sm:text-sm text-slate-300 font-medium border-r border-white/20 pr-4">
                             Defending Constitutional Rights & Freedoms
                         </span>
                         <div className="flex items-center space-x-3 text-slate-300">
@@ -242,10 +242,10 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                                 {/* Right: Bullets / Submenu Items (62%) */}
                                                 <div className="w-full sm:w-[62%] p-6 bg-white">
                                                     <div className="flex items-center justify-between border-b border-slate-100 pb-2.5 mb-3">
-                                                        <h3 className="text-xs font-bold tracking-wider text-slate-500 uppercase">
+                                                        <h3 className="text-sm font-bold tracking-wider text-slate-600 uppercase">
                                                             {link.label === 'About' ? 'About Chapter Four' : `What We Do at Chapter Four`}
                                                         </h3>
-                                                        <Link href={link.href} className="text-[11px] text-slate-400 hover:text-brand-rust transition font-medium">
+                                                        <Link href={link.href} className="text-xs sm:text-sm text-slate-500 hover:text-brand-rust transition font-semibold">
                                                             View all &rarr;
                                                         </Link>
                                                     </div>
@@ -264,11 +264,11 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                                                                 <IconComp className="w-4 h-4" />
                                                                             </div>
                                                                             <div className="ml-2.5">
-                                                                                <p className="text-slate-800 font-semibold text-xs group-hover/item:text-brand-rust transition-colors leading-snug">
+                                                                                <p className="text-slate-900 font-semibold text-sm group-hover/item:text-brand-rust transition-colors leading-snug">
                                                                                     {child.label}
                                                                                 </p>
                                                                                 {child.desc && (
-                                                                                    <p className="text-slate-400 text-[10px] mt-0.5 line-clamp-1">
+                                                                                    <p className="text-slate-500 text-xs mt-0.5 line-clamp-1">
                                                                                         {child.desc}
                                                                                     </p>
                                                                                 )}
@@ -284,11 +284,11 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                                                                 <IconComp className="w-4 h-4" />
                                                                             </div>
                                                                             <div className="ml-2.5">
-                                                                                <p className="text-slate-800 font-semibold text-xs group-hover/item:text-brand-rust transition-colors leading-snug">
+                                                                                <p className="text-slate-900 font-semibold text-sm group-hover/item:text-brand-rust transition-colors leading-snug">
                                                                                     {child.label}
                                                                                 </p>
                                                                                 {child.desc && (
-                                                                                    <p className="text-slate-400 text-[10px] mt-0.5 line-clamp-1">
+                                                                                    <p className="text-slate-500 text-xs mt-0.5 line-clamp-1">
                                                                                         {child.desc}
                                                                                     </p>
                                                                                 )}
@@ -312,26 +312,25 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                             <Link
                                 href="/search"
                                 title="Search Chapter Four"
-                                className={`p-2.5 rounded-full transition flex items-center justify-center ${
-                                    scrolled
-                                        ? 'text-slate-600 hover:text-brand-rust hover:bg-slate-100'
-                                        : 'text-white/80 hover:text-white hover:bg-white/10'
-                                }`}
+                                className={`p-2.5 rounded-full transition flex items-center justify-center ${scrolled
+                                    ? 'text-slate-600 hover:text-brand-rust hover:bg-slate-100'
+                                    : 'text-white/80 hover:text-white hover:bg-white/10'
+                                    }`}
                             >
                                 <Search className="w-4 h-4" />
                             </Link>
 
                             <Link
                                 href="/contact"
-                                className="hidden sm:inline-flex bg-brand-rust hover:bg-brand-rust-dark text-white px-5 py-2.5 rounded-lg text-xs sm:text-sm font-semibold tracking-wide transition shadow-lg shadow-brand-rust/25 items-center gap-1.5"
+                                className="hidden sm:inline-flex bg-brand-rust hover:bg-brand-rust-dark text-white px-5 py-2.5 rounded-lg text-sm sm:text-base font-semibold tracking-wide transition shadow-lg shadow-brand-rust/25 items-center gap-2"
                             >
                                 <span>Contact Us</span>
-                                <ArrowRight className="w-3.5 h-3.5" />
+                                <ArrowRight className="w-4 h-4" />
                             </Link>
 
                             <button
                                 id="mobile-menu-toggle"
-                                className={`lg:hidden p-2 rounded-lg border transition ${scrolled
+                                className={`lg:hidden p-2.5 rounded-lg border transition ${scrolled
                                     ? 'border-slate-200 text-slate-700 hover:bg-slate-100'
                                     : 'border-white/20 text-slate-200 hover:text-white hover:bg-white/10'
                                     }`}
@@ -347,27 +346,27 @@ export default function PublicLayout({ children }: PropsWithChildren) {
 
                 {/* ─── MOBILE DRAWER MENU ─────────────────────────────────────────────── */}
                 {mobileOpen && (
-                    <div className="lg:hidden bg-[#0e0704] border-b border-white/10 px-4 pt-4 pb-6 space-y-3 animate-fade-in shadow-2xl text-left">
+                    <div className="lg:hidden bg-[#0e0704] border-b border-white/10 px-5 pt-4 pb-6 space-y-3 animate-fade-in shadow-2xl text-left">
                         {navLinks.map((link) => (
                             <div key={link.label} className="border-b border-white/10 pb-2">
                                 {link.children ? (
                                     <div>
                                         <button
                                             onClick={() => setOpenDropdown(openDropdown === link.label ? null : link.label)}
-                                            className="w-full flex items-center justify-between py-2 text-sm font-semibold text-slate-200 hover:text-white"
+                                            className="w-full flex items-center justify-between py-2 text-base font-semibold text-slate-100 hover:text-white"
                                         >
                                             <span>{link.label}</span>
                                             <ChevronDown className={`w-4 h-4 transition-transform ${openDropdown === link.label ? 'rotate-180 text-brand-amber' : ''}`} />
                                         </button>
                                         {openDropdown === link.label && (
-                                            <div className="pl-3 space-y-1.5 pt-1">
+                                            <div className="pl-3.5 space-y-2 pt-1.5 pb-1">
                                                 {link.children.map((child) => (
                                                     child.isAction ? (
                                                         <button
                                                             key={child.label}
                                                             type="button"
                                                             onClick={() => setIsReportModalOpen(true)}
-                                                            className="block w-full text-left py-1.5 text-xs text-slate-400 hover:text-brand-amber"
+                                                            className="block w-full text-left py-1.5 text-sm font-medium text-slate-300 hover:text-brand-amber"
                                                         >
                                                             {child.label}
                                                         </button>
@@ -375,7 +374,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                                         <Link
                                                             key={child.label}
                                                             href={child.href}
-                                                            className="block py-1.5 text-xs text-slate-400 hover:text-brand-amber"
+                                                            className="block py-1.5 text-sm font-medium text-slate-300 hover:text-brand-amber"
                                                         >
                                                             {child.label}
                                                         </Link>
@@ -387,7 +386,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                 ) : (
                                     <Link
                                         href={link.href}
-                                        className={`block py-2 text-sm font-semibold ${isActive(link.href) ? 'text-brand-amber' : 'text-slate-200 hover:text-white'
+                                        className={`block py-2 text-base font-semibold ${isActive(link.href) ? 'text-brand-amber' : 'text-slate-100 hover:text-white'
                                             }`}
                                     >
                                         {link.label}
@@ -395,10 +394,10 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                 )}
                             </div>
                         ))}
-                        <div className="pt-2">
+                        <div className="pt-3">
                             <Link
                                 href="/get-involved"
-                                className="w-full bg-brand-rust hover:bg-brand-rust-dark text-white text-center py-2.5 rounded-lg text-sm font-semibold block shadow-md"
+                                className="w-full bg-brand-rust hover:bg-brand-rust-dark text-white text-center py-3 rounded-lg text-base font-bold block shadow-md"
                             >
                                 Get Involved
                             </Link>
@@ -419,7 +418,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                     <div className="md:col-span-7 p-8 sm:p-12 space-y-6 text-white z-10">
                         <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight leading-tight">
                             Partner With Us to Advance
-                            <br />Constitutional Rights
+                            <br />Rights Protection, Climate Justice and Peace Building
                         </h2>
                         <form
                             className="flex items-center bg-white/20 backdrop-blur-md rounded-full p-1.5 max-w-md border border-white/20"
@@ -461,12 +460,12 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                         <div className="mb-5">
                             <ChapterFourLogo variant="white" imgClassName="h-10 w-auto" />
                         </div>
-                        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6 max-w-sm">
+                        <p className="text-sm sm:text-base text-slate-300 leading-relaxed mb-6 max-w-sm">
                             Chapter Four is a non-partisan, public interest legal and civic organization dedicated to defending constitutionalism, human rights, and the rule of law in Malawi.
                         </p>
-                        <div className="space-y-2.5 text-xs sm:text-sm text-slate-300">
+                        <div className="space-y-3 text-sm text-slate-200">
                             <div className="flex items-start gap-2.5">
-                                <MapPin className="w-4 h-4 text-brand-amber mt-0.5 shrink-0" />
+                                <MapPin className="w-4 h-4 text-brand-amber mt-1 shrink-0" />
                                 <span>{site?.office_address || 'Area 11, House No. 11/38/05, City Centre, Lilongwe, Malawi'}</span>
                             </div>
                             <div className="flex items-center gap-2.5">
@@ -482,10 +481,10 @@ export default function PublicLayout({ children }: PropsWithChildren) {
 
                     {/* Col 2: Quick Links */}
                     <div className="hidden md:block lg:col-span-2">
-                        <h3 className="text-white text-xs font-bold uppercase tracking-wider mb-4 border-b border-brand-amber/30 pb-1">
+                        <h3 className="text-white text-sm font-bold uppercase tracking-wider mb-4 border-b border-brand-amber/30 pb-1.5">
                             Resources
                         </h3>
-                        <ul className="space-y-2.5 text-xs sm:text-sm">
+                        <ul className="space-y-3 text-sm sm:text-base">
                             <li><Link className="hover:text-brand-amber transition" href="/resources?type=report">Field Reports</Link></li>
                             <li><Link className="hover:text-brand-amber transition" href="/resources?type=statement">Legal Statements</Link></li>
                             <li><Link className="hover:text-brand-amber transition" href="/resources?type=press_release">Press Releases</Link></li>
@@ -496,10 +495,10 @@ export default function PublicLayout({ children }: PropsWithChildren) {
 
                     {/* Col 3: Explore */}
                     <div className="lg:col-span-2">
-                        <h3 className="text-white text-xs font-bold uppercase tracking-wider mb-4 border-b border-brand-amber/30 pb-1">
+                        <h3 className="text-white text-sm font-bold uppercase tracking-wider mb-4 border-b border-brand-amber/30 pb-1.5">
                             Explore
                         </h3>
-                        <ul className="space-y-2.5 text-xs sm:text-sm">
+                        <ul className="space-y-3 text-sm sm:text-base">
                             <li><Link className="hover:text-brand-amber transition" href="/about">About Us</Link></li>
                             <li><Link className="hover:text-brand-amber transition" href="/about/our-team">Our Team</Link></li>
                             <li><Link className="hover:text-brand-amber transition" href="/what-we-do">What We Do</Link></li>
@@ -511,22 +510,22 @@ export default function PublicLayout({ children }: PropsWithChildren) {
 
                     {/* Col 4: Newsletter */}
                     <div className="lg:col-span-4" id="newsletter">
-                        <h3 className="text-white text-xs font-bold uppercase tracking-wider mb-2 border-b border-brand-amber/30 pb-1">
+                        <h3 className="text-white text-sm font-bold uppercase tracking-wider mb-3 border-b border-brand-amber/30 pb-1.5">
                             Newsletter
                         </h3>
-                        <p className="text-xs sm:text-sm text-slate-300 mb-4">
+                        <p className="text-sm text-slate-300 mb-4 leading-relaxed">
                             Subscribe to receive updates on legal advisories, reports, and constitutional monitoring.
                         </p>
                         {subscribed ? (
-                            <div className="bg-emerald-950/60 border border-emerald-500/40 rounded p-3 flex items-center gap-2 text-emerald-300 text-xs">
-                                <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+                            <div className="bg-emerald-950/60 border border-emerald-500/40 rounded-lg p-3.5 flex items-center gap-2.5 text-emerald-300 text-sm">
+                                <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-400" />
                                 <span>Thank you for subscribing to Chapter Four updates!</span>
                             </div>
                         ) : (
                             <form className="space-y-3" onSubmit={handleSubscribe} data-purpose="newsletter-form">
-                                <div className="flex items-center bg-[#1c120b] rounded border border-white/20 p-1 focus-within:border-brand-amber">
+                                <div className="flex items-center bg-[#1c120b] rounded-lg border border-white/20 p-1 focus-within:border-brand-amber">
                                     <input
-                                        className="bg-transparent border-none text-white placeholder-slate-400 text-xs sm:text-sm px-3 py-1.5 w-full focus:ring-0 focus:outline-none"
+                                        className="bg-transparent border-none text-white placeholder-slate-400 text-sm sm:text-base px-3.5 py-2 w-full focus:ring-0 focus:outline-none"
                                         placeholder="Enter your email address"
                                         required
                                         type="email"
@@ -534,7 +533,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                         onChange={(e) => setEmail(e.target.value)}
                                     />
                                     <button
-                                        className="bg-brand-rust hover:bg-brand-rust-dark text-white text-xs font-bold py-2 px-4 rounded transition shrink-0"
+                                        className="bg-brand-rust hover:bg-brand-rust-dark text-white text-sm font-bold py-2.5 px-5 rounded-md transition shrink-0"
                                         type="submit"
                                         disabled={isSubmitting}
                                     >
@@ -543,12 +542,12 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                 </div>
                                 <div className="flex items-start gap-2">
                                     <input
-                                        className="mt-0.5 rounded border-slate-600 bg-black/40 text-brand-amber focus:ring-0 w-3.5 h-3.5"
+                                        className="mt-0.5 rounded border-slate-600 bg-black/40 text-brand-amber focus:ring-0 w-4 h-4"
                                         id="terms"
                                         required
                                         type="checkbox"
                                     />
-                                    <label className="text-[11px] text-slate-400" htmlFor="terms">
+                                    <label className="text-xs sm:text-sm text-slate-400" htmlFor="terms">
                                         I agree to the <Link href="/privacy" className="underline hover:text-white">privacy policy</Link> and to receive advocacy updates.
                                     </label>
                                 </div>
@@ -558,7 +557,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                 </div>
 
                 {/* Bottom Copyright and Socials */}
-                <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
+                <div className="max-w-7xl mx-auto px-4 sm:px-8 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs sm:text-sm text-slate-400 gap-4">
                     <p>© {new Date().getFullYear()} Chapter Four Malawi. All Rights Reserved. Chapter IV of the Constitution of Malawi.</p>
                     <div className="flex items-center space-x-4">
                         <Link href="/privacy" className="hover:text-white transition">Privacy Policy</Link>

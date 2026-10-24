@@ -63,15 +63,24 @@ export default function ThematicArea({
     return (
         <PublicLayout>
             <Head>
-                <title>{`${title} — Chapter Four Malawi`}</title>
-                <meta name="description" content={description} />
+                <title>{`${title} | Chapter Four Malawi`}</title>
+                <meta
+                    head-key="description"
+                    name="description"
+                    content={description}
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
+                />
             </Head>
 
             {/* ─── HERO BANNER ─────────────────────────────────────────────── */}
             <section className="hero-pattern text-white py-16 px-4 sm:px-8 border-b border-white/10">
                 <div className="max-w-7xl mx-auto">
                     {/* Breadcrumbs */}
-                    <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-300 mb-4 font-semibold">
+                    <div className="flex items-center gap-2 text-xs sm:text-sm uppercase tracking-wider text-slate-300 mb-4 font-semibold">
                         <Link href="/" className="hover:text-brand-amber transition">Home</Link>
                         <span className="text-slate-500">›</span>
                         <Link href="/what-we-do" className="hover:text-brand-amber transition">What We Do</Link>
@@ -80,13 +89,13 @@ export default function ThematicArea({
                     </div>
 
                     <div className="max-w-3xl">
-                        <div className="inline-flex items-center gap-2 bg-white/10 text-brand-amber text-xs font-bold px-3 py-1 rounded-full mb-4 border border-white/15">
+                        <div className="inline-flex items-center gap-2 bg-white/10 text-brand-amber text-xs sm:text-sm font-bold px-3.5 py-1 rounded-full mb-4 border border-white/15">
                             <span>Strategic Pillar Focus</span>
                         </div>
                         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white tracking-tight leading-tight mb-4">
                             {title}
                         </h1>
-                        <p className="text-sm sm:text-base text-slate-200 leading-relaxed">
+                        <p className="text-base sm:text-lg text-slate-200 leading-relaxed">
                             {description}
                         </p>
                     </div>
@@ -101,11 +110,11 @@ export default function ThematicArea({
                         <div className="lg:col-span-8 space-y-10">
                             {/* Strategic Objectives */}
                             <div className="bg-white rounded-xl p-8 border border-slate-200 shadow-xs">
-                                <span className="text-xs font-bold uppercase tracking-wider text-brand-rust block mb-2">Programmatic Focus</span>
+                                <span className="text-sm font-bold uppercase tracking-wider text-brand-rust block mb-2">Programmatic Focus</span>
                                 <h2 className="text-xl sm:text-2xl font-black text-slate-900 mb-6">Strategic Objectives</h2>
                                 <div className="space-y-3.5">
                                     {objectives.map((obj, i) => (
-                                        <div key={i} className="flex items-start gap-3 text-sm text-slate-700">
+                                        <div key={i} className="flex items-start gap-3 text-sm sm:text-base text-slate-700">
                                             <CheckCircle2 className="w-5 h-5 text-brand-rust shrink-0 mt-0.5" />
                                             <span className="leading-relaxed">{obj}</span>
                                         </div>
@@ -115,15 +124,15 @@ export default function ThematicArea({
 
                             {/* Key Interventions */}
                             <div className="bg-white rounded-xl p-8 border border-slate-200 shadow-xs">
-                                <span className="text-xs font-bold uppercase tracking-wider text-brand-amber-dark block mb-2">Field Operations</span>
+                                <span className="text-sm font-bold uppercase tracking-wider text-brand-amber-dark block mb-2">Field Operations</span>
                                 <h2 className="text-xl sm:text-2xl font-black text-slate-900 mb-6">Key Interventions & Activities</h2>
                                 <div className="space-y-4">
                                     {interventions.map((act, i) => (
                                         <div key={i} className="flex items-start gap-3.5 p-4 rounded-lg bg-slate-50 border border-slate-200/70">
-                                            <span className="w-6 h-6 rounded-full bg-brand-dark text-white text-xs font-bold flex items-center justify-center shrink-0">
+                                            <span className="w-7 h-7 rounded-full bg-brand-dark text-white text-xs font-bold flex items-center justify-center shrink-0">
                                                 {i + 1}
                                             </span>
-                                            <span className="text-xs sm:text-sm font-medium text-slate-800 leading-relaxed">{act}</span>
+                                            <span className="text-sm sm:text-base font-medium text-slate-800 leading-relaxed">{act}</span>
                                         </div>
                                     ))}
                                 </div>
@@ -140,11 +149,11 @@ export default function ThematicArea({
                                                 href={`/projects/${proj.slug}`}
                                                 className="p-4 rounded-lg border border-slate-200 hover:border-brand-rust/40 hover:shadow-xs transition block group"
                                             >
-                                                <h3 className="font-bold text-sm text-slate-900 group-hover:text-brand-rust transition mb-1">{proj.title}</h3>
-                                                {proj.summary && <p className="text-xs text-slate-600 line-clamp-2">{proj.summary}</p>}
+                                                <h3 className="font-bold text-sm sm:text-base text-slate-900 group-hover:text-brand-rust transition mb-1">{proj.title}</h3>
+                                                {proj.summary && <p className="text-xs sm:text-sm text-slate-600 line-clamp-2 leading-relaxed">{proj.summary}</p>}
                                                 {proj.locations && (
-                                                    <div className="flex items-center gap-1 text-[11px] text-slate-400 mt-2">
-                                                        <MapPin className="w-3 h-3 text-brand-rust" />
+                                                    <div className="flex items-center gap-1.5 text-xs text-slate-500 mt-2">
+                                                        <MapPin className="w-3.5 h-3.5 text-brand-rust" />
                                                         <span>{Array.isArray(proj.locations) ? proj.locations.join(', ') : proj.locations}</span>
                                                     </div>
                                                 )}
@@ -168,31 +177,31 @@ export default function ThematicArea({
                                             <Link
                                                 key={res.slug || i}
                                                 href={`/resources/${res.slug}`}
-                                                className="block p-3 rounded-lg bg-slate-50 hover:bg-brand-rust-light transition group"
+                                                className="block p-3.5 rounded-lg bg-slate-50 hover:bg-brand-rust-light transition group"
                                             >
-                                                <span className="text-[10px] font-bold text-brand-rust uppercase tracking-wider block mb-1">
+                                                <span className="text-xs font-bold text-brand-rust uppercase tracking-wider block mb-1">
                                                     {res.type || 'Resource'}
                                                 </span>
-                                                <h4 className="text-xs font-bold text-slate-900 group-hover:text-brand-rust transition leading-snug">
+                                                <h4 className="text-sm font-bold text-slate-900 group-hover:text-brand-rust transition leading-snug">
                                                     {res.title}
                                                 </h4>
                                             </Link>
                                         ))}
                                     </div>
                                 ) : (
-                                    <p className="text-xs text-slate-500">Related publications will appear here as they are published.</p>
+                                    <p className="text-sm text-slate-500">Related publications will appear here as they are published.</p>
                                 )}
                             </div>
 
                             {/* Contact Box */}
                             <div className="bg-brand-dark rounded-xl p-6 text-white shadow-md">
-                                <h3 className="text-base font-bold text-brand-amber mb-2">Engage Our Team</h3>
-                                <p className="text-xs text-slate-300 leading-relaxed mb-4">
+                                <h3 className="text-base sm:text-lg font-bold text-brand-amber mb-2">Engage Our Team</h3>
+                                <p className="text-sm text-slate-300 leading-relaxed mb-4">
                                     Interested in collaborating, seeking legal guidance, or requesting an intervention under this thematic area?
                                 </p>
                                 <Link
                                     href="/contact"
-                                    className="w-full btn-primary text-xs py-2.5 block text-center"
+                                    className="w-full btn-primary text-sm py-3 block text-center font-semibold"
                                 >
                                     Contact Program Lead
                                 </Link>

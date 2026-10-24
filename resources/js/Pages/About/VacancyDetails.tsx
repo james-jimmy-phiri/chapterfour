@@ -54,10 +54,16 @@ export default function VacancyDetails({ id, vacancy }: VacancyDetailsProps) {
     return (
         <PublicLayout>
             <Head>
-                <title>{`${currentVacancy.title} — Chapter Four Malawi`}</title>
+                <title>{`${currentVacancy.title} | Vacancies | Chapter Four Malawi`}</title>
                 <meta
+                    head-key="description"
                     name="description"
                     content={currentVacancy.description.slice(0, 160)}
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
                 />
             </Head>
 

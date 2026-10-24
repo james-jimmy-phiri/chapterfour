@@ -4,7 +4,19 @@ import { Head, Link } from '@inertiajs/react';
 export default function Safeguarding() {
     return (
         <PublicLayout>
-            <Head title="Safeguarding Policy — Chapter Four Malawi" />
+            <Head>
+                <title>Safeguarding Policy | Chapter Four Malawi</title>
+                <meta
+                    head-key="description"
+                    name="description"
+                    content="Safeguarding Policy of Chapter Four Malawi. Zero-tolerance against exploitation, child abuse, and harassment across all field operations and legal clinics."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
+                />
+            </Head>
             <section className="hero-pattern text-white py-14 px-4 sm:px-8 border-b border-white/10">
                 <div className="max-w-4xl mx-auto">
                     <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-300 mb-4 font-semibold">

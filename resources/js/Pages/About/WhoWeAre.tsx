@@ -494,10 +494,16 @@ export default function WhoWeAre({ thematicAreas = [], contentBlocks = {}, quote
     return (
         <PublicLayout>
             <Head>
-                <title>Who We Are — Chapter Four Malawi</title>
+                <title>Who We Are | Chapter Four Malawi</title>
                 <meta
+                    head-key="description"
                     name="description"
-                    content="Chapter Four is a youth-led non-governmental organization established to promote, protect and advance human rights, constitutionalism, democracy, social-cohesion, good governance and social justice."
+                    content="Chapter Four is a youth-led non-governmental organization established to promote, protect and advance human rights, constitutionalism, democracy, social-cohesion, good governance and social justice in Malawi."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
                 />
             </Head>
 

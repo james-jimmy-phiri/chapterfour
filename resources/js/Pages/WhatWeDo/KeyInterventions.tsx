@@ -273,10 +273,16 @@ export default function KeyInterventions({ interventions = [] }: KeyIntervention
     return (
         <PublicLayout>
             <Head>
-                <title>Key Programmatic Interventions — Chapter Four Malawi</title>
+                <title>Key Programmatic Interventions | Chapter Four Malawi</title>
                 <meta
+                    head-key="description"
                     name="description"
                     content="Explore the key programmatic interventions executed by Chapter Four Malawi — from constitutional education and legal aid to strategic advocacy, monitoring, and peace building."
+                />
+                <meta
+                    head-key="robots"
+                    name="robots"
+                    content="index, follow"
                 />
             </Head>
 
@@ -293,7 +299,7 @@ export default function KeyInterventions({ interventions = [] }: KeyIntervention
 
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
                     {/* Breadcrumbs */}
-                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs text-slate-400 mb-8 font-bold uppercase tracking-wider">
+                    <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs sm:text-sm text-slate-400 mb-8 font-bold uppercase tracking-wider">
                         <Link href="/" className="hover:text-brand-amber transition">Home</Link>
                         <span>/</span>
                         <Link href="/what-we-do" className="hover:text-brand-amber transition">What We Do</Link>
@@ -342,14 +348,14 @@ export default function KeyInterventions({ interventions = [] }: KeyIntervention
                             viewport={{ once: true }}
                             transition={{ duration: 0.8 }}
                         >
-                            <span className="text-xs font-bold uppercase tracking-widest text-brand-rust block mb-3">Multifaceted Strategy</span>
+                            <span className="text-sm font-bold uppercase tracking-wider text-brand-rust block mb-3">Multifaceted Strategy</span>
                             <h2 className="text-3xl sm:text-4xl font-black text-slate-900 leading-tight mb-6">
                                 A Holistic Approach to<br />Rights Protection
                             </h2>
-                            <p className="text-slate-500 leading-relaxed text-base mb-5">
+                            <p className="text-slate-600 leading-relaxed text-base mb-5">
                                 Chapter Four employs a multifaceted portfolio of programmatic interventions designed to create lasting impact by empowering individuals, strengthening institutions, and fostering a culture of constitutionalism and human rights across Malawi.
                             </p>
-                            <p className="text-slate-500 leading-relaxed text-base mb-8">
+                            <p className="text-slate-600 leading-relaxed text-base mb-8">
                                 Our ten key interventions span the full spectrum of rights protection — from the community to the courtroom, from grassroots civic education to legislative advocacy — each reinforcing the others in a coherent, evidence-grounded strategy.
                             </p>
 
@@ -362,7 +368,7 @@ export default function KeyInterventions({ interventions = [] }: KeyIntervention
                                 ].map((s, i) => (
                                     <div key={i} className="bg-slate-50 rounded-xl p-4 border border-slate-100">
                                         <div className="text-2xl font-black text-brand-rust mb-0.5">{s.value}</div>
-                                        <div className="text-xs font-semibold text-slate-500 uppercase tracking-wider">{s.label}</div>
+                                        <div className="text-xs sm:text-sm font-semibold text-slate-600 uppercase tracking-wider">{s.label}</div>
                                     </div>
                                 ))}
                             </div>
@@ -388,11 +394,11 @@ export default function KeyInterventions({ interventions = [] }: KeyIntervention
             <section className="py-20 bg-slate-50">
                 <div className="w-full max-w-[1400px] mx-auto px-4 sm:px-8">
                     <div className="text-center max-w-2xl mx-auto mb-16">
-                        <span className="text-xs font-bold uppercase tracking-widest text-brand-rust block mb-3">Our Work in Practice</span>
+                        <span className="text-sm font-bold uppercase tracking-wider text-brand-rust block mb-3">Our Work in Practice</span>
                         <h2 className="text-3xl sm:text-4xl font-black text-slate-900 leading-tight">
                             Ten Key Interventions
                         </h2>
-                        <p className="text-slate-500 mt-4 leading-relaxed">
+                        <p className="text-slate-600 mt-4 text-base leading-relaxed">
                             Each intervention area represents a strategic dimension of our effort to make constitutional rights real for all Malawians.
                         </p>
                     </div>
@@ -445,7 +451,7 @@ export default function KeyInterventions({ interventions = [] }: KeyIntervention
                                         )}
                                     >
                                         <div className="flex items-center gap-2">
-                                            <span className="rounded-full border border-white/30 bg-white/15 px-3 py-1 text-[10px] sm:text-xs font-bold uppercase tracking-wider text-white backdrop-blur-md">
+                                            <span className="rounded-full border border-white/30 bg-white/15 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white backdrop-blur-md">
                                                 Intervention {item.id}
                                             </span>
                                         </div>
@@ -454,7 +460,7 @@ export default function KeyInterventions({ interventions = [] }: KeyIntervention
                                             {item.title}
                                         </h3>
 
-                                        <div className="mt-2 sm:mt-4 flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-white/90 hover:text-brand-rust transition-colors">
+                                        <div className="mt-2 sm:mt-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-white/90 hover:text-brand-rust transition-colors">
                                             View Details <ArrowUpRight className="h-4 w-4" />
                                         </div>
                                     </div>
