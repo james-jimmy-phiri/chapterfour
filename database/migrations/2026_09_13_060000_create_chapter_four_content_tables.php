@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('group')->default('general');
             $table->string('key')->unique();
-            $table->json('value')->nullable();
+            $table->text('value')->nullable();
             $table->string('type')->default('string');
             $table->timestamps();
         });
