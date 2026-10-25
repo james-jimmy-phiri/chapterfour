@@ -171,7 +171,7 @@ return [
         //     'confirmPassword' => true,
         // ]),
         Features::passkeys([
-            'confirmPassword' => true,
+            'confirmPassword' => false,
         ]),
     ],
 
