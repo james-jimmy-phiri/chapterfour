@@ -16,10 +16,6 @@ class EnsureAdminAccess
             abort(403);
         }
 
-        if ($user->requiresTwoFactorSetup() && ! $request->routeIs('admin.two-factor.*', 'logout')) {
-            return redirect()->route('admin.two-factor.setup');
-        }
-
         return $next($request);
     }
 }
