@@ -488,7 +488,7 @@ class PublicController extends Controller
 
         $yearCounts = (clone $baseScopeQuery)
             ->whereNotNull('published_at')
-            ->selectRaw("strftime('%Y', published_at) as year, count(*) as count")
+            ->selectRaw("YEAR(published_at) as year, count(*) as count")
             ->groupBy('year')
             ->orderByDesc('year')
             ->get()
