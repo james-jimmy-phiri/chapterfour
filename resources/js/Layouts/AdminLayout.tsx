@@ -1,4 +1,4 @@
-import { Link, usePage } from '@inertiajs/react';
+import { Link, usePage, router } from '@inertiajs/react';
 import { PropsWithChildren, useState, useEffect } from 'react';
 import {
     LayoutDashboard, FileText, Newspaper, Users, Briefcase, BookOpen,
@@ -6,6 +6,7 @@ import {
     Shield, MessageSquare, Mail, Image, BarChart3, ChevronDown,
     Building2, Star, Sparkles, ExternalLink, Plus, CheckCircle2, UserCheck,
     Sun, Moon, Target, History, HeartHandshake, Layers,
+    UploadCloud, RefreshCw, Trash2, Loader2
 } from 'lucide-react';
 import ChapterFourLogo from '@/Components/ChapterFourLogo';
 
@@ -63,6 +64,74 @@ export default function AdminLayout({ children, header, description, breadcrumbs
         updateTime();
         const interval = setInterval(updateTime, 60000);
         return () => clearInterval(interval);
+    }, []);
+
+    // Async Mutation & Upload tracking for all admin operations
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [progressPercent, setProgressPercent] = useState<number | null>(null);
+    const [processType, setProcessType] = useState<'upload' | 'save' | 'delete'>('save');
+    const [processTitle, setProcessTitle] = useState('Saving Changes');
+    const [processDetail, setProcessDetail] = useState('Updating record on the server...');
+
+    useEffect(() => {
+        const removeStart = router.on('start', (event) => {
+            const method = (event.detail.visit.method || 'get').toLowerCase();
+            if (method !== 'get') {
+                setIsProcessing(true);
+                setProgressPercent(null);
+
+                const visitData = event.detail.visit.data;
+                const hasFiles = visitData instanceof FormData ||
+                    (visitData && typeof visitData === 'object' && Object.values(visitData).some(
+                        v => v instanceof File || (Array.isArray(v) && v.some(f => f instanceof File))
+                    ));
+
+                if (method === 'delete') {
+                    setProcessType('delete');
+                    setProcessTitle('Deleting Record');
+                    setProcessDetail('Removing item and updating records...');
+                } else if (hasFiles) {
+                    setProcessType('upload');
+                    setProcessTitle('Uploading Media & Files');
+                    setProcessDetail('Transferring assets and publishing records...');
+                } else if (method === 'post') {
+                    setProcessType('save');
+                    setProcessTitle('Creating Record');
+                    setProcessDetail('Saving new content to database...');
+                } else {
+                    setProcessType('save');
+                    setProcessTitle('Updating Record');
+                    setProcessDetail('Applying modifications and syncing data...');
+                }
+            }
+        });
+
+        const removeProgress = router.on('progress', (event) => {
+            if (event.detail.progress?.percentage !== undefined) {
+                const pct = Math.round(event.detail.progress.percentage);
+                setProgressPercent(pct);
+                setProcessType('upload');
+                setProcessTitle(`Uploading... ${pct}%`);
+                setProcessDetail(`${Math.round((event.detail.progress.loaded || 0) / 1024)} KB of ${Math.round((event.detail.progress.total || 0) / 1024)} KB transferred`);
+            }
+        });
+
+        const removeFinish = router.on('finish', () => {
+            setIsProcessing(false);
+            setProgressPercent(null);
+        });
+
+        const removeCancel = router.on('cancel', () => {
+            setIsProcessing(false);
+            setProgressPercent(null);
+        });
+
+        return () => {
+            removeStart();
+            removeProgress();
+            removeFinish();
+            removeCancel();
+        };
     }, []);
 
     const navGroups = [
@@ -455,6 +524,63 @@ export default function AdminLayout({ children, header, description, breadcrumbs
                     {children}
                 </main>
             </div>
+
+            {/* Top Multi-Gradient Progress Bar */}
+            {isProcessing && (
+                <div className="fixed top-0 left-0 right-0 z-[999] h-1.5 overflow-hidden bg-slate-900/20">
+                    <div
+                        className="h-full bg-gradient-to-r from-brand-rust via-brand-amber to-emerald-400 transition-all duration-300"
+                        style={{
+                            width: progressPercent !== null ? `${progressPercent}%` : '100%',
+                            animation: progressPercent === null ? 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite' : 'none',
+                        }}
+                    />
+                </div>
+            )}
+
+            {/* Floating Glassmorphism Upload / Update Modal */}
+            {isProcessing && (
+                <div className="fixed bottom-6 right-6 z-[999] max-w-sm w-full select-none animate-in fade-in slide-in-from-bottom-4 duration-300 pointer-events-auto">
+                    <div className="p-4 rounded-2xl bg-slate-900/95 dark:bg-black/95 text-white backdrop-blur-md border border-white/15 shadow-2xl flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-brand-rust/20 border border-brand-rust/40 flex items-center justify-center shrink-0 text-brand-amber relative">
+                            {processType === 'upload' ? (
+                                <UploadCloud className="w-6 h-6 text-brand-amber animate-bounce" />
+                            ) : processType === 'delete' ? (
+                                <Trash2 className="w-6 h-6 text-red-400 animate-pulse" />
+                            ) : (
+                                <RefreshCw className="w-6 h-6 text-brand-amber animate-spin" />
+                            )}
+                            <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-amber opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-brand-amber"></span>
+                            </span>
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-2">
+                                <h4 className="text-sm font-bold text-white truncate">{processTitle}</h4>
+                                {progressPercent !== null && (
+                                    <span className="text-xs font-mono font-bold text-brand-amber shrink-0">{progressPercent}%</span>
+                                )}
+                            </div>
+                            <p className="text-xs text-slate-300 truncate mt-0.5">{processDetail}</p>
+
+                            {progressPercent !== null ? (
+                                <div className="w-full h-1.5 bg-white/20 rounded-full overflow-hidden mt-2">
+                                    <div
+                                        className="h-full bg-gradient-to-r from-brand-rust to-brand-amber transition-all duration-200 rounded-full"
+                                        style={{ width: `${progressPercent}%` }}
+                                    />
+                                </div>
+                            ) : (
+                                <div className="w-full h-1.5 bg-white/10 rounded-full overflow-hidden mt-2">
+                                    <div className="w-full h-full bg-gradient-to-r from-brand-rust via-brand-amber to-brand-rust animate-pulse"></div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

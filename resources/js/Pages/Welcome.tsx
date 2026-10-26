@@ -336,9 +336,9 @@ export default function Welcome({
                         })()}
                     </AnimatePresence>
 
-                    {/* Dark Overlay - enhanced for richer contrast and improved readability */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-black/92 via-black/72 to-black/55 sm:from-black/90 sm:via-black/65 sm:to-black/45 z-1" />
-                    <div className="absolute inset-0 bg-black/20 z-1 pointer-events-none" />
+                    {/* Dark Overlay - mobile uses a balanced top-to-bottom gradient so both text and image remain visible */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/68 to-black/65 sm:bg-gradient-to-r sm:from-black/90 sm:via-black/65 sm:to-black/45 z-1" />
+                    <div className="absolute inset-0 bg-black/10 sm:bg-black/20 z-1 pointer-events-none" />
 
                     {/* Subtle ambient glow accents */}
                     <div className="absolute top-1/4 -left-20 w-96 h-96 bg-brand-amber/10 rounded-full blur-3xl pointer-events-none z-1" />

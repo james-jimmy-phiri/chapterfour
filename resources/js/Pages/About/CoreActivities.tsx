@@ -116,20 +116,20 @@ export default function CoreActivities({ objectives = [] }: Props) {
                                     initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true, margin: '-100px' }} transition={{ duration: 0.7 }}>
                                     <div className="flex flex-col md:flex-row gap-8 items-start mb-10">
-                                        <div className="w-16 h-16 rounded-2xl bg-brand-rust text-white flex items-center justify-center shrink-0 shadow-lg shadow-brand-rust/30">
+                                        <div className="w-16 h-16 rounded-2xl bg-slate-800 text-white flex items-center justify-center shrink-0 shadow-lg shadow-slate-900/20">
                                             <IconComponent className="w-8 h-8" />
                                         </div>
                                         <div>
                                             <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-3">{objective.title}</h2>
-                                            <div className="w-20 h-1 bg-brand-amber rounded-full" />
+                                            <div className="w-20 h-1 bg-slate-700 rounded-full" />
                                         </div>
                                     </div>
                                     {objective.activities && objective.activities.length > 0 && (
                                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                             {objective.activities.map((activity, aIdx) => (
-                                                <div key={aIdx} className="bg-slate-50 p-6 rounded-xl border border-slate-100 hover:border-brand-rust/30 hover:shadow-md transition-all group">
+                                                <div key={aIdx} className="bg-slate-50 p-6 rounded-xl border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all group">
                                                     <div className="flex items-start gap-4">
-                                                        <div className="mt-1 w-2 h-2 rounded-full bg-brand-amber shrink-0 group-hover:scale-150 transition-transform" />
+                                                        <div className="mt-1.5 w-2 h-2 rounded-full bg-slate-700 shrink-0 group-hover:bg-slate-900 group-hover:scale-125 transition-all" />
                                                         <p className="text-slate-700 leading-relaxed text-sm sm:text-base font-medium">{activity}</p>
                                                     </div>
                                                 </div>

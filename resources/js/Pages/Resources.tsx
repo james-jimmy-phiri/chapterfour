@@ -3,7 +3,7 @@ import { Head, Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-    Calendar, Search, ChevronLeft, ChevronRight, X, ExternalLink, ArrowRight
+    Calendar, Search, ChevronLeft, ChevronRight, X, ExternalLink, ArrowRight, FileText
 } from 'lucide-react';
 
 // Extended Interface to support new filters
@@ -189,16 +189,15 @@ const itemVariants = {
 
 export default function Resources({ resources, filters = {}, filterCategories = [], isNews = false }: ResourcesProps) {
     const isPaginator = resources && !Array.isArray(resources) && 'data' in resources;
-    const fallbackList = isNews ? defaultNewsList : defaultResourcesList;
     const items: ResourceItem[] = isPaginator
         ? (resources as any).data || []
         : Array.isArray(resources)
         ? resources
-        : fallbackList;
+        : (resources === undefined ? (isNews ? defaultNewsList : defaultResourcesList) : []);
 
-    const displayItems = items.length > 0 ? items : fallbackList;
+    const displayItems = items;
     const paginationLinks = isPaginator ? (resources as any).links || [] : [];
-    const totalCount = isPaginator ? (resources as any).total || displayItems.length : displayItems.length;
+    const totalCount = isPaginator ? (resources as any).total ?? displayItems.length : displayItems.length;
 
     const basePath = isNews ? '/news' : '/resources';
     const [searchInput, setSearchInput] = useState(filters.search || '');
@@ -402,81 +401,97 @@ export default function Resources({ resources, filters = {}, filterCategories = 
                                     </select>
                                 </div>
                                 <div className="text-sm font-medium text-slate-600">
-                                    1-{displayItems.length} of {totalCount} results
+                                    {displayItems.length > 0
+                                        ? `1-${displayItems.length} of ${totalCount} results`
+                                        : '0 results'}
                                 </div>
                             </div>
 
-                            {/* Cards Grid (3 Columns) */}
-                            <motion.div 
-                                variants={containerVariants}
-                                initial="hidden"
-                                animate="show"
-                                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
-                            >
-                                {displayItems.map((item, idx) => {
-                                    return (
-                                        <motion.article
-                                            variants={itemVariants}
-                                            key={item.slug || idx}
-                                            whileHover={{ y: -5, transition: { duration: 0.25 } }}
-                                            className="group relative bg-white rounded-xl border border-slate-200/90 hover:border-brand-rust/40 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full cursor-pointer"
-                                        >
-                                            <Link href={`/resources/${item.slug}`} className="flex flex-col h-full focus:outline-none">
-                                                {/* Image container */}
-                                                <div className="relative h-48 block overflow-hidden shrink-0 bg-slate-100 border-b border-slate-100">
-                                                    <img
-                                                        src={item.featured_image || PLACEHOLDER_IMAGE}
-                                                        alt={item.title}
-                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
-                                                        onError={(e) => {
-                                                            // Swap to placeholder if the provided link is broken
-                                                            e.currentTarget.src = PLACEHOLDER_IMAGE;
-                                                        }}
-                                                    />
-                                                    {/* Hover subtle dark gradient overlay */}
-                                                    <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                            {/* Cards Grid or Empty Message */}
+                            {displayItems.length > 0 ? (
+                                <motion.div 
+                                    variants={containerVariants}
+                                    initial="hidden"
+                                    animate="show"
+                                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                                >
+                                    {displayItems.map((item, idx) => {
+                                        return (
+                                            <motion.article
+                                                variants={itemVariants}
+                                                key={item.slug || idx}
+                                                whileHover={{ y: -5, transition: { duration: 0.25 } }}
+                                                className="group relative bg-white rounded-xl border border-slate-200/90 hover:border-brand-rust/40 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col h-full cursor-pointer"
+                                            >
+                                                <Link href={`/resources/${item.slug}`} className="flex flex-col h-full focus:outline-none">
+                                                    {/* Image container */}
+                                                    <div className="relative h-48 block overflow-hidden shrink-0 bg-slate-100 border-b border-slate-100">
+                                                        <img
+                                                            src={item.featured_image || PLACEHOLDER_IMAGE}
+                                                            alt={item.title}
+                                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"
+                                                            onError={(e) => {
+                                                                // Swap to placeholder if the provided link is broken
+                                                                e.currentTarget.src = PLACEHOLDER_IMAGE;
+                                                            }}
+                                                        />
+                                                        {/* Hover subtle dark gradient overlay */}
+                                                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
-                                                    {/* Type Badge */}
-                                                    <div className="absolute top-3 left-3">
-                                                        <span className="inline-block bg-white/95 backdrop-blur-sm text-slate-800 text-[11px] font-bold tracking-wider uppercase px-2.5 py-1 rounded shadow-sm border border-slate-200/50">
-                                                            {item.type || (isNews ? 'News' : 'Publication')}
-                                                        </span>
-                                                    </div>
-                                                </div>
-
-                                                {/* Dynamic accent line on hover */}
-                                                <div className="h-1 w-full bg-gradient-to-r from-brand-rust via-brand-amber to-brand-rust scale-x-0 group-hover:scale-x-100 opacity-0 group-hover:opacity-100 transition-all duration-500 origin-left" />
-
-                                                {/* Content */}
-                                                <div className="p-5 flex flex-col flex-grow">
-                                                    
-                                                    {/* Date */}
-                                                    <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 mb-2.5 tracking-wider">
-                                                        <Calendar className="w-3.5 h-3.5 text-brand-rust" />
-                                                        <span>{formatDate(item.published_at)}</span>
+                                                        {/* Type Badge */}
+                                                        <div className="absolute top-3 left-3">
+                                                            <span className="inline-block bg-white/95 backdrop-blur-sm text-slate-800 text-[11px] font-bold tracking-wider uppercase px-2.5 py-1 rounded shadow-sm border border-slate-200/50">
+                                                                {item.type || (isNews ? 'News' : 'Publication')}
+                                                            </span>
+                                                        </div>
                                                     </div>
 
-                                                    {/* Title */}
-                                                    <h2 className="text-base sm:text-lg font-bold text-slate-900 mb-2 group-hover:text-brand-rust transition-colors leading-snug line-clamp-2">
-                                                        {item.title}
-                                                    </h2>
+                                                    {/* Dynamic accent line on hover */}
+                                                    <div className="h-1 w-full bg-gradient-to-r from-brand-rust via-brand-amber to-brand-rust scale-x-0 group-hover:scale-x-100 opacity-0 group-hover:opacity-100 transition-all duration-500 origin-left" />
 
-                                                    {/* Description/Excerpt */}
-                                                    <p className="text-sm text-slate-600 leading-relaxed mb-4 line-clamp-3 flex-grow">
-                                                        {item.excerpt || "Click to view more details about this publication."}
-                                                    </p>
+                                                    {/* Content */}
+                                                    <div className="p-5 flex flex-col flex-grow">
+                                                        
+                                                        {/* Date */}
+                                                        <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-400 mb-2.5 tracking-wider">
+                                                            <Calendar className="w-3.5 h-3.5 text-brand-rust" />
+                                                            <span>{formatDate(item.published_at)}</span>
+                                                        </div>
 
-                                                    {/* Read more footer with animated arrow */}
-                                                    <div className="mt-auto pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-brand-rust group-hover:text-brand-rust-dark">
-                                                        <span>Read full details</span>
-                                                        <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1.5 transition-transform duration-300" />
+                                                        {/* Title */}
+                                                        <h2 className="text-base sm:text-lg font-bold text-slate-900 mb-2 leading-snug line-clamp-2">
+                                                            {item.title}
+                                                        </h2>
+
+                                                        {/* Description/Excerpt */}
+                                                        <p className="text-sm text-slate-600 leading-relaxed mb-4 line-clamp-3 flex-grow">
+                                                            {item.excerpt || "Click to view more details about this publication."}
+                                                        </p>
+
+                                                        {/* Read more footer with animated arrow */}
+                                                        <div className="mt-auto pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-brand-rust group-hover:text-brand-rust-dark">
+                                                            <span>Read full details</span>
+                                                            <ArrowRight className="w-4 h-4 transform group-hover:translate-x-1.5 transition-transform duration-300" />
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </Link>
-                                        </motion.article>
-                                    );
-                                })}
-                            </motion.div>
+                                                </Link>
+                                            </motion.article>
+                                        );
+                                    })}
+                                </motion.div>
+                            ) : (
+                                <div className="text-center py-20 bg-slate-50 rounded-3xl border border-slate-100">
+                                    <FileText className="w-12 h-12 text-slate-300 mx-auto mb-4" />
+                                    <h3 className="text-xl font-bold text-slate-700 mb-2">
+                                        {isNews ? 'No News Available' : 'No Resources Available'}
+                                    </h3>
+                                    <p className="text-slate-500 text-sm max-w-md mx-auto">
+                                        {isNews
+                                            ? 'Check back later for our latest news, press releases, and announcements.'
+                                            : 'Check back later for our latest research publications and reports.'}
+                                    </p>
+                                </div>
+                            )}
 
                             {/* Pagination */}
                             {paginationLinks.length > 3 && (

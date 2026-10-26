@@ -54,7 +54,7 @@ export default function CrossCuttingActivities({ activities = [] }: Props) {
             {/* Hero Section */}
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
-                    <img src="/images/animate-img-1.jpg" alt="Background" className="w-full h-full object-cover opacity-60" />
+                    <img src="/images/new/girls.jpg" alt="Cross-Cutting Human Rights Approaches" className="w-full h-full object-cover opacity-60" />
                     <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent" />
                 </div>
                 <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">

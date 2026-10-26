@@ -71,8 +71,8 @@ export default function OurTeam({ teamMembers = [] }: OurTeamProps) {
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="/images/book/no_silent1.jpg"
-                        alt="Background"
+                        src="/images/new/community_engagement.jpg"
+                        alt="Chapter Four Team"
                         className="w-full h-full object-cover opacity-60"
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent"></div>
@@ -146,11 +146,11 @@ export default function OurTeam({ teamMembers = [] }: OurTeamProps) {
                     
                     {/* Card Content — Added items-center and text-center */}
                     <div className="p-6 flex flex-col items-center text-center flex-grow relative bg-white">
-                        <h3 className="text-xl font-bold text-slate-900 mb-1 group-hover:text-brand-rust transition-colors">{member.name}</h3>
+                        <h3 className="text-xl font-bold text-slate-900 mb-1">{member.name}</h3>
                         <p className="text-brand-rust font-bold text-sm tracking-wider uppercase mb-4">{member.role}</p>
 
                         {/* Added w-full and justify-center to center the View Profile button */}
-                        <div className="mt-auto pt-4 border-t border-slate-100 w-full flex justify-center items-center text-sm font-bold text-slate-600 group-hover:text-brand-rust transition-colors uppercase tracking-wider">
+                        <div className="mt-auto pt-4 border-t border-slate-100 w-full flex justify-center items-center text-sm font-bold text-slate-600 transition-colors uppercase tracking-wider">
                             <span>View Profile</span>
                             <ArrowRight className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" />
                         </div>

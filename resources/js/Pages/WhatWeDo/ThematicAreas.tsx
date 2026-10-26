@@ -385,8 +385,8 @@ export default function ThematicAreas({ thematicAreas: dbThematicAreas = [] }: {
                             className="grid grid-cols-2 gap-4"
                         >
                             <img src="/images/animate-img-1.jpg" alt="Community engagement" className="rounded-2xl w-full h-52 object-cover shadow-lg" />
-                            <img src="/images/Parliament_Building_of_Malawioutside.jpg" alt="Parliamentary advocacy" className="rounded-2xl w-full h-52 object-cover shadow-lg mt-8" />
-                            <img src="/images/Chief_Justice.jpg" alt="Judicial engagement" className="rounded-2xl w-full h-52 object-cover shadow-lg -mt-4" />
+                            <img src="/images/new/climate.jpg" alt="Parliamentary advocacy" className="rounded-2xl w-full h-52 object-cover shadow-lg mt-8" />
+                            <img src="/images/new/girl_learners.jpg" alt="Judicial engagement" className="rounded-2xl w-full h-52 object-cover shadow-lg -mt-4" />
                             <img src="/images/woman.jpg" alt="Community empowerment" className="rounded-2xl w-full h-52 object-cover shadow-lg mt-4" />
                         </motion.div>
                     </div>
@@ -412,7 +412,13 @@ export default function ThematicAreas({ thematicAreas: dbThematicAreas = [] }: {
                             <div
                                 key={item.number}
                                 onMouseEnter={() => setActiveId(item.number)}
-                                onClick={() => setSelectedArea(item)}
+                                onClick={() => {
+                                    if (activeId !== item.number) {
+                                        setActiveId(item.number);
+                                    } else {
+                                        setSelectedArea(item);
+                                    }
+                                }}
                                 className={cn(
                                     "relative cursor-pointer overflow-hidden rounded-2xl border border-neutral-200 bg-white",
                                     "transition-[flex,filter] duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] shadow-sm hover:shadow-md",

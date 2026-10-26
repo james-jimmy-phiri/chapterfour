@@ -1,5 +1,6 @@
 import PublicLayout from '@/Layouts/PublicLayout';
 import { Head, Link } from '@inertiajs/react';
+import { motion } from 'framer-motion';
 
 export default function Privacy() {
     return (
@@ -17,15 +18,35 @@ export default function Privacy() {
                     content="index, follow"
                 />
             </Head>
-            <section className="hero-pattern text-white py-14 px-4 sm:px-8 border-b border-white/10">
-                <div className="max-w-4xl mx-auto">
-                    <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-slate-300 mb-4 font-semibold">
-                        <Link href="/" className="hover:text-brand-amber transition">Home</Link>
-                        <span className="text-slate-500">›</span>
-                        <span className="text-brand-amber">Privacy Policy</span>
-                    </div>
-                    <h1 className="text-3xl sm:text-4xl font-black text-white">Privacy Policy</h1>
-                    <p className="text-sm text-slate-200 mt-2">Last updated: January 2026</p>
+
+            {/* Hero Section */}
+            <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
+                <div className="absolute inset-0 z-0">
+                    <img
+                        src="/images/new/girls.jpg"
+                        alt="Legal and privacy protection"
+                        className="w-full h-full object-cover opacity-60"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/50 to-transparent"></div>
+                </div>
+
+                <div className="max-w-7xl mx-auto px-4 sm:px-8 relative z-10">
+                    <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.8 }}
+                        className="max-w-3xl"
+                    >
+                        <span className="text-brand-amber font-bold tracking-widest uppercase mb-4 block flex items-center gap-2">
+                            <span className="w-8 h-0.5 bg-brand-amber"></span> Legal & Compliance
+                        </span>
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black mb-6 leading-tight">
+                            Privacy Policy
+                        </h1>
+                        <p className="text-lg sm:text-xl text-slate-300 leading-relaxed">
+                            Safeguarding your rights, confidentiality, and data protection across all our operations, clinics, and digital platforms.
+                        </p>
+                    </motion.div>
                 </div>
             </section>
 

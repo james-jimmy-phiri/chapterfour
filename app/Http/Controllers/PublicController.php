@@ -582,8 +582,8 @@ class PublicController extends Controller
     public function submitContact(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'name'         => 'required_without:email|nullable|string|max:255',
-            'email'        => 'required_without:name|nullable|email|max:255',
+            'name'         => 'nullable|string|max:255',
+            'email'        => 'nullable|email|max:255',
             'phone'        => 'nullable|string|max:50',
             'inquiry_type' => 'required|string|max:100',
             'subject'      => 'nullable|string|max:255',
@@ -733,52 +733,95 @@ class PublicController extends Controller
         ];
 
         if ($queryStr !== '') {
-            $resources = Resource::where('status', 'published')
-                ->where(function ($q) use ($queryStr) {
-                    $q->where('title', 'like', "%{$queryStr}%")
-                      ->orWhere('excerpt', 'like', "%{$queryStr}%")
-                      ->orWhere('body', 'like', "%{$queryStr}%");
-                })
-                ->take(15)
-                ->get(['id', 'title', 'slug', 'type', 'excerpt', 'published_at'])
-                ->toArray();
+            $resources = $this->fetch(fn () =>
+                Resource::where('status', 'published')
+                    ->where(function ($q) use ($queryStr) {
+                        $q->where('title', 'like', "%{$queryStr}%")
+                          ->orWhere('excerpt', 'like', "%{$queryStr}%")
+                          ->orWhere('body', 'like', "%{$queryStr}%");
+                    })
+                    ->latest('published_at')
+                    ->take(15)
+                    ->get(['id', 'title', 'slug', 'type', 'excerpt', 'published_at'])
+                    ->map(fn ($r) => [
+                        'id'           => $r->id,
+                        'title'        => $r->title,
+                        'slug'         => $r->slug,
+                        'type'         => is_object($r->type) && method_exists($r->type, 'value') ? $r->type->value : (string) ($r->type ?? 'resource'),
+                        'excerpt'      => $r->excerpt,
+                        'published_at' => $r->published_at ? $r->published_at->toISOString() : null,
+                    ])
+                    ->toArray()
+            ) ?? [];
 
-            $thematicAreas = ThematicArea::where('status', 'published')
-                ->where(function ($q) use ($queryStr) {
-                    $q->where('title', 'like', "%{$queryStr}%")
-                      ->orWhere('short_description', 'like', "%{$queryStr}%");
-                })
-                ->take(8)
-                ->get(['id', 'title', 'slug', 'short_description', 'icon'])
-                ->toArray();
+            $thematicAreas = $this->fetch(fn () =>
+                ThematicArea::where(function ($q) {
+                        $q->where('status', 'published')->orWhereNull('status');
+                    })
+                    ->where(function ($q) use ($queryStr) {
+                        $q->where('title', 'like', "%{$queryStr}%")
+                          ->orWhere('short_description', 'like', "%{$queryStr}%")
+                          ->orWhere('full_description', 'like', "%{$queryStr}%");
+                    })
+                    ->orderBy('sort_order')
+                    ->take(8)
+                    ->get(['id', 'title', 'slug', 'short_description', 'icon'])
+                    ->toArray()
+            ) ?? [];
 
-            $projects = Project::where('status', 'published')
-                ->where(function ($q) use ($queryStr) {
-                    $q->where('title', 'like', "%{$queryStr}%")
-                      ->orWhere('summary', 'like', "%{$queryStr}%");
-                })
-                ->take(8)
-                ->get(['id', 'title', 'slug', 'summary'])
-                ->toArray();
+            $projects = $this->fetch(fn () =>
+                Project::where(function ($q) {
+                        $q->where('status', 'published')->orWhere('status', 'active')->orWhere('status', 'completed');
+                    })
+                    ->where(function ($q) use ($queryStr) {
+                        $q->where('title', 'like', "%{$queryStr}%")
+                          ->orWhere('summary', 'like', "%{$queryStr}%")
+                          ->orWhere('description', 'like', "%{$queryStr}%");
+                    })
+                    ->latest('published_at')
+                    ->take(8)
+                    ->get(['id', 'title', 'slug', 'summary'])
+                    ->toArray()
+            ) ?? [];
 
-            $team = TeamMember::where('status', 'published')
-                ->where(function ($q) use ($queryStr) {
-                    $q->where('name', 'like', "%{$queryStr}%")
-                      ->orWhere('role', 'like', "%{$queryStr}%")
-                      ->orWhere('department', 'like', "%{$queryStr}%");
-                })
-                ->take(8)
-                ->get(['id', 'name', 'role', 'department', 'photo'])
-                ->toArray();
+            $team = $this->fetch(fn () =>
+                TeamMember::where(function ($q) {
+                        $q->where('status', 'published')->orWhereNull('status');
+                    })
+                    ->where(function ($q) use ($queryStr) {
+                        $q->where('name', 'like', "%{$queryStr}%")
+                          ->orWhere('role', 'like', "%{$queryStr}%")
+                          ->orWhere('department', 'like', "%{$queryStr}%")
+                          ->orWhere('biography', 'like', "%{$queryStr}%");
+                    })
+                    ->orderBy('sort_order')
+                    ->take(8)
+                    ->get(['id', 'name', 'role', 'department', 'photo'])
+                    ->toArray()
+            ) ?? [];
 
-            $vacancies = Vacancy::where('status', 'published')
-                ->where(function ($q) use ($queryStr) {
-                    $q->where('title', 'like', "%{$queryStr}%")
-                      ->orWhere('description', 'like', "%{$queryStr}%");
-                })
-                ->take(6)
-                ->get(['id', 'title', 'department', 'location', 'deadline'])
-                ->toArray();
+            $vacancies = $this->fetch(fn () =>
+                Vacancy::where(function ($q) {
+                        $q->where('status', 'open')->orWhere('status', 'published');
+                    })
+                    ->where(function ($q) use ($queryStr) {
+                        $q->where('title', 'like', "%{$queryStr}%")
+                          ->orWhere('department', 'like', "%{$queryStr}%")
+                          ->orWhere('description', 'like', "%{$queryStr}%");
+                    })
+                    ->latest('posted_date')
+                    ->take(6)
+                    ->get(['id', 'title', 'slug', 'department', 'location', 'deadline_text', 'closes_at'])
+                    ->map(fn ($v) => [
+                        'id'         => $v->id,
+                        'title'      => $v->title,
+                        'slug'       => $v->slug,
+                        'department' => $v->department,
+                        'location'   => $v->location,
+                        'deadline'   => $v->deadline_text ?? ($v->closes_at ? $v->closes_at->format('M d, Y') : null),
+                    ])
+                    ->toArray()
+            ) ?? [];
 
             $results = [
                 'resources'     => $resources,

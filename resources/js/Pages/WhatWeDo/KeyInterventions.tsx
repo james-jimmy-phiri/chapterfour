@@ -410,7 +410,13 @@ export default function KeyInterventions({ interventions = [] }: KeyIntervention
                             <div
                                 key={item.id}
                                 onMouseEnter={() => setActiveId(item.id)}
-                                onClick={() => setSelectedIntervention(item)}
+                                onClick={() => {
+                                    if (activeId !== item.id) {
+                                        setActiveId(item.id);
+                                    } else {
+                                        setSelectedIntervention(item);
+                                    }
+                                }}
                                 className={cn(
                                     "relative cursor-pointer overflow-hidden rounded-2xl border border-neutral-200 bg-white",
                                     "transition-[flex,filter] duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] shadow-sm hover:shadow-md",

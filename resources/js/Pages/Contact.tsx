@@ -3,7 +3,7 @@ import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import {
     Mail, Phone, MapPin, Send, MessageSquare, Clock,
-    CheckCircle2, Shield, Loader2, AlertCircle
+    CheckCircle2, Shield, Loader2, AlertCircle, Navigation, ExternalLink
 } from 'lucide-react';
 
 export default function Contact() {
@@ -154,13 +154,47 @@ export default function Contact() {
                                 </div>
                             </div>
                             
-                            <div className="rounded-2xl overflow-hidden shadow-lg h-48 relative">
-                                <img 
-                                    src={site?.contact_image || "/images/child-hero.png"} 
-                                    alt="Location or Contact Image" 
-                                    className="w-full h-full object-cover"
-                                />
-                                <div className="absolute inset-0 bg-slate-900/20"></div>
+                            {/* Interactive Office Map & Directions */}
+                            <div className="rounded-2xl overflow-hidden shadow-lg border border-slate-200 bg-white relative flex flex-col">
+                                <div className="relative h-60 w-full overflow-hidden bg-slate-100">
+                                    <iframe
+                                        title="Chapter Four Malawi Office Location"
+                                        src="https://maps.google.com/maps?q=-13.9626,33.7888(Chapter+Four+Malawi)&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                                        className="w-full h-full border-0"
+                                        loading="lazy"
+                                        allowFullScreen
+                                        referrerPolicy="no-referrer-when-downgrade"
+                                    ></iframe>
+
+                                    {/* Pinned Location Tag */}
+                                    <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full shadow-md border border-slate-200/80 flex items-center gap-2 pointer-events-none">
+                                        <span className="relative flex h-2.5 w-2.5">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-rust opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-brand-rust"></span>
+                                        </span>
+                                        <span className="text-xs font-bold text-slate-800">
+                                            Chapter Four Malawi • Area 11
+                                        </span>
+                                    </div>
+                                </div>
+
+                                {/* Directions Footer Bar */}
+                                <div className="p-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                    <div className="flex items-center gap-2 text-xs text-slate-600">
+                                        <MapPin className="w-4 h-4 text-brand-rust shrink-0" />
+                                        <span>Area 11, House No. 11/38/05, City Centre, Lilongwe</span>
+                                    </div>
+                                    <a
+                                        href="https://www.google.com/maps/dir/?api=1&destination=Area+11+Lilongwe+Malawi"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-brand-rust hover:bg-brand-rust-dark text-white text-xs font-bold transition shadow-sm shrink-0"
+                                    >
+                                        <Navigation className="w-3.5 h-3.5" />
+                                        <span>Get Directions</span>
+                                        <ExternalLink className="w-3 h-3 opacity-80" />
+                                    </a>
+                                </div>
                             </div>
                         </motion.div>
 
@@ -202,9 +236,7 @@ export default function Contact() {
                                     <form onSubmit={handleSubmit} className="space-y-6">
                                         {/* Anonymous complaint notice - cool, professional styling */}
                                         <div className="flex items-center gap-3.5 bg-slate-50 border border-slate-200/90 rounded-2xl px-4 py-3 text-slate-600">
-                                            <div className="w-8 h-8 rounded-xl bg-white border border-slate-200/80 shadow-xs flex items-center justify-center shrink-0 text-slate-700">
-                                                <Shield className="w-4 h-4 text-slate-600" />
-                                            </div>
+                                           
                                             <p className="text-sm text-slate-600 leading-relaxed">
                                                 <span className="font-semibold text-slate-900">Anonymous Submission:</span> You can leave your name, email, and phone blank if you wish to remain anonymous. Your report will still be received and handled with strict confidentiality.
                                             </p>

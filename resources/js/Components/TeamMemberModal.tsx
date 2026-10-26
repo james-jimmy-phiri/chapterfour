@@ -20,6 +20,40 @@ interface TeamMemberModalProps {
     member: TeamMember | null;
 }
 
+const getFormattedBioParagraphs = (bio?: string): string[] => {
+    if (!bio) return [];
+    
+    // First, split by existing newline breaks if any
+    const rawParagraphs = bio.split(/\r?\n+/).map(p => p.trim()).filter(Boolean);
+    
+    if (rawParagraphs.length > 1) {
+        return rawParagraphs;
+    }
+    
+    // If it's a single block of text, check if it has multiple sentences to break into readable paragraphs
+    const singleText = rawParagraphs[0] || '';
+    const sentences = singleText.match(/[^.!?]+[.!?]+(\s|$)/g);
+    
+    if (sentences && sentences.length >= 3) {
+        const paragraphs: string[] = [];
+        let current = '';
+        sentences.forEach((sentence, idx) => {
+            current += sentence;
+            // Group every 2 sentences into a paragraph
+            if ((idx + 1) % 2 === 0 || idx === sentences.length - 1) {
+                paragraphs.push(current.trim());
+                current = '';
+            }
+        });
+        if (current.trim()) {
+            paragraphs.push(current.trim());
+        }
+        return paragraphs;
+    }
+    
+    return [singleText];
+};
+
 export default function TeamMemberModal({ isOpen, onClose, member }: TeamMemberModalProps) {
     // Prevent scrolling when modal is open
     useEffect(() => {
@@ -34,6 +68,8 @@ export default function TeamMemberModal({ isOpen, onClose, member }: TeamMemberM
     }, [isOpen]);
 
     if (!member) return null;
+
+    const bioParagraphs = getFormattedBioParagraphs(member.bio);
 
     return (
         <AnimatePresence>
@@ -105,21 +141,14 @@ export default function TeamMemberModal({ isOpen, onClose, member }: TeamMemberM
                             </div>
 
                             {/* Bio Content */}
-                            <div className="prose prose-slate max-w-none text-slate-700">
-                                <p className="text-lg font-medium leading-relaxed mb-6 text-slate-800">
-                                    {member.bio}
-                                </p>
-                                
+                            <div className="prose prose-slate max-w-none">
                                 {member.longBio ? (
-                                    <div className="space-y-4 text-sm leading-relaxed" dangerouslySetInnerHTML={{ __html: member.longBio }} />
+                                    <div className="space-y-4 text-base sm:text-lg leading-relaxed text-slate-600" dangerouslySetInnerHTML={{ __html: member.longBio }} />
                                 ) : (
-                                    <div className="space-y-4 text-sm leading-relaxed text-slate-600">
-                                        <p>
-                                            Dedicated to the promotion of human rights and constitutionalism, {member.name.split(' ')[0]} plays a crucial role in advancing the mission of Chapter Four.
-                                        </p>
-                                        <p>
-                                            With extensive experience in legal advocacy, community mobilization, and strategic planning, they work tirelessly to ensure that fundamental rights are not just theoretical concepts, but practical realities for all citizens.
-                                        </p>
+                                    <div className="space-y-4 text-base sm:text-lg leading-relaxed text-slate-600">
+                                        {bioParagraphs.map((paragraph, idx) => (
+                                            <p key={idx}>{paragraph}</p>
+                                        ))}
                                     </div>
                                 )}
                             </div>

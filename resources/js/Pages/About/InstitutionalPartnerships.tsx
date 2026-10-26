@@ -118,7 +118,7 @@ export default function InstitutionalPartnerships({ partners = [] }: Institution
                             className="grid grid-cols-2 gap-4"
                         >
                             <div className="space-y-4 mt-8">
-                                <img src="/images/animate-img-3.jpg" alt="Partnership" className="rounded-2xl shadow-lg w-full object-cover aspect-[4/5]" />
+                                <img src="/images/hero/legalassistancebg.jpg" alt="Institutional Engagement" className="rounded-2xl shadow-lg w-full object-cover aspect-[4/5]" />
                                 <div className="bg-brand-rust text-white p-6 rounded-2xl shadow-lg flex flex-col justify-center items-center text-center aspect-square">
                                     <Network className="w-10 h-10 mb-3 text-brand-amber" />
                                     <span className="font-bold">Building Strong Networks</span>
@@ -129,7 +129,7 @@ export default function InstitutionalPartnerships({ partners = [] }: Institution
                                     <Scale className="w-10 h-10 mb-3 text-brand-amber" />
                                     <span className="font-bold">Collaborative Justice</span>
                                 </div>
-                                <img src="/images/hero-bg.jpg" alt="Meetings" className="rounded-2xl shadow-lg w-full object-cover aspect-[4/5]" />
+                                <img src="/images/new/police_advice.jpg" alt="Institutional Dialogue and Law Enforcement" className="rounded-2xl shadow-lg w-full object-cover aspect-[4/5]" />
                             </div>
                         </motion.div>
                     </div>

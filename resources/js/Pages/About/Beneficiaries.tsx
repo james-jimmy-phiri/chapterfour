@@ -102,8 +102,8 @@ export default function Beneficiaries({ beneficiaryGroups = [] }: BeneficiariesP
                             className="relative h-full min-h-[400px] rounded-2xl overflow-hidden shadow-2xl"
                         >
                             <img
-                                src="/images/crying_boychild.jpg"
-                                alt="Community members"
+                                src="/images/new/communitypolice.webp"
+                                alt="Community rights holders and beneficiaries"
                                 className="absolute inset-0 w-full h-full object-cover"
                             />
                         </motion.div>

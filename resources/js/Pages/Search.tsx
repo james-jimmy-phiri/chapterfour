@@ -1,9 +1,9 @@
 import PublicLayout from '@/Layouts/PublicLayout';
 import { Head, Link, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     Search as SearchIcon, FileText, Globe, Briefcase, Users,
-    ArrowRight, Sparkles, Filter, Calendar
+    ArrowRight, Sparkles, Filter, Calendar, X as ClearIcon
 } from 'lucide-react';
 
 interface SearchProps {
@@ -14,32 +14,57 @@ interface SearchProps {
         thematicAreas: Array<{ id: number; title: string; slug: string; short_description?: string; icon?: string }>;
         projects: Array<{ id: number; title: string; slug: string; summary?: string }>;
         team: Array<{ id: number; name: string; role: string; department?: string; photo?: string }>;
-        vacancies: Array<{ id: number; title: string; department?: string; location?: string; deadline?: string }>;
+        vacancies: Array<{ id: number; title: string; slug?: string; department?: string; location?: string; deadline?: string }>;
         total: number;
     };
 }
+
+const POPULAR_SEARCHES = [
+    'Constitutional Rights',
+    'Civic Space',
+    'Legal Aid',
+    'Climate Justice',
+    'Human Rights',
+    'Rule of Law',
+    'Youth Empowerment',
+    'Reports'
+];
 
 export default function SearchPage({ query: initialQuery = '', tab: initialTab = 'all', results }: SearchProps) {
     const [query, setQuery] = useState(initialQuery);
     const [activeTab, setActiveTab] = useState(initialTab);
 
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        router.get('/search', { q: query, tab: activeTab }, { preserveState: true });
+    useEffect(() => {
+        setQuery(initialQuery);
+    }, [initialQuery]);
+
+    useEffect(() => {
+        setActiveTab(initialTab);
+    }, [initialTab]);
+
+    const handleSearch = (e?: React.FormEvent, explicitQuery?: string) => {
+        if (e) e.preventDefault();
+        const q = explicitQuery !== undefined ? explicitQuery : query;
+        router.get('/search', { q: q.trim(), tab: activeTab }, { preserveState: false });
     };
 
     const handleTabChange = (t: string) => {
         setActiveTab(t);
-        router.get('/search', { q: query, tab: t }, { preserveState: true });
+        router.get('/search', { q: query.trim(), tab: t }, { preserveState: false });
+    };
+
+    const handleQuickSearch = (keyword: string) => {
+        setQuery(keyword);
+        handleSearch(undefined, keyword);
     };
 
     const tabs = [
-        { id: 'all', label: 'All Results', count: results.total },
-        { id: 'resources', label: 'News & Publications', count: results.resources.length },
-        { id: 'thematic', label: 'Thematic Areas', count: results.thematicAreas.length },
-        { id: 'projects', label: 'Field Projects', count: results.projects.length },
-        { id: 'team', label: 'Team & Leadership', count: results.team.length },
-        { id: 'vacancies', label: 'Vacancies', count: results.vacancies.length },
+        { id: 'all', label: 'All Results', count: results?.total ?? 0 },
+        { id: 'resources', label: 'News & Publications', count: results?.resources?.length ?? 0 },
+        { id: 'thematic', label: 'Thematic Areas', count: results?.thematicAreas?.length ?? 0 },
+        { id: 'projects', label: 'Field Projects', count: results?.projects?.length ?? 0 },
+        { id: 'team', label: 'Team & Leadership', count: results?.team?.length ?? 0 },
+        { id: 'vacancies', label: 'Vacancies', count: results?.vacancies?.length ?? 0 },
     ];
 
     return (
@@ -80,6 +105,16 @@ export default function SearchPage({ query: initialQuery = '', tab: initialTab =
                             className="bg-transparent border-none text-white placeholder-slate-300 text-base sm:text-lg px-4 py-2.5 w-full focus:ring-0 focus:outline-none"
                             autoFocus
                         />
+                        {query && (
+                            <button
+                                type="button"
+                                onClick={() => { setQuery(''); }}
+                                className="p-1.5 mr-1 text-white/60 hover:text-white transition"
+                                title="Clear input"
+                            >
+                                <ClearIcon className="w-4 h-4" />
+                            </button>
+                        )}
                         <button
                             type="submit"
                             className="bg-brand-rust hover:bg-brand-rust-dark text-white text-sm sm:text-base font-bold py-3 px-7 rounded-xl transition shrink-0 shadow-sm"
@@ -87,6 +122,21 @@ export default function SearchPage({ query: initialQuery = '', tab: initialTab =
                             Search
                         </button>
                     </form>
+
+                    {/* Quick Search Suggestions */}
+                    <div className="flex flex-wrap items-center justify-center gap-2 pt-2">
+                        <span className="text-xs text-white/60 font-medium mr-1">Popular:</span>
+                        {POPULAR_SEARCHES.map((term) => (
+                            <button
+                                key={term}
+                                type="button"
+                                onClick={() => handleQuickSearch(term)}
+                                className="text-xs bg-white/10 hover:bg-white/20 text-white/90 px-3 py-1 rounded-full border border-white/10 transition-colors"
+                            >
+                                {term}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
 
@@ -116,11 +166,19 @@ export default function SearchPage({ query: initialQuery = '', tab: initialTab =
                     {/* Summary Line */}
                     {initialQuery && (
                         <p className="text-sm sm:text-base text-slate-600">
-                            Found <strong className="text-slate-900">{results.total}</strong> results matching "<span className="text-brand-rust font-semibold">{initialQuery}</span>"
+                            Found <strong className="text-slate-900">{results?.total ?? 0}</strong> results matching "<span className="text-brand-rust font-semibold">{initialQuery}</span>"
                         </p>
                     )}
 
-                    {results.total === 0 ? (
+                    {!initialQuery ? (
+                        <div className="py-16 text-center bg-white rounded-2xl border border-slate-200 p-8 shadow-xs">
+                            <Sparkles className="w-12 h-12 mx-auto text-brand-rust mb-3 opacity-80" />
+                            <h3 className="font-serif font-bold text-slate-900 text-xl">Search the Chapter Four Repository</h3>
+                            <p className="text-sm sm:text-base text-slate-600 mt-2 max-w-md mx-auto">
+                                Type a topic, project name, publication title, or team member name above, or click any of the popular search terms to explore.
+                            </p>
+                        </div>
+                    ) : results.total === 0 ? (
                         <div className="py-20 text-center bg-white rounded-2xl border border-slate-200 p-8">
                             <SearchIcon className="w-12 h-12 mx-auto text-slate-400 mb-3 opacity-40" />
                             <h3 className="font-serif font-bold text-slate-800 text-xl">No matching results found</h3>
@@ -145,7 +203,7 @@ export default function SearchPage({ query: initialQuery = '', tab: initialTab =
                                             >
                                                 <div className="flex items-center gap-2.5 mb-1.5">
                                                     <span className="px-2.5 py-0.5 rounded bg-brand-rust/10 text-brand-rust text-xs font-bold uppercase tracking-wider">
-                                                        {item.type.replace('_', ' ')}
+                                                        {(item.type || 'resource').replace('_', ' ')}
                                                     </span>
                                                     {item.published_at && (
                                                         <span className="text-xs text-slate-500">

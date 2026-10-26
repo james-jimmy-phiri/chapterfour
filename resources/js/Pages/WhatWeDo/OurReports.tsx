@@ -98,7 +98,7 @@ export default function OurReports({ reports }: { reports: Report[] }) {
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="/images/legal_books.webp"
+                        src="/images/new/woman_tree.jpg"
                         alt="Chapter Four Research & Reports"
                         className="w-full h-full object-cover opacity-40"
                     />
@@ -138,20 +138,6 @@ export default function OurReports({ reports }: { reports: Report[] }) {
                         <p className="text-lg sm:text-xl text-slate-300 leading-relaxed max-w-2xl">
                             Evidence-based research, policy analysis, legal handbooks, and annual human rights documentation — generating credible knowledge to drive advocacy, litigation support, and policy reform in Malawi.
                         </p>
-                    </motion.div>
-
-                    {/* Type chips */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.5 }}
-                        className="flex flex-wrap gap-2 mt-10"
-                    >
-                        {['Annual Reports', 'Research Papers', 'Policy Briefs', 'Legal Handbooks', 'Country Profiles', 'Press Releases'].map((t) => (
-                            <span key={t} className="inline-flex items-center gap-1.5 bg-white/10 border border-white/15 text-slate-200 text-xs font-semibold px-3 py-1.5 rounded-full backdrop-blur-sm">
-                                {t}
-                            </span>
-                        ))}
                     </motion.div>
                 </div>
 
@@ -195,47 +181,10 @@ export default function OurReports({ reports }: { reports: Report[] }) {
                             className="grid grid-cols-2 gap-4"
                         >
                             <img src="/images/open_book.jpg" alt="Research books" className="rounded-2xl w-full h-52 object-cover shadow-lg" />
-                            <img src="/images/legal_books.webp" alt="Legal publications" className="rounded-2xl w-full h-52 object-cover shadow-lg mt-8" />
-                            <img src="/images/constitutional_book.jpg" alt="Constitution" className="rounded-2xl w-full h-52 object-cover shadow-lg -mt-4" />
+                            <img src="/images/new/communitypolice.webp" alt="Legal publications" className="rounded-2xl w-full h-52 object-cover shadow-lg mt-8" />
+                            <img src="/images/new/AwarenessRaising.jpg" alt="Constitution" className="rounded-2xl w-full h-52 object-cover shadow-lg -mt-4" />
                             <img src="/images/animate-img-2.jpg" alt="Documentation" className="rounded-2xl w-full h-52 object-cover shadow-lg mt-4" />
                         </motion.div>
-                    </div>
-                </div>
-            </section>
-
-            {/* ─── CROSS-CUTTING THEMATIC AREAS ────────────────────────────── */}
-            <section className="py-20 bg-slate-50 border-t border-slate-200">
-                <div className="max-w-7xl mx-auto px-4 sm:px-8">
-                    <div className="text-center max-w-2xl mx-auto mb-14">
-                        <span className="text-xs font-bold uppercase tracking-widest text-brand-rust block mb-3">Cross-Cutting Work</span>
-                        <h2 className="text-3xl sm:text-4xl font-black text-slate-900 leading-tight">
-                            Mainstreamed Across All Programmes
-                        </h2>
-                        <p className="text-slate-500 mt-4 leading-relaxed">
-                            These seven cross-cutting activities run through every Chapter Four programme — ensuring coherence, learning, and systemic impact across all our work.
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {crossCuttingAreas.map((area, idx) => {
-                            const Icon = area.icon;
-                            return (
-                                <motion.div
-                                    key={idx}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }}
-                                    transition={{ duration: 0.5, delay: (idx % 4) * 0.1 }}
-                                    className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md hover:border-slate-200 transition-all group"
-                                >
-                                    <div className={`w-11 h-11 ${area.bg} rounded-xl flex items-center justify-center mb-4`}>
-                                        <Icon className={`w-5 h-5 ${area.color}`} />
-                                    </div>
-                                    <h3 className="font-bold text-slate-800 text-sm mb-2">{area.label}</h3>
-                                    <p className="text-slate-500 text-xs leading-relaxed">{area.description}</p>
-                                </motion.div>
-                            );
-                        })}
                     </div>
                 </div>
             </section>

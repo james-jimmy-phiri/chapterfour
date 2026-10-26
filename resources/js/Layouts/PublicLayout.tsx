@@ -172,8 +172,8 @@ export default function PublicLayout({ children }: PropsWithChildren) {
 
             {/* ─── STICKY MAIN HEADER (Overlays Hero with z-40, Glassmorphic) ────── */}
             <header
-                className={`sticky top-0 z-40 transition-all duration-300 ${scrolled
-                    ? 'bg-white/95 backdrop-blur-md border-b border-white/10 shadow-xl py-2'
+                className={`sticky top-0 z-40 transition-all duration-300 ${(scrolled || mobileOpen)
+                    ? 'bg-white/95 backdrop-blur-md border-b border-slate-200 shadow-xl py-2'
                     : 'bg-white/5 backdrop-blur-md border-b border-white/10 shadow-lg py-2.5 sm:py-3'
                     }`}
                 data-purpose="site-header"
@@ -182,7 +182,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                     <div className="flex items-center justify-between h-16 sm:h-20">
                         {/* Official Chapter Four Logo (Prominent Size) */}
                         <Link href="/" className="flex items-center gap-3 group shrink-0" aria-label="Chapter Four Home">
-                            <ChapterFourLogo variant={scrolled ? 'full' : 'white'} imgClassName="h-14 sm:h-16 lg:h-18 w-auto drop-shadow-md transition-all duration-300" />
+                            <ChapterFourLogo variant={(scrolled || mobileOpen) ? 'full' : 'white'} imgClassName="h-14 sm:h-16 lg:h-18 w-auto drop-shadow-md transition-all duration-300" />
                         </Link>
 
                         {/* Desktop Navigation Menu */}
@@ -312,7 +312,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                             <Link
                                 href="/search"
                                 title="Search Chapter Four"
-                                className={`p-2.5 rounded-full transition flex items-center justify-center ${scrolled
+                                className={`p-2.5 rounded-full transition flex items-center justify-center ${(scrolled || mobileOpen)
                                     ? 'text-slate-600 hover:text-brand-rust hover:bg-slate-100'
                                     : 'text-white/80 hover:text-white hover:bg-white/10'
                                     }`}
@@ -330,8 +330,8 @@ export default function PublicLayout({ children }: PropsWithChildren) {
 
                             <button
                                 id="mobile-menu-toggle"
-                                className={`lg:hidden p-2.5 rounded-lg border transition ${scrolled
-                                    ? 'border-slate-200 text-slate-700 hover:bg-slate-100'
+                                className={`lg:hidden p-2.5 rounded-lg border transition ${(scrolled || mobileOpen)
+                                    ? 'border-slate-300 text-slate-700 hover:bg-slate-100'
                                     : 'border-white/20 text-slate-200 hover:text-white hover:bg-white/10'
                                     }`}
                                 onClick={() => setMobileOpen(!mobileOpen)}
@@ -346,27 +346,27 @@ export default function PublicLayout({ children }: PropsWithChildren) {
 
                 {/* ─── MOBILE DRAWER MENU ─────────────────────────────────────────────── */}
                 {mobileOpen && (
-                    <div className="lg:hidden bg-[#0e0704] border-b border-white/10 px-5 pt-4 pb-6 space-y-3 animate-fade-in shadow-2xl text-left">
+                    <div className="lg:hidden bg-white border-b border-slate-200 px-5 pt-4 pb-6 space-y-3 animate-fade-in shadow-2xl text-left">
                         {navLinks.map((link) => (
-                            <div key={link.label} className="border-b border-white/10 pb-2">
+                            <div key={link.label} className="border-b border-slate-200 pb-2">
                                 {link.children ? (
                                     <div>
                                         <button
                                             onClick={() => setOpenDropdown(openDropdown === link.label ? null : link.label)}
-                                            className="w-full flex items-center justify-between py-2 text-base font-semibold text-slate-100 hover:text-white"
+                                            className="w-full flex items-center justify-between py-2 text-base font-semibold text-slate-900 hover:text-brand-rust"
                                         >
                                             <span>{link.label}</span>
-                                            <ChevronDown className={`w-4 h-4 transition-transform ${openDropdown === link.label ? 'rotate-180 text-brand-amber' : ''}`} />
+                                            <ChevronDown className={`w-4 h-4 transition-transform text-slate-700 ${openDropdown === link.label ? 'rotate-180 text-brand-rust' : ''}`} />
                                         </button>
                                         {openDropdown === link.label && (
-                                            <div className="pl-3.5 space-y-2 pt-1.5 pb-1">
+                                            <div className="pl-3.5 space-y-2 pt-1.5 pb-2 border-t border-slate-100 mt-1">
                                                 {link.children.map((child) => (
                                                     child.isAction ? (
                                                         <button
                                                             key={child.label}
                                                             type="button"
                                                             onClick={() => setIsReportModalOpen(true)}
-                                                            className="block w-full text-left py-1.5 text-sm font-medium text-slate-300 hover:text-brand-amber"
+                                                            className="block w-full text-left py-1.5 text-sm font-medium text-slate-700 hover:text-brand-rust transition-colors"
                                                         >
                                                             {child.label}
                                                         </button>
@@ -374,7 +374,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                                         <Link
                                                             key={child.label}
                                                             href={child.href}
-                                                            className="block py-1.5 text-sm font-medium text-slate-300 hover:text-brand-amber"
+                                                            className="block py-1.5 text-sm font-medium text-slate-700 hover:text-brand-rust transition-colors"
                                                         >
                                                             {child.label}
                                                         </Link>
@@ -386,7 +386,7 @@ export default function PublicLayout({ children }: PropsWithChildren) {
                                 ) : (
                                     <Link
                                         href={link.href}
-                                        className={`block py-2 text-base font-semibold ${isActive(link.href) ? 'text-brand-amber' : 'text-slate-100 hover:text-white'
+                                        className={`block py-2 text-base font-semibold transition-colors ${isActive(link.href) ? 'text-brand-rust font-bold' : 'text-slate-900 hover:text-brand-rust'
                                             }`}
                                     >
                                         {link.label}

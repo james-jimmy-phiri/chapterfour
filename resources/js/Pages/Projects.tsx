@@ -25,65 +25,8 @@ interface ProjectsProps {
     projects?: ProjectItem[];
 }
 
-const defaultProjects: ProjectItem[] = [
-    {
-        title: 'Mobile Legal Defense Clinics for Rural Communities',
-        slug: 'mobile-legal-defense-clinics',
-        summary: 'Deploying traveling legal clinics to police posts, magistrate benches, and community centers to provide immediate representation and bail assistance.',
-        locations: ['Lilongwe Rural', 'Dowa', 'Salima', 'Dedza'],
-        beneficiaries: ['Underprivileged Detainees', 'Vulnerable Families'],
-        status: 'Active',
-        featured_image: '/images/paliament.jpg',
-    },
-    {
-        title: 'Youth Constitutional Literacy & Chapter IV Assemblies',
-        slug: 'youth-constitutional-literacy',
-        summary: 'Grassroots civic education assemblies training youth leaders, school human rights clubs, and community radio advocates on Bill of Rights protections.',
-        locations: ['Blantyre', 'Zomba', 'Mangochi', 'Thyolo'],
-        beneficiaries: ['Youth Leaders', 'Student Associations'],
-        status: 'Active',
-        featured_image: '/images/constitutional_book.jpg',
-    },
-    {
-        title: 'District Social Accountability & Public Resource Monitoring',
-        slug: 'district-social-accountability',
-        summary: 'Citizen monitoring groups tracking constituency development funds (CDF) and local government healthcare budgets to prevent corruption.',
-        locations: ['Mzimba', 'Kasungu', 'Mchinji'],
-        beneficiaries: ['Rural Communities', 'Civic Watchdogs'],
-        status: 'Active',
-        featured_image: '/images/Parliament_Building_of_Malawioutside.jpg',
-    },
-    {
-        title: 'Legal Protection Against Child Marriage & Harmful Traditional Rites',
-        slug: 'child-marriage-protection',
-        summary: 'Collaborative initiative with traditional authorities and child protection committees to enforce statutory age laws and rescue victims.',
-        locations: ['Phalombe', 'Mulanje', 'Machinga'],
-        beneficiaries: ['Adolescent Girls', 'Community Mothers Groups'],
-        status: 'Completed',
-        featured_image: '/images/child_ca.jpg',
-    },
-    {
-        title: 'GBV Survivors Legal Aid & Psychosocial Support Program',
-        slug: 'gbv-survivors-legal-aid',
-        summary: 'Providing integrated legal assistance and referral pathways for gender-based violence survivors through local courts and community support structures.',
-        locations: ['Lilongwe', 'Blantyre', 'Mzuzu'],
-        beneficiaries: ['GBV Survivors', 'Women & Girls'],
-        status: 'Active',
-        featured_image: '/images/woman.jpg',
-    },
-    {
-        title: 'Community-Based Human Rights Monitoring Network',
-        slug: 'human-rights-monitoring-network',
-        summary: 'Training community monitors to document and report human rights violations at the grassroots level, contributing to national accountability reports.',
-        locations: ['Ntchisi', 'Nkhata Bay', 'Karonga'],
-        beneficiaries: ['Community Monitors', 'Rights Defenders'],
-        status: 'Completed',
-        featured_image: '/images/no_justice.jpg',
-    },
-];
-
 export default function Projects({ projects = [] }: ProjectsProps) {
-    const items = projects.length > 0 ? projects : defaultProjects;
+    const items = projects;
     const [statusFilter, setStatusFilter] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -107,6 +50,7 @@ export default function Projects({ projects = [] }: ProjectsProps) {
 
     const activeCount = items.filter((p) => p.status?.toLowerCase() === 'active').length;
     const completedCount = items.filter((p) => p.status?.toLowerCase() === 'completed').length;
+    const hasProjects = items.length > 0;
 
     return (
         <PublicLayout>
@@ -128,7 +72,7 @@ export default function Projects({ projects = [] }: ProjectsProps) {
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="/images/Parliament_Building_of_Malawioutside.jpg"
+                        src="/images/new/treeplanting.jpg"
                         alt="Chapter Four Field Projects"
                         className="w-full h-full object-cover opacity-50"
                     />
@@ -238,15 +182,45 @@ export default function Projects({ projects = [] }: ProjectsProps) {
                         )}
                     </div>
 
-                    {/* Empty state */}
-                    {filtered.length === 0 && (
+                    {/* Empty state — no projects at all from backend */}
+                    {!hasProjects && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="text-center py-28"
+                        >
+                            <Briefcase className="w-20 h-20 text-slate-200 mx-auto mb-6" />
+                            <h3 className="text-2xl font-bold text-slate-500 mb-3">No Projects Published Yet</h3>
+                            <p className="text-base text-slate-400 max-w-md mx-auto leading-relaxed">
+                                Chapter Four's field projects will appear here once they are published. Check back soon or explore our thematic areas.
+                            </p>
+                            <div className="flex items-center justify-center gap-4 mt-8">
+                                <Link
+                                    href="/what-we-do/thematic-areas"
+                                    className="inline-flex items-center gap-2 px-6 py-3 bg-brand-rust hover:bg-brand-rust-dark text-white font-bold rounded-xl text-sm transition shadow-lg"
+                                >
+                                    <span>Explore Thematic Areas</span>
+                                    <ArrowRight className="w-4 h-4" />
+                                </Link>
+                                <Link
+                                    href="/contact"
+                                    className="inline-flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 hover:border-brand-rust text-slate-700 hover:text-brand-rust font-bold rounded-xl text-sm transition"
+                                >
+                                    <span>Contact Us</span>
+                                </Link>
+                            </div>
+                        </motion.div>
+                    )}
+
+                    {/* Empty state — filter/search produced no results */}
+                    {hasProjects && filtered.length === 0 && (
                         <motion.div
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             className="text-center py-20"
                         >
                             <Briefcase className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-                            <h3 className="text-xl font-bold text-slate-500 mb-2">No projects found</h3>
+                            <h3 className="text-xl font-bold text-slate-500 mb-2">No projects match your search</h3>
                             <p className="text-sm text-slate-400">Try adjusting your search or filter criteria.</p>
                         </motion.div>
                     )}

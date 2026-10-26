@@ -68,8 +68,8 @@ export default function BoardOfTrustees({ trustees = [] }: BoardOfTrusteesProps)
             <section className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 bg-slate-900 overflow-hidden text-white">
                 <div className="absolute inset-0 z-0">
                     <img
-                        src="/images/president_muthalika.jpg"
-                        alt="Background"
+                        src="/images/new/fao.jpg"
+                        alt="Court and Governance Leadership"
                         className="w-full h-full object-cover opacity-60"
                     />
                     <div className="absolute inset-0 bg-gradient-to-r from-slate-900 via-slate-900/40 to-transparent"></div>
